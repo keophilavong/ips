@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="icon" type="image/png" href="../assets/images/edu.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        .admin-dashboard {
+            max-width: 1600px;
+            margin: var(--spacing-3xl) auto;
+            padding: var(--spacing-xl);
+        }
+        
+        .dashboard-header {
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .dashboard-header h1 {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .stat-card {
+            background: var(--bg-primary);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+            transition: all var(--transition-base);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .action-card {
+            background: var(--bg-primary);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+            transition: all var(--transition-base);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-2xl);
+            border-color: var(--primary-color);
+        }
+        
+        .action-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .action-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .action-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        
+        .recent-activity {
+            background: var(--bg-primary);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+        }
+        
+        .activity-item {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            font-size: 2rem;
+            width: 50px;
+            text-align: center;
+        }
+        
+        .activity-content {
+            flex-grow: 1;
+        }
+        
+        .activity-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .activity-time {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<div id="navbar"></div>
+
+<div class="admin-dashboard">
+    <div class="dashboard-header">
+        <h1>Admin Dashboard</h1>
+        <p style="color: var(--text-secondary); font-size: 1.1rem;">Manage all aspects of the Education Worker Report System</p>
+    </div>
+    
+    <!-- Statistics -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-value" id="totalUsers">-</div>
+            <div class="stat-label">Total Users</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📋</div>
+            <div class="stat-value" id="totalActivities">-</div>
+            <div class="stat-label">Activities</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📄</div>
+            <div class="stat-value" id="totalReports">-</div>
+            <div class="stat-label">Reports</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-value" id="activeActivities">-</div>
+            <div class="stat-label">Active Activities</div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <h2 style="margin-bottom: var(--spacing-lg);">Quick Actions</h2>
+    <div class="quick-actions">
+        <a href="manage-activities.html" class="action-card">
+            <div class="action-icon">📌</div>
+            <div class="action-title">Manage Activities</div>
+            <div class="action-description">Add, edit, or delete activities and meetings. Upload images and manage activity descriptions.</div>
+        </a>
+        
+        <a href="manage-users.html" class="action-card">
+            <div class="action-icon">👥</div>
+            <div class="action-title">Manage Users</div>
+            <div class="action-description">View all registered users, edit user information, activate or deactivate accounts.</div>
+        </a>
+        
+        <a href="view-reports.html" class="action-card">
+            <div class="action-icon">📄</div>
+            <div class="action-title">View Reports</div>
+            <div class="action-description">Review all uploaded reports, manage report categories, and download files.</div>
+        </a>
+        
+        <a href="system-settings.html" class="action-card">
+            <div class="action-icon">⚙️</div>
+            <div class="action-title">System Settings</div>
+            <div class="action-description">Configure system settings, manage admin accounts, and view system information.</div>
+        </a>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="recent-activity" style="margin-top: var(--spacing-2xl);">
+        <h2 style="margin-bottom: var(--spacing-lg);">Recent Activity</h2>
+        <div id="recentActivity">
+            <div style="text-align: center; padding: var(--spacing-xl); color: var(--text-secondary);">
+                <div class="loading"></div>
+                <p style="margin-top: 1rem;">Loading recent activity...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="footer"></div>
+<script src="../assets/js/main.js"></script>
+<script>
+// Check admin authentication
+function checkAuth() {
+    fetch('../backend/check-admin.php')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.is_admin) {
+                window.location.href = '../login.html';
+            }
+        })
+        .catch(() => {
+            window.location.href = '../login.html';
+        });
+}
+
+// Load statistics
+function loadStats() {
+    // Load user count
+    fetch('../backend/fetch-users.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data && !data.error) {
+                document.getElementById('totalUsers').textContent = data.length || 0;
+            }
+        })
+        .catch(() => {
+            document.getElementById('totalUsers').textContent = '0';
+        });
+    
+    // Load activities count
+    fetch('../backend/fetch-activities.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data && !data.error) {
+                const total = data.length || 0;
+                const active = data.filter(a => a.is_active !== false).length;
+                document.getElementById('totalActivities').textContent = total;
+                document.getElementById('activeActivities').textContent = active;
+            }
+        })
+        .catch(() => {
+            document.getElementById('totalActivities').textContent = '0';
+            document.getElementById('activeActivities').textContent = '0';
+        });
+    
+    // Load reports count
+    fetch('../backend/fetch-reports.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data && !data.error) {
+                document.getElementById('totalReports').textContent = data.length || 0;
+            }
+        })
+        .catch(() => {
+            document.getElementById('totalReports').textContent = '0';
+        });
+}
+
+// Load recent activity
+function loadRecentActivity() {
+    Promise.all([
+        fetch('../backend/fetch-activities.php').then(r => r.json()),
+        fetch('../backend/fetch-reports.php').then(r => r.json())
+    ])
+    .then(([activities, reports]) => {
+        const recent = [];
+        
+        // Add recent activities
+        if (activities && !activities.error) {
+            activities.slice(0, 3).forEach(activity => {
+                recent.push({
+                    type: 'activity',
+                    title: activity.title,
+                    time: new Date(activity.created_at).toLocaleString('lo-LA'),
+                    icon: '📌'
+                });
+            });
+        }
+        
+        // Add recent reports
+        if (reports && !reports.error) {
+            reports.slice(0, 2).forEach(report => {
+                recent.push({
+                    type: 'report',
+                    title: report.title,
+                    time: new Date(report.created_at).toLocaleString('lo-LA'),
+                    icon: '📄'
+                });
+            });
+        }
+        
+        // Sort by time and show latest 5
+        recent.sort((a, b) => new Date(b.time) - new Date(a.time));
+        
+        const container = document.getElementById('recentActivity');
+        if (recent.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: var(--spacing-xl);">No recent activity</p>';
+        } else {
+            container.innerHTML = recent.slice(0, 5).map(item => `
+                <div class="activity-item">
+                    <div class="activity-icon">${item.icon}</div>
+                    <div class="activity-content">
+                        <div class="activity-title">${item.title}</div>
+                        <div class="activity-time">${item.time}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    })
+    .catch(error => {
+        document.getElementById('recentActivity').innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: var(--spacing-xl);">Error loading recent activity</p>';
+    });
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuth();
+    loadStats();
+    loadRecentActivity();
+    
+    // Refresh stats every 30 seconds
+    setInterval(loadStats, 30000);
+});
+</script>
+</body>
+</html>
+

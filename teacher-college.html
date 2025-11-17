@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher College Movement</title>
+    <link rel="icon" type="image/png" href="assets/images/edu.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Responsive Design for Teacher College Form */
+        @media (max-width: 768px) {
+            .content > div {
+                padding: 0 var(--spacing-md);
+            }
+            
+            .card {
+                padding: var(--spacing-lg);
+            }
+            
+            .form-group {
+                padding-bottom: var(--spacing-md) !important;
+                margin-bottom: var(--spacing-lg) !important;
+            }
+            
+            .form-control {
+                font-size: 1rem;
+                padding: 0.75rem;
+            }
+            
+            #fileUploadArea {
+                padding: var(--spacing-lg) !important;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn-block {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .page-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .page-header p {
+                font-size: 0.9rem;
+            }
+            
+            .card-title {
+                font-size: 1.25rem;
+            }
+            
+            .form-label {
+                font-size: 0.9rem;
+            }
+            
+            #fileList > div {
+                padding: var(--spacing-sm) !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div id="navbar"></div>
+
+<div class="page-header">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h2>🏫 ຂໍ້ມູນການເຄື່ອນໄຫວຂອງວິທະຍາໄລຄູ</h2>
+            <p style="margin-bottom: 0;">Track and manage teacher college movement information and activities</p>
+        </div>
+        <a href="uploads/upload-teacher-college.html" class="btn" style="background: white; color: var(--primary-color); border: 2px solid white;">+ Upload Data</a>
+    </div>
+</div>
+
+<section class="content">
+    <div style="max-width: 900px; margin: 0 auto;">
+        <div class="card" style="margin-bottom: var(--spacing-xl);">
+            <div class="card-title">🏫 ຂໍ້ມູນການເຄື່ອນໄຫວຂອງວິທະຍາໄລຄູ</div>
+            <div class="card-body">
+                <p>Upload teacher college movement information and documents. Fill out the form below to submit new data.</p>
+            </div>
+        </div>
+        
+        <!-- Upload Form -->
+        <div class="card" id="uploadFormCard">
+            <div class="card-title">📤 Upload Teacher College Data</div>
+            <div class="card-body">
+                <form id="teacherCollegeForm" enctype="multipart/form-data" style="margin-top: var(--spacing-lg);">
+                    <!-- Question 1: Teacher's College -->
+                    <div class="form-group" style="margin-bottom: var(--spacing-xl); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--border-color);">
+                        <label for="college" class="form-label" style="display: block; font-weight: 600; margin-bottom: var(--spacing-md); font-size: 1rem;">
+                            1. ວິທະຍາໄລຄູ <span style="color: #dc2626;">*</span>
+                        </label>
+                        <select id="college" name="college" class="form-control" required style="padding: 0.875rem 1rem; font-size: 1rem; cursor: pointer;">
+                            <option value="">-- Select Teacher's College --</option>
+                            <option value="ຫຼວງນໍ້າທາ">1. ຫຼວງນໍ້າທາ</option>
+                            <option value="ຫຼວງພະບາງ">2. ຫຼວງພະບາງ</option>
+                            <option value="ປານເກີນ">3. ປານເກີນ</option>
+                            <option value="ຄົງຄໍາຊາງ">4. ຄົງຄໍາຊາງ</option>
+                            <option value="ຄັງໄຂ">5. ຄັງໄຂ</option>
+                            <option value="ອະຫວັນນະເຂດ">6. ອະຫວັນນະເຂດ</option>
+                            <option value="ປາກເຊ">7. ປາກເຊ</option>
+                            <option value="ອາລະວັນ">8. ອາລະວັນ</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Question 2: Document Title -->
+                    <div class="form-group" style="margin-bottom: var(--spacing-xl); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--border-color);">
+                        <label for="title" class="form-label" style="display: block; font-weight: 600; margin-bottom: var(--spacing-md); font-size: 1rem;">
+                            2. ຫົວຂໍ້ເອກະສານ <span style="color: #dc2626;">*</span>
+                        </label>
+                        <input type="text" id="title" name="title" class="form-control" placeholder="Your answer" required>
+                    </div>
+                    
+                    <!-- Question 3: File Upload -->
+                    <div class="form-group" style="margin-bottom: var(--spacing-xl); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--border-color);">
+                        <label class="form-label" style="display: block; font-weight: 600; margin-bottom: var(--spacing-md); font-size: 1rem;">
+                            ເອກະສານທີ່ upload <span style="color: #dc2626;">*</span>
+                        </label>
+                        <small style="color: var(--text-light); font-size: 0.875rem; display: block; margin-bottom: var(--spacing-md);">
+                            Upload up to 5 supported files. Max 100 MB per file.
+                        </small>
+                        <div style="border: 2px dashed var(--border-color); border-radius: 8px; padding: var(--spacing-2xl); text-align: center; background: var(--bg-secondary); cursor: pointer; transition: all 0.2s;" 
+                             id="fileUploadArea" 
+                             onclick="document.getElementById('fileInput').click()">
+                            <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">☁️</div>
+                            <button type="button" class="btn" style="display: inline-flex; align-items: center; gap: var(--spacing-sm);">
+                                ↑ Add file
+                            </button>
+                            <input type="file" id="fileInput" name="files[]" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.webp,.bmp" style="display: none;">
+                        </div>
+                        <div id="fileList" style="margin-top: var(--spacing-lg); display: flex; flex-direction: column; gap: var(--spacing-sm);"></div>
+                    </div>
+                    
+                    <!-- Question 4: Date -->
+                    <div class="form-group" style="margin-bottom: var(--spacing-xl);">
+                        <label for="date" class="form-label" style="display: block; font-weight: 600; margin-bottom: var(--spacing-md); font-size: 1rem;">
+                            ວັນທີ ເດືອນ ປີ <span style="color: #dc2626;">*</span>
+                        </label>
+                        <div style="position: relative;">
+                            <input type="date" id="date" name="date" class="form-control" required style="padding-right: 3rem;">
+                            <span style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-light); pointer-events: none;">📅</span>
+                        </div>
+                    </div>
+                    
+                    <div id="result"></div>
+                    
+                    <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-2xl); padding-top: var(--spacing-xl); border-top: 2px solid var(--border-color);">
+                        <button type="submit" class="btn btn-block" id="submitBtn">Submit</button>
+                        <button type="button" class="btn btn-outline btn-block" onclick="clearForm()">Clear form</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="footer"></div>
+<script src="assets/js/main.js"></script>
+<script>
+// File management
+let selectedFiles = [];
+const maxFiles = 5;
+const maxFileSize = 100 * 1024 * 1024; // 100MB
+
+// File icons
+const fileIcons = {
+    'pdf': '📕',
+    'doc': '📘', 'docx': '📘',
+    'xls': '📗', 'xlsx': '📗',
+    'ppt': '📙', 'pptx': '📙',
+    'jpg': '🖼️', 'jpeg': '🖼️', 'png': '🖼️', 'gif': '🖼️', 'webp': '🖼️', 'bmp': '🖼️',
+    'txt': '📄',
+    'default': '📄'
+};
+
+// Format file size
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+}
+
+// Get file icon
+function getFileIcon(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    return fileIcons[ext] || fileIcons['default'];
+}
+
+// Update file list display
+function updateFileList() {
+    const fileList = document.getElementById('fileList');
+    
+    if (selectedFiles.length === 0) {
+        fileList.innerHTML = '';
+        return;
+    }
+    
+    fileList.innerHTML = selectedFiles.map((file, index) => `
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: var(--spacing-md); background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-color);">
+            <div style="display: flex; align-items: center; gap: var(--spacing-md); flex: 1;">
+                <div style="font-size: 2rem;">${getFileIcon(file.name)}</div>
+                <div style="flex: 1;">
+                    <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">${file.name}</div>
+                    <div style="font-size: 0.875rem; color: var(--text-secondary);">${formatFileSize(file.size)}</div>
+                </div>
+            </div>
+            <button type="button" onclick="removeFile(${index})" style="background: none; border: none; color: #dc2626; cursor: pointer; font-size: 1.5rem; padding: var(--spacing-xs); transition: all 0.2s;" title="Remove file">×</button>
+        </div>
+    `).join('');
+}
+
+// Add files
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const files = Array.from(e.target.files);
+    
+    if (selectedFiles.length + files.length > maxFiles) {
+        alert(`You can only upload up to ${maxFiles} files. Please remove some files first.`);
+        return;
+    }
+    
+    files.forEach(file => {
+        if (file.size > maxFileSize) {
+            alert(`File "${file.name}" exceeds the maximum size of 100MB.`);
+            return;
+        }
+        
+        selectedFiles.push(file);
+    });
+    
+    updateFileList();
+    e.target.value = '';
+});
+
+// Remove file
+function removeFile(index) {
+    selectedFiles.splice(index, 1);
+    updateFileList();
+}
+
+// Drag and drop
+const fileUploadArea = document.getElementById('fileUploadArea');
+const fileInput = document.getElementById('fileInput');
+
+fileUploadArea.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    fileUploadArea.style.borderColor = 'var(--primary-color)';
+    fileUploadArea.style.background = 'rgba(30, 64, 175, 0.05)';
+});
+
+fileUploadArea.addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    fileUploadArea.style.borderColor = 'var(--border-color)';
+    fileUploadArea.style.background = 'var(--bg-secondary)';
+});
+
+fileUploadArea.addEventListener('drop', function(e) {
+    e.preventDefault();
+    fileUploadArea.style.borderColor = 'var(--border-color)';
+    fileUploadArea.style.background = 'var(--bg-secondary)';
+    
+    const files = Array.from(e.dataTransfer.files);
+    
+    if (selectedFiles.length + files.length > maxFiles) {
+        alert(`You can only upload up to ${maxFiles} files. Please remove some files first.`);
+        return;
+    }
+    
+    files.forEach(file => {
+        if (file.size > maxFileSize) {
+            alert(`File "${file.name}" exceeds the maximum size of 100MB.`);
+            return;
+        }
+        
+        selectedFiles.push(file);
+    });
+    
+    updateFileList();
+});
+
+// Clear form
+function clearForm() {
+    if (confirm('Are you sure you want to clear all form data?')) {
+        document.getElementById('teacherCollegeForm').reset();
+        selectedFiles = [];
+        updateFileList();
+        document.getElementById('result').innerHTML = '';
+        document.getElementById('date').valueAsDate = new Date();
+    }
+}
+
+// Form submission
+document.getElementById('teacherCollegeForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    if (selectedFiles.length === 0) {
+        alert('Please select at least one file to upload.');
+        return;
+    }
+    
+    const formData = new FormData(this);
+    
+    // Add all files
+    selectedFiles.forEach((file, index) => {
+        formData.append(`file_${index}`, file);
+    });
+    
+    // Add college as category
+    const college = formData.get('college');
+    formData.set('category', college);
+    
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.textContent;
+    const result = document.getElementById('result');
+    
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Uploading...';
+    result.innerHTML = '';
+    
+    fetch('backend/upload-handler.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.text())
+    .then(data => {
+        if (data.trim() === 'success' || data.trim().startsWith('partial_success')) {
+            result.innerHTML = '<div class="alert alert-success">✅ Documents uploaded successfully! Redirecting...</div>';
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            result.innerHTML = '<div class="alert alert-error">❌ Error: ' + (data.includes('error') ? data : 'Failed to upload documents. Please try again.') + '</div>';
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
+    })
+    .catch(error => {
+        result.innerHTML = '<div class="alert alert-error">❌ An error occurred. Please try again later.</div>';
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        console.error('Error:', error);
+    });
+});
+
+// Set today's date as default
+document.getElementById('date').valueAsDate = new Date();
+</script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<footer>
+    <div style="max-width: 1600px; margin: 0 auto; padding: 0 var(--spacing-xl);">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-xl); margin-bottom: var(--spacing-xl);">
+            <!-- Logo and Organization Info -->
+            <div>
+                <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-md);">
+                    <img src="assets/images/edu.png" alt="MOES Logo" style="height: 60px; width: auto; filter: brightness(0) invert(1);" onerror="this.style.display='none';">
+                    <div>
+                        <h3 style="color: white; font-size: 1.25rem; margin: 0; font-weight: 700;">ກະຊວງສຶກສາທິການ ແລະ ກິລາ</h3>
+                        <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; margin: 0.25rem 0 0 0; line-height: 1.5;">
+                            Ministry of Education and Sports
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Links -->
+            <div>
+                <h4 style="color: white; font-size: 1.1rem; margin-bottom: var(--spacing-md); font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                    <span>🔗</span> Quick Links
+                </h4>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li style="margin-bottom: 0.75rem;">
+                        <a href="index.html" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-radius: 0.25rem;">
+                            <span style="font-size: 1.1rem;">🏠</span>
+                            <span>Home</span>
+                        </a>
+                    </li>
+                    <li style="margin-bottom: 0.75rem;">
+                        <a href="activities.html" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-radius: 0.25rem;">
+                            <span style="font-size: 1.1rem;">📌</span>
+                            <span>Activities</span>
+                        </a>
+                    </li>
+                    <li style="margin-bottom: 0.75rem;">
+                        <a href="documents.html" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-radius: 0.25rem;">
+                            <span style="font-size: 1.1rem;">📄</span>
+                            <span>Documents</span>
+                        </a>
+                    </li>
+                    <li style="margin-bottom: 0.75rem;">
+                        <a href="cpd.html" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-radius: 0.25rem;">
+                            <span style="font-size: 1.1rem;">🎓</span>
+                            <span>CPD</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- System Links -->
+            <div>
+                <h4 style="color: white; font-size: 1.1rem; margin-bottom: var(--spacing-md); font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                    <span>⚙️</span> System
+                </h4>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li style="margin-bottom: 0.75rem;">
+                        <a href="login.html" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-radius: 0.25rem;">
+                            <span style="font-size: 1.1rem;">🔐</span>
+                            <span>Login</span>
+                        </a>
+                    </li>
+                    <li style="margin-bottom: 0.75rem;">
+                        <a href="register.html" style="color: rgba(255, 255, 255, 0.85); text-decoration: none; transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-radius: 0.25rem;">
+                            <span style="font-size: 1.1rem;">📝</span>
+                            <span>Register</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Copyright Section -->
+        <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: var(--spacing-lg); text-align: center;">
+            <p style="margin: 0; color: rgba(255, 255, 255, 0.9); font-weight: 600; font-size: 1.05rem;">
+                © 2025 Internal Education Worker Report Tracking System. All rights reserved.
+            </p>
+            <p style="margin-top: 0.75rem; color: rgba(255, 255, 255, 0.7); font-size: 0.95rem;">
+                Empowering education through efficient tracking and reporting
+            </p>
+        </div>
+    </div>
+    
+    <style>
+        footer a:hover {
+            color: white !important;
+            transform: translateX(5px);
+            padding-left: 0.5rem;
+        }
+        
+        footer a:hover span:first-child {
+            transform: scale(1.2);
+        }
+        
+        @media (max-width: 768px) {
+            footer > div > div:first-child {
+                grid-template-columns: 1fr;
+            }
+            
+            footer img {
+                height: 50px !important;
+            }
+        }
+    </style>
+</footer>

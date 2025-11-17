@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documents</title>
+    <link rel="icon" type="image/png" href="assets/images/edu.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Enhanced Filter & Search Bar */
+        .documents-toolbar {
+            background: var(--bg-primary);
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-xl);
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+            flex-wrap: wrap;
+            border: 1px solid var(--border-light);
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-lg) var(--spacing-sm) 3rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all var(--transition-base);
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: var(--bg-primary);
+            box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.1);
+        }
+        
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: var(--spacing-md);
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            pointer-events: none;
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: var(--spacing-sm);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: var(--bg-primary);
+            box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.1);
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: 0.25rem;
+            background: var(--bg-secondary);
+            padding: 0.25rem;
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--border-color);
+        }
+        
+        .view-toggle button {
+            padding: var(--spacing-xs) var(--spacing-md);
+            border: none;
+            background: transparent;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all var(--transition-base);
+            color: var(--text-secondary);
+            min-width: 40px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .view-toggle button:hover {
+            background: var(--bg-tertiary);
+            color: var(--primary-color);
+        }
+        
+        .view-toggle button.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .documents-count {
+            color: var(--text-secondary);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        /* Documents Grid/List Container */
+        #documents-container.list-view .documents-list {
+            grid-template-columns: 1fr;
+        }
+        
+        .documents-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+        }
+        
+        /* Professional Documents List View */
+        .documents-list-view {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-top: var(--spacing-xl);
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+        
+        .doc-list-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f3f4f6;
+            transition: all 0.15s ease;
+            gap: 1.25rem;
+            cursor: pointer;
+        }
+        
+        .doc-list-item:last-child {
+            border-bottom: none;
+        }
+        
+        .doc-list-item:hover {
+            background: #f9fafb;
+        }
+        
+        .doc-list-item.selected {
+            background: #eff6ff;
+            border-left: 3px solid #1e40af;
+        }
+        
+        .doc-list-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3f4f6;
+            border-radius: 0.5rem;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .doc-list-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
+        
+        .doc-list-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .doc-list-title {
+            font-weight: 600;
+            color: #111827;
+            font-size: 0.9375rem;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .doc-list-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.375rem;
+        }
+        
+        .doc-list-category {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.625rem;
+            background: #1e40af;
+            color: white;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+        
+        .doc-list-type {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.625rem;
+            background: #f3f4f6;
+            color: #374151;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .doc-list-date {
+            color: #6b7280;
+            font-size: 0.8125rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .doc-list-description {
+            color: #6b7280;
+            font-size: 0.8125rem;
+            margin-top: 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .doc-list-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        
+        .btn-list-view, .btn-list-download {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .btn-list-view {
+            background: #059669;
+            color: white;
+        }
+        
+        .btn-list-view:hover {
+            background: #047857;
+            box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .btn-list-download {
+            background: #1e40af;
+            color: white;
+        }
+        
+        .btn-list-download:hover {
+            background: #1e3a8a;
+            box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        @media (max-width: 768px) {
+            .doc-list-item {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+            
+            .doc-list-icon {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .doc-list-content {
+                width: 100%;
+            }
+            
+            .doc-list-actions {
+                width: 100%;
+                justify-content: flex-end;
+                margin-top: 0.5rem;
+            }
+            
+            .btn-list-view, .btn-list-download {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+        
+        /* Professional Table View Styles */
+        .documents-table-container {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-top: var(--spacing-xl);
+            border: 1px solid #e5e7eb;
+        }
+        
+        .documents-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.9375rem;
+            background: white;
+        }
+        
+        .documents-table thead {
+            background: #1e40af;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .documents-table th {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: none;
+            white-space: nowrap;
+            color: rgba(255, 255, 255, 0.95);
+        }
+        
+        .documents-table th:first-child {
+            width: 60px;
+            text-align: center;
+            padding-left: 1.5rem;
+        }
+        
+        .documents-table th:last-child {
+            width: 220px;
+            text-align: center;
+            padding-right: 1.5rem;
+        }
+        
+        .documents-table tbody tr {
+            border-bottom: 1px solid #f3f4f6;
+            transition: background-color 0.15s ease;
+            background: white;
+        }
+        
+        .documents-table tbody tr:hover {
+            background: #f9fafb;
+        }
+        
+        .documents-table tbody tr:last-child {
+            border-bottom: none;
+        }
+        
+        .documents-table tbody tr.selected {
+            background: #eff6ff;
+            border-left: 3px solid #1e40af;
+        }
+        
+        .documents-table td {
+            padding: 1.125rem 1.25rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .documents-table td:first-child {
+            text-align: center;
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding-left: 1.5rem;
+        }
+        
+        .documents-table td:last-child {
+            padding-right: 1.5rem;
+        }
+        
+        .table-doc-title {
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.375rem;
+            font-size: 0.9375rem;
+            line-height: 1.4;
+        }
+        
+        .table-doc-description {
+            color: #6b7280;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            margin-top: 0.25rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .table-doc-category {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.75rem;
+            background: #1e40af;
+            color: white;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+        
+        .table-doc-type {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.75rem;
+            background: #f3f4f6;
+            color: #374151;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .table-doc-date {
+            color: #6b7280;
+            font-size: 0.8125rem;
+            font-weight: 500;
+        }
+        
+        .table-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-view, .btn-table-download {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .btn-view {
+            background: #059669;
+            color: white;
+        }
+        
+        .btn-view:hover {
+            background: #047857;
+            box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .btn-table-download {
+            background: #1e40af;
+            color: white;
+        }
+        
+        .btn-table-download:hover {
+            background: #1e3a8a;
+            box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        /* Professional table enhancements */
+        .documents-table-container::before {
+            content: '';
+            display: block;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
+        }
+        
+        @media (max-width: 1024px) {
+            .documents-table {
+                font-size: 0.875rem;
+            }
+            
+            .documents-table th,
+            .documents-table td {
+                padding: 0.875rem 1rem;
+            }
+            
+            .documents-table th:first-child,
+            .documents-table td:first-child {
+                padding-left: 1rem;
+            }
+            
+            .table-actions {
+                flex-direction: column;
+                gap: 0.375rem;
+            }
+            
+            .btn-view, .btn-table-download {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        /* Enhanced Document Card */
+        .document-item {
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            transition: all var(--transition-base);
+            border: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            height: 100%;
+        }
+        
+        .document-item.list-view {
+            flex-direction: row;
+            height: auto;
+        }
+        
+        .document-item:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-2xl);
+            border-color: var(--primary-light);
+        }
+        
+        .document-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform var(--transition-base);
+        }
+        
+        .document-item:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .document-thumbnail {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 5rem;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .document-item.list-view .document-thumbnail {
+            width: 280px;
+            height: 200px;
+        }
+        
+        .document-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .document-thumbnail::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 100%);
+            pointer-events: none;
+        }
+        
+        .document-thumbnail {
+            cursor: pointer;
+            transition: transform var(--transition-base);
+        }
+        
+        .document-thumbnail:hover {
+            transform: scale(1.05);
+        }
+        
+        .file-type-badge {
+            position: absolute;
+            top: var(--spacing-sm);
+            right: var(--spacing-sm);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            backdrop-filter: blur(10px);
+        }
+        
+        .document-content {
+            padding: var(--spacing-lg);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .document-header {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .document-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .document-meta {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .document-category {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.9rem;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .document-date {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+        
+        .document-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            flex-grow: 1;
+            margin-bottom: var(--spacing-md);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .document-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+        
+        .document-actions {
+            display: flex;
+            gap: var(--spacing-xs);
+            flex-wrap: wrap;
+        }
+        
+        .btn-download, .btn-preview {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all var(--transition-base);
+            white-space: nowrap;
+        }
+        
+        .btn-download {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn-preview {
+            background: var(--secondary-gradient);
+            color: white;
+        }
+        
+        .btn-preview:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: var(--spacing-3xl);
+            color: var(--text-secondary);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-3xl);
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border-radius: var(--radius-xl);
+            border: 2px dashed var(--border-color);
+        }
+        
+        .empty-state-icon {
+            font-size: 5rem;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .empty-state h3 {
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+        
+        /* Preview Modal Styles */
+        .preview-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .preview-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .preview-modal-content {
+            background: var(--bg-primary);
+            margin: var(--spacing-xl) auto;
+            padding: 0;
+            border-radius: var(--radius-xl);
+            max-width: 95%;
+            width: 100%;
+            max-height: 90vh;
+            box-shadow: var(--shadow-2xl);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .preview-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border-bottom: 2px solid var(--border-color);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+        
+        .preview-modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+            flex: 1;
+        }
+        
+        .preview-modal-close {
+            font-size: 2rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-base);
+        }
+        
+        .preview-modal-close:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            transform: rotate(90deg);
+        }
+        
+        .preview-modal-body {
+            padding: var(--spacing-xl);
+            overflow: auto;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+        
+        .preview-iframe {
+            width: 100%;
+            height: 70vh;
+            border: none;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            object-fit: contain;
+        }
+        
+        .preview-text {
+            width: 100%;
+            max-height: 70vh;
+            padding: var(--spacing-lg);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow: auto;
+            border: 1px solid var(--border-color);
+        }
+        
+        .preview-unsupported {
+            text-align: center;
+            padding: var(--spacing-3xl);
+            color: var(--text-secondary);
+        }
+        
+        .preview-unsupported-icon {
+            font-size: 5rem;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .preview-unsupported h3 {
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+        
+        .preview-modal-footer {
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border-top: 2px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-md);
+            background: var(--bg-secondary);
+            border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+        }
+        
+        .btn-preview {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all var(--transition-base);
+        }
+        
+        .btn-preview:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .document-image {
+            cursor: pointer;
+            transition: transform var(--transition-base);
+        }
+        
+        .document-image:hover {
+            transform: scale(1.02);
+        }
+        
+        @media (max-width: 768px) {
+            .documents-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .document-item.list-view {
+                flex-direction: column;
+            }
+            
+            .document-item.list-view .document-thumbnail {
+                width: 100%;
+                height: 200px;
+            }
+            
+            .documents-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                min-width: 100%;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+            
+            .filter-select {
+                flex: 1;
+            }
+            
+            .documents-table-container {
+                overflow-x: auto;
+            }
+            
+            .documents-table {
+                min-width: 800px;
+            }
+            
+            .preview-modal-content {
+                max-width: 100%;
+                margin: 0;
+                border-radius: 0;
+                max-height: 100vh;
+            }
+            
+            .preview-iframe {
+                height: 60vh;
+            }
+            
+            .preview-image {
+                max-height: 60vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="navbar"></div>
+
+<div class="page-header">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h2>📄 ເອກະສານທີ່ກ່ຽວຂ້ອງ</h2>
+            <p style="margin-bottom: 0;">Upload, manage, and access all related educational documents in one place</p>
+        </div>
+        <a href="/internal-education-worker-report/uploads/upload-documents.html" class="btn" style="background: white; color: var(--primary-color); border: 2px solid white;">+ Upload Document</a>
+    </div>
+</div>
+
+<section class="content">
+    <!-- Enhanced Toolbar with Search & Filters -->
+    <div class="documents-toolbar">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search documents by title or description..." autocomplete="off">
+        </div>
+        <div class="filter-group">
+            <select id="categoryFilter" class="filter-select">
+                <option value="">All Categories</option>
+            </select>
+            <select id="sortSelect" class="filter-select">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="title-asc">Title (A-Z)</option>
+                <option value="title-desc">Title (Z-A)</option>
+            </select>
+        </div>
+        <div class="view-toggle">
+            <button id="docsListViewBtn" class="active" title="Documents List">📋</button>
+            <button id="tableViewBtn" title="Table View">☷</button>
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-light); white-space: nowrap;">
+            <span id="currentViewText">Documents List</span>
+        </div>
+        <div class="documents-count">
+            <span id="documentCount">0</span> documents
+        </div>
+    </div>
+    
+    <!-- Documents Container -->
+    <div id="documents-container">
+        <div class="loading">
+            <div class="loading"></div>
+            <p style="margin-top: 1rem;">Loading documents...</p>
+        </div>
+    </div>
+</section>
+
+<!-- Preview Modal -->
+<div id="previewModal" class="preview-modal">
+    <div class="preview-modal-content">
+        <div class="preview-modal-header">
+            <h3 class="preview-modal-title" id="previewTitle">Document Preview</h3>
+            <button class="preview-modal-close" onclick="closePreview()">&times;</button>
+        </div>
+        <div class="preview-modal-body" id="previewBody">
+            <div class="loading">Loading preview...</div>
+        </div>
+        <div class="preview-modal-footer">
+            <a id="previewDownloadBtn" href="#" class="btn-download" download>
+                📥 Download
+            </a>
+            <button class="btn-preview" onclick="closePreview()">Close</button>
+        </div>
+    </div>
+</div>
+
+<div id="footer"></div>
+<script src="assets/js/main.js"></script>
+<script>
+let allDocuments = [];
+
+// Get file icon based on extension
+function getFileIcon(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    const icons = {
+        'pdf': '📕',
+        'doc': '📘', 'docx': '📘',
+        'xls': '📗', 'xlsx': '📗',
+        'ppt': '📙', 'pptx': '📙',
+        'jpg': '🖼️', 'jpeg': '🖼️', 'png': '🖼️', 'gif': '🖼️',
+        'zip': '📦', 'rar': '📦',
+        'txt': '📄',
+        'default': '📄'
+    };
+    return icons[ext] || icons['default'];
+}
+
+// Check if file is an image
+function isImageFile(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
+}
+
+// Check if file is a PDF
+function isPdfFile(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    return ext === 'pdf';
+}
+
+// Check if file is a text file
+function isTextFile(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    return ext === 'txt';
+}
+
+// Check if file can be previewed
+function canPreview(filename) {
+    return isImageFile(filename) || isPdfFile(filename) || isTextFile(filename);
+}
+
+// Get file type for preview
+function getFileType(filename) {
+    if (isImageFile(filename)) return 'image';
+    if (isPdfFile(filename)) return 'pdf';
+    if (isTextFile(filename)) return 'text';
+    return 'unsupported';
+}
+
+// Open preview modal
+function openPreview(fileUrl, title, filename) {
+    const modal = document.getElementById('previewModal');
+    const modalTitle = document.getElementById('previewTitle');
+    const modalBody = document.getElementById('previewBody');
+    const downloadBtn = document.getElementById('previewDownloadBtn');
+    
+    modalTitle.textContent = title || 'Document Preview';
+    downloadBtn.href = fileUrl;
+    downloadBtn.download = filename;
+    
+    const fileType = getFileType(filename);
+    
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+    
+    modal.classList.add('active');
+    
+    // Load preview based on file type
+    switch(fileType) {
+        case 'image':
+            modalBody.innerHTML = `<img src="${fileUrl}" alt="${title}" class="preview-image" onerror="showPreviewError()">`;
+            break;
+        case 'pdf':
+            modalBody.innerHTML = `<iframe src="${fileUrl}#toolbar=1" class="preview-iframe" onerror="showPreviewError()"></iframe>`;
+            break;
+        case 'text':
+            // Fetch and display text content
+            fetch(fileUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to load');
+                    return response.text();
+                })
+                .then(text => {
+                    modalBody.innerHTML = `<pre class="preview-text">${escapeHtml(text)}</pre>`;
+                })
+                .catch(error => {
+                    showPreviewError();
+                });
+            break;
+        default:
+            modalBody.innerHTML = `
+                <div class="preview-unsupported">
+                    <div class="preview-unsupported-icon">📄</div>
+                    <h3>Preview Not Available</h3>
+                    <p>This file type cannot be previewed in the browser.</p>
+                    <p style="margin-top: var(--spacing-md);">Please download the file to view it.</p>
+                </div>
+            `;
+    }
+}
+
+// Escape HTML to prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Show preview error
+function showPreviewError() {
+    const modalBody = document.getElementById('previewBody');
+    modalBody.innerHTML = `
+        <div class="preview-unsupported">
+            <div class="preview-unsupported-icon">⚠️</div>
+            <h3>Error Loading Preview</h3>
+            <p>Unable to load the document preview.</p>
+            <p style="margin-top: var(--spacing-md);">Please try downloading the file instead.</p>
+        </div>
+    `;
+}
+
+// Close preview modal
+function closePreview() {
+    const modal = document.getElementById('previewModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+    
+    // Clear preview content
+    setTimeout(() => {
+        document.getElementById('previewBody').innerHTML = '<div class="loading">Loading preview...</div>';
+    }, 300);
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(event) {
+    const modal = document.getElementById('previewModal');
+    if (event.target === modal) {
+        closePreview();
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const modal = document.getElementById('previewModal');
+        if (modal.classList.contains('active')) {
+            closePreview();
+        }
+    }
+});
+
+// Load documents
+function loadDocuments() {
+    fetch('backend/fetch-reports.php')
+        .then(response => response.json())
+        .then(data => {
+            allDocuments = data;
+            
+            if (data.error) {
+                document.getElementById('documents-container').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <p style="font-size: 1.2rem; color: var(--text-secondary);">Error loading documents: ${data.error}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            if (!data || data.length === 0) {
+                document.getElementById('documents-container').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📁</div>
+                        <h3 style="margin-bottom: 1rem;">No documents yet</h3>
+                        <p style="color: var(--text-secondary); font-size: 1.1rem;">Upload your first document to get started!</p>
+                        <a href="/internal-education-worker-report/uploads/upload-documents.html" class="btn" style="margin-top: 1.5rem;">Upload Document</a>
+                    </div>
+                `;
+                document.getElementById('documentCount').textContent = '0';
+                return;
+            }
+            
+            // Populate category filter
+            const categories = [...new Set(data.map(doc => doc.category).filter(Boolean))];
+            const categoryFilter = document.getElementById('categoryFilter');
+            // Clear existing options except "All Categories"
+            while (categoryFilter.children.length > 1) {
+                categoryFilter.removeChild(categoryFilter.lastChild);
+            }
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categoryFilter.appendChild(option);
+            });
+            
+            // Initialize filtered documents and display
+            filteredDocuments = data;
+            filterAndSearchDocuments();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('documents-container').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">⚠️</div>
+                    <p style="font-size: 1.2rem; color: var(--text-secondary);">Error loading documents. Please try again later.</p>
+                </div>
+            `;
+        });
+}
+
+// Get file extension for badge
+function getFileExtension(filename) {
+    return filename.split('.').pop().toLowerCase().toUpperCase();
+}
+
+// Display documents
+function displayDocuments(documents) {
+    const container = document.getElementById('documents-container');
+    const isTableView = container.classList.contains('table-view');
+    const isDocsListView = container.classList.contains('docs-list-view');
+    
+    if (documents.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">🔍</div>
+                <h3>No documents found</h3>
+                <p style="color: var(--text-secondary); font-size: 1.1rem;">Try adjusting your search or filter criteria.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Default to Documents List View if no view is set
+    const viewToUse = isTableView ? 'table' : 'docs-list';
+    
+    // Documents List View (Simple List) - Default
+    if (viewToUse === 'docs-list' || isDocsListView) {
+        container.innerHTML = `
+            <div class="documents-list-view">
+                ${documents.map((doc, index) => {
+                    const filename = doc.file_path.split('/').pop() || doc.file_path;
+                    const fileIcon = getFileIcon(filename);
+                    const fileUrl = doc.file_path.startsWith('http') ? doc.file_path : '/' + doc.file_path.replace(/^\.\.\//, '');
+                    const isImage = isImageFile(filename);
+                    const canPreviewFile = canPreview(filename);
+                    const fileExt = getFileExtension(filename);
+                    const safeTitle = (doc.title || 'Untitled Document').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    const date = new Date(doc.created_at).toLocaleDateString('en-GB', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                    });
+                    
+                    return `
+                        <div class="doc-list-item" ${canPreviewFile ? `onclick="openPreview('${fileUrl}', '${safeTitle}', '${filename}')"` : ''}>
+                            <div class="doc-list-icon">
+                                ${isImage ? 
+                                    `<img src="${fileUrl}" alt="${safeTitle}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                     <div style="display: none; font-size: 1.5rem;">${fileIcon}</div>` :
+                                    `<div style="font-size: 1.5rem;">${fileIcon}</div>`
+                                }
+                            </div>
+                            <div class="doc-list-content">
+                                <div class="doc-list-title">
+                                    ${doc.title || 'Untitled Document'}
+                                </div>
+                                <div class="doc-list-meta">
+                                    ${doc.category ? `<span class="doc-list-category">${doc.category}</span>` : ''}
+                                    <span class="doc-list-type">${fileExt}</span>
+                                    <span class="doc-list-date">📅 ${date}</span>
+                                </div>
+                                ${doc.description ? `<div class="doc-list-description">${doc.description}</div>` : ''}
+                            </div>
+                            <div class="doc-list-actions" onclick="event.stopPropagation();">
+                                ${canPreviewFile ? `
+                                    <button class="btn-list-view" onclick="event.stopPropagation(); openPreview('${fileUrl}', '${safeTitle}', '${filename}')" title="Preview Document">
+                                        <span style="font-size: 0.875rem;">👁</span> View
+                                    </button>
+                                ` : ''}
+                                <a href="${fileUrl}" target="_blank" class="btn-list-download" download onclick="event.stopPropagation();" title="Download Document">
+                                    <span style="font-size: 0.875rem;">⬇</span> Download
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+        return;
+    }
+    
+    // Table View
+    if (viewToUse === 'table' || isTableView) {
+        container.innerHTML = `
+            <div class="documents-table-container">
+                <table class="documents-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>ຊື່ເອກະສານ (Document Title)</th>
+                            <th>ປະເພດ (Category)</th>
+                            <th>ປະເພດໄຟລ໌ (File Type)</th>
+                            <th>ວັນທີ່ (Date)</th>
+                            <th>ການດຳເນີນການ (Actions)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${documents.map((doc, index) => {
+                            const filename = doc.file_path.split('/').pop() || doc.file_path;
+                            const fileIcon = getFileIcon(filename);
+                            const fileUrl = doc.file_path.startsWith('http') ? doc.file_path : '/' + doc.file_path.replace(/^\.\.\//, '');
+                            const canPreviewFile = canPreview(filename);
+                            const fileExt = getFileExtension(filename);
+                            const safeTitle = (doc.title || 'Untitled Document').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                            const date = new Date(doc.created_at).toLocaleDateString('en-GB', { 
+                                year: 'numeric', 
+                                month: '2-digit', 
+                                day: '2-digit' 
+                            });
+                            
+                            return `
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td>
+                                        <div class="table-doc-title">${doc.title || 'Untitled Document'}</div>
+                                        <div class="table-doc-description">${doc.description || 'No description available.'}</div>
+                                    </td>
+                                    <td>
+                                        ${doc.category ? `<span class="table-doc-category">${doc.category}</span>` : '<span style="color: var(--text-light);">-</span>'}
+                                    </td>
+                                    <td>
+                                        <span class="table-doc-type">${fileExt}</span>
+                                    </td>
+                                    <td>
+                                        <div class="table-doc-date">${date}</div>
+                                    </td>
+                                    <td>
+                                        <div class="table-actions">
+                                            ${canPreviewFile ? `
+                                                <button class="btn-view" onclick="openPreview('${fileUrl}', '${safeTitle}', '${filename}')" title="Preview Document">
+                                                    <span style="font-size: 0.875rem;">👁</span> View
+                                                </button>
+                                            ` : ''}
+                                            <a href="${fileUrl}" target="_blank" class="btn-table-download" download title="Download Document">
+                                                <span style="font-size: 0.875rem;">⬇</span> Download
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+        return;
+    }
+    
+    // Fallback to Documents List if somehow reached here
+    container.classList.add('docs-list-view');
+    displayDocuments(documents);
+}
+
+// Filter and search documents
+let filteredDocuments = [];
+
+function filterAndSearchDocuments() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    const selectedCategory = document.getElementById('categoryFilter').value;
+    const sortOption = document.getElementById('sortSelect').value;
+    
+    // Filter by category and search
+    filteredDocuments = allDocuments.filter(doc => {
+        const matchesCategory = !selectedCategory || doc.category === selectedCategory;
+        const matchesSearch = !searchTerm || 
+            (doc.title && doc.title.toLowerCase().includes(searchTerm)) ||
+            (doc.description && doc.description.toLowerCase().includes(searchTerm)) ||
+            (doc.category && doc.category.toLowerCase().includes(searchTerm));
+        return matchesCategory && matchesSearch;
+    });
+    
+    // Sort documents
+    filteredDocuments.sort((a, b) => {
+        switch(sortOption) {
+            case 'newest':
+                return new Date(b.created_at) - new Date(a.created_at);
+            case 'oldest':
+                return new Date(a.created_at) - new Date(b.created_at);
+            case 'title-asc':
+                return (a.title || '').localeCompare(b.title || '');
+            case 'title-desc':
+                return (b.title || '').localeCompare(a.title || '');
+            default:
+                return 0;
+        }
+    });
+    
+    // Update count and display
+    document.getElementById('documentCount').textContent = filteredDocuments.length;
+    displayDocuments(filteredDocuments);
+}
+
+// View toggle functionality
+function toggleView(viewType) {
+    const container = document.getElementById('documents-container');
+    const docsListBtn = document.getElementById('docsListViewBtn');
+    const tableBtn = document.getElementById('tableViewBtn');
+    
+    // Remove all view classes
+    container.classList.remove('table-view', 'docs-list-view');
+    
+    // Remove active from all buttons
+    docsListBtn.classList.remove('active');
+    tableBtn.classList.remove('active');
+    
+    // Apply selected view
+    const viewText = document.getElementById('currentViewText');
+    if (viewType === 'docs-list') {
+        container.classList.add('docs-list-view');
+        docsListBtn.classList.add('active');
+        if (viewText) viewText.textContent = 'Documents List';
+    } else if (viewType === 'table') {
+        container.classList.add('table-view');
+        tableBtn.classList.add('active');
+        if (viewText) viewText.textContent = 'Table View';
+    }
+    
+    // Re-render to apply view changes
+    if (filteredDocuments.length > 0) {
+        displayDocuments(filteredDocuments);
+    } else if (allDocuments.length > 0) {
+        displayDocuments(allDocuments);
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadDocuments();
+    
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    let searchTimeout;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(filterAndSearchDocuments, 300);
+    });
+    
+    // Category filter
+    const categoryFilter = document.getElementById('categoryFilter');
+    categoryFilter.addEventListener('change', filterAndSearchDocuments);
+    
+    // Sort functionality
+    const sortSelect = document.getElementById('sortSelect');
+    sortSelect.addEventListener('change', filterAndSearchDocuments);
+    
+    // View toggle buttons
+    document.getElementById('docsListViewBtn').addEventListener('click', () => toggleView('docs-list'));
+    document.getElementById('tableViewBtn').addEventListener('click', () => toggleView('table'));
+    
+    // Set default view to Documents List
+    toggleView('docs-list');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ເອກະສານທີ່ຕ້ອງການ Upload - Upload Documents</title>
+    <link rel="icon" type="image/png" href="../assets/images/edu.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        .upload-form-container {
+            max-width: 900px;
+            margin: var(--spacing-3xl) auto;
+            padding: 0 var(--spacing-lg);
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: var(--spacing-3xl);
+        }
+        
+        .form-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .form-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .upload-form-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: var(--spacing-2xl);
+            border: 1px solid var(--border-color);
+        }
+        
+        .form-section {
+            margin-bottom: var(--spacing-2xl);
+            padding-bottom: var(--spacing-2xl);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+            font-size: 1rem;
+        }
+        
+        .form-label .required {
+            color: #dc2626;
+            margin-left: 0.25rem;
+        }
+        
+        .form-hint {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-top: var(--spacing-xs);
+            line-height: 1.5;
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-primary);
+        }
+        
+        .radio-option:hover {
+            border-color: var(--primary-color);
+            background: var(--bg-secondary);
+        }
+        
+        .radio-option input[type="radio"] {
+            margin-right: var(--spacing-md);
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary-color);
+        }
+        
+        .radio-option input[type="radio"]:checked + label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .radio-option label {
+            flex: 1;
+            cursor: pointer;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+        
+        .radio-option.selected {
+            border-color: var(--primary-color);
+            background: rgba(30, 64, 175, 0.05);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            font-family: 'Noto Sans Lao', sans-serif;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+            background: white;
+        }
+        
+        .file-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: var(--spacing-2xl);
+            text-align: center;
+            background: var(--bg-secondary);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .file-upload-area:hover {
+            border-color: var(--primary-color);
+            background: rgba(30, 64, 175, 0.02);
+        }
+        
+        .file-upload-area.dragover {
+            border-color: var(--primary-color);
+            background: rgba(30, 64, 175, 0.05);
+        }
+        
+        .file-upload-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+            color: var(--primary-color);
+        }
+        
+        .file-upload-button {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-xl);
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: var(--spacing-md);
+        }
+        
+        .file-upload-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+        }
+        
+        .file-list {
+            margin-top: var(--spacing-lg);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-md);
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .file-item-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            flex: 1;
+        }
+        
+        .file-item-icon {
+            font-size: 2rem;
+        }
+        
+        .file-item-details {
+            flex: 1;
+        }
+        
+        .file-item-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .file-item-size {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .file-item-remove {
+            background: none;
+            border: none;
+            color: #dc2626;
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: var(--spacing-xs);
+            transition: all 0.2s ease;
+        }
+        
+        .file-item-remove:hover {
+            transform: scale(1.2);
+        }
+        
+        .date-input-wrapper {
+            position: relative;
+        }
+        
+        .date-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            pointer-events: none;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-3xl);
+            padding-top: var(--spacing-2xl);
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .btn-submit {
+            flex: 1;
+            padding: var(--spacing-md) var(--spacing-xl);
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+        }
+        
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-clear {
+            padding: var(--spacing-md) var(--spacing-xl);
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-clear:hover {
+            background: rgba(30, 64, 175, 0.05);
+        }
+        
+        #result {
+            margin-top: var(--spacing-lg);
+        }
+        
+        @media (max-width: 768px) {
+            .upload-form-container {
+                padding: 0 var(--spacing-md);
+            }
+            
+            .upload-form-card {
+                padding: var(--spacing-xl);
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="navbar"></div>
+
+<div class="upload-form-container">
+    <div class="form-header">
+        <h1>ເອກະສານທີ່ຕ້ອງການ Upload</h1>
+        <p>Upload Documents</p>
+    </div>
+    
+    <div class="upload-form-card">
+        <form id="uploadForm" enctype="multipart/form-data">
+            <!-- Question 1: Teacher's College -->
+            <div class="form-section">
+                <label for="college" class="form-label">
+                    1. ວິທະຍາໄລຄູ <span class="required">*</span>
+                </label>
+                <select id="college" name="college" class="form-control" required style="padding: 0.875rem 1rem; font-size: 1rem; cursor: pointer;">
+                    <option value="">-- Select Teacher's College --</option>
+                    <option value="ຫຼວງນໍ້າທາ">1. ຫຼວງນໍ້າທາ</option>
+                    <option value="ຫຼວງພະບາງ">2. ຫຼວງພະບາງ</option>
+                    <option value="ປານເກີນ">3. ປານເກີນ</option>
+                    <option value="ຄົງຄໍາຊາງ">4. ຄົງຄໍາຊາງ</option>
+                    <option value="ຄັງໄຂ">5. ຄັງໄຂ</option>
+                    <option value="ອະຫວັນນະເຂດ">6. ອະຫວັນນະເຂດ</option>
+                    <option value="ປາກເຊ">7. ປາກເຊ</option>
+                    <option value="ອາລະວັນ">8. ອາລະວັນ</option>
+                </select>
+            </div>
+            
+            <!-- Question 2: Document Title -->
+            <div class="form-section">
+                <label for="title" class="form-label">
+                    2. ຫົວຂໍ້ເອກະສານ <span class="required">*</span>
+                </label>
+                <input type="text" id="title" name="title" class="form-control" placeholder="Your answer" required>
+            </div>
+            
+            <!-- Question 3: File Upload -->
+            <div class="form-section">
+                <label class="form-label">
+                    ເອກະສານທີ່ upload <span class="required">*</span>
+                </label>
+                <div class="form-hint">
+                    Upload up to 5 supported files. Max 100 MB per file.
+                </div>
+                <div class="file-upload-area" id="fileUploadArea">
+                    <div class="file-upload-icon">☁️</div>
+                    <button type="button" class="file-upload-button" onclick="document.getElementById('fileInput').click()">
+                        ↑ Add file
+                    </button>
+                    <input type="file" id="fileInput" name="files[]" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.webp,.bmp" style="display: none;">
+                </div>
+                <div class="file-list" id="fileList"></div>
+            </div>
+            
+            <!-- Question 4: Date -->
+            <div class="form-section">
+                <label for="date" class="form-label">
+                    ວັນທີ ເດືອນ ປີ <span class="required">*</span>
+                </label>
+                <div class="date-input-wrapper">
+                    <input type="date" id="date" name="date" class="form-control" required>
+                    <span class="date-icon">📅</span>
+                </div>
+            </div>
+            
+            <div id="result"></div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn-submit" id="submitBtn">Submit</button>
+                <button type="button" class="btn-clear" onclick="clearForm()">Clear form</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="footer"></div>
+<script src="../assets/js/main.js"></script>
+<script>
+// File management
+let selectedFiles = [];
+const maxFiles = 5;
+const maxFileSize = 100 * 1024 * 1024; // 100MB
+
+// File icons
+const fileIcons = {
+    'pdf': '📕',
+    'doc': '📘', 'docx': '📘',
+    'xls': '📗', 'xlsx': '📗',
+    'ppt': '📙', 'pptx': '📙',
+    'jpg': '🖼️', 'jpeg': '🖼️', 'png': '🖼️', 'gif': '🖼️', 'webp': '🖼️', 'bmp': '🖼️',
+    'txt': '📄',
+    'default': '📄'
+};
+
+// Format file size
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+}
+
+// Get file icon
+function getFileIcon(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    return fileIcons[ext] || fileIcons['default'];
+}
+
+// Update file list display
+function updateFileList() {
+    const fileList = document.getElementById('fileList');
+    
+    if (selectedFiles.length === 0) {
+        fileList.innerHTML = '';
+        return;
+    }
+    
+    fileList.innerHTML = selectedFiles.map((file, index) => `
+        <div class="file-item">
+            <div class="file-item-info">
+                <div class="file-item-icon">${getFileIcon(file.name)}</div>
+                <div class="file-item-details">
+                    <div class="file-item-name">${file.name}</div>
+                    <div class="file-item-size">${formatFileSize(file.size)}</div>
+                </div>
+            </div>
+            <button type="button" class="file-item-remove" onclick="removeFile(${index})" title="Remove file">×</button>
+        </div>
+    `).join('');
+}
+
+// Add files
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const files = Array.from(e.target.files);
+    
+    if (selectedFiles.length + files.length > maxFiles) {
+        alert(`You can only upload up to ${maxFiles} files. Please remove some files first.`);
+        return;
+    }
+    
+    files.forEach(file => {
+        if (file.size > maxFileSize) {
+            alert(`File "${file.name}" exceeds the maximum size of 100MB.`);
+            return;
+        }
+        
+        selectedFiles.push(file);
+    });
+    
+    updateFileList();
+    e.target.value = '';
+});
+
+// Remove file
+function removeFile(index) {
+    selectedFiles.splice(index, 1);
+    updateFileList();
+}
+
+// Drag and drop
+const fileUploadArea = document.getElementById('fileUploadArea');
+const fileInput = document.getElementById('fileInput');
+
+fileUploadArea.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    fileUploadArea.classList.add('dragover');
+});
+
+fileUploadArea.addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    fileUploadArea.classList.remove('dragover');
+});
+
+fileUploadArea.addEventListener('drop', function(e) {
+    e.preventDefault();
+    fileUploadArea.classList.remove('dragover');
+    
+    const files = Array.from(e.dataTransfer.files);
+    
+    if (selectedFiles.length + files.length > maxFiles) {
+        alert(`You can only upload up to ${maxFiles} files. Please remove some files first.`);
+        return;
+    }
+    
+    files.forEach(file => {
+        if (file.size > maxFileSize) {
+            alert(`File "${file.name}" exceeds the maximum size of 100MB.`);
+            return;
+        }
+        
+        selectedFiles.push(file);
+    });
+    
+    updateFileList();
+});
+
+// Clear form
+function clearForm() {
+    if (confirm('Are you sure you want to clear all form data?')) {
+        document.getElementById('uploadForm').reset();
+        selectedFiles = [];
+        updateFileList();
+        document.getElementById('result').innerHTML = '';
+        document.getElementById('date').valueAsDate = new Date();
+    }
+}
+
+// Form submission
+document.getElementById('uploadForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    if (selectedFiles.length === 0) {
+        alert('Please select at least one file to upload.');
+        return;
+    }
+    
+    const formData = new FormData(this);
+    
+    // Add all files
+    selectedFiles.forEach((file, index) => {
+        formData.append(`file_${index}`, file);
+    });
+    
+    // Add college as category
+    const college = formData.get('college');
+    formData.set('category', college);
+    
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.textContent;
+    const result = document.getElementById('result');
+    
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Uploading...';
+    result.innerHTML = '';
+    
+    fetch('../backend/upload-handler.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.text())
+    .then(data => {
+        if (data.trim() === 'success') {
+            result.innerHTML = '<div class="alert alert-success">✅ Documents uploaded successfully! Redirecting...</div>';
+            setTimeout(() => {
+                window.location.href = '../documents.html';
+            }, 1500);
+        } else {
+            result.innerHTML = '<div class="alert alert-error">❌ Error: ' + (data.includes('error') ? data : 'Failed to upload documents. Please try again.') + '</div>';
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
+    })
+    .catch(error => {
+        result.innerHTML = '<div class="alert alert-error">❌ An error occurred. Please try again later.</div>';
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        console.error('Error:', error);
+    });
+});
+
+// Set today's date as default
+document.getElementById('date').valueAsDate = new Date();
+</script>
+</body>
+</html>

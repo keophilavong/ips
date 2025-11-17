@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Activities - Admin</title>
+    <link rel="icon" type="image/png" href="../assets/images/edu.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        .admin-container {
+            max-width: 1400px;
+            margin: var(--spacing-3xl) auto;
+            padding: var(--spacing-xl);
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background: var(--bg-primary);
+            margin: var(--spacing-xl) auto;
+            padding: var(--spacing-2xl);
+            border-radius: var(--radius-2xl);
+            max-width: 700px;
+            box-shadow: var(--shadow-2xl);
+            position: relative;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: var(--spacing-md);
+                margin: var(--spacing-lg) auto;
+            }
+            
+            .admin-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .admin-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .modal-content {
+                margin: var(--spacing-md);
+                padding: var(--spacing-lg);
+                max-width: 100%;
+            }
+            
+            table {
+                font-size: 0.875rem;
+            }
+            
+            table th,
+            table td {
+                padding: var(--spacing-xs) var(--spacing-sm);
+            }
+            
+            .btn {
+                padding: var(--spacing-xs) var(--spacing-md);
+                font-size: 0.875rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .admin-container {
+                padding: var(--spacing-sm);
+            }
+            
+            table {
+                font-size: 0.75rem;
+            }
+            
+            .form-group {
+                margin-bottom: var(--spacing-md);
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .close {
+            font-size: 2rem;
+            font-weight: 300;
+            cursor: pointer;
+            color: var(--text-light);
+            line-height: 1;
+        }
+        
+        .close:hover {
+            color: var(--text-primary);
+        }
+        
+        .activities-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .activities-table th {
+            background: var(--primary-gradient);
+            color: white;
+            padding: var(--spacing-lg);
+            text-align: left;
+            font-weight: 700;
+        }
+        
+        .activities-table td {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .activities-table tr:hover {
+            background: var(--bg-secondary);
+        }
+        
+        .activity-image-preview {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+        }
+        
+        .btn-small {
+            padding: var(--spacing-xs) var(--spacing-md);
+            font-size: 0.875rem;
+            margin: 0 0.25rem;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        }
+    </style>
+</head>
+<body>
+
+<div id="navbar"></div>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <div>
+            <h2>Manage Activities</h2>
+            <p style="margin-top: 0.5rem; color: var(--text-secondary);">Add, edit, or delete activities</p>
+        </div>
+        <button class="btn" onclick="openAddModal()">+ Add New Activity</button>
+    </div>
+    
+    <div class="table-container">
+        <table class="activities-table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="activities-table-body">
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: var(--spacing-3xl);">
+                        <div class="loading"></div>
+                        <p style="margin-top: 1rem; color: var(--text-secondary);">Loading...</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div id="activityModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Add New Activity</h3>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <form id="activityForm" enctype="multipart/form-data">
+            <input type="hidden" id="activity_id" name="activity_id">
+            
+            <div class="form-group">
+                <label for="title">Title (ຫົວຂໍ້)</label>
+                <input type="text" id="title" name="title" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description (ລາຍລະອຽດ)</label>
+                <textarea id="description" name="description" class="form-control" rows="6" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="date_created">Date (ວັນທີ)</label>
+                <input type="date" id="date_created" name="date_created" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="image">Image (ຮູບພາບ)</label>
+                <input type="file" id="image" name="image" class="form-control" accept="image/*">
+                <small style="color: var(--text-light);">Leave empty to keep current image when editing</small>
+                <div id="imagePreview" style="margin-top: 1rem;"></div>
+            </div>
+            
+            <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl);">
+                <button type="submit" class="btn btn-block">Save Activity</button>
+                <button type="button" class="btn btn-outline btn-block" onclick="closeModal()">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="footer"></div>
+<script src="../assets/js/main.js"></script>
+<script>
+let currentActivityId = null;
+
+// Check admin authentication
+function checkAuth() {
+    fetch('../backend/check-admin.php')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.is_admin) {
+                window.location.href = '../login.html';
+            }
+        })
+        .catch(() => {
+            window.location.href = '../login.html';
+        });
+}
+
+// Load activities
+function loadActivities() {
+    fetch('../backend/fetch-activities.php')
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.getElementById('activities-table-body');
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: var(--spacing-3xl);">
+                            <p style="color: var(--text-secondary);">No activities found. Click "Add New Activity" to create one.</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = data.map(activity => `
+                <tr>
+                    <td>
+                        ${activity.image_url ? 
+                            `<img src="${activity.image_url.startsWith('/') ? '..' + activity.image_url : '../' + activity.image_url}" alt="${activity.title}" class="activity-image-preview">` :
+                            '<span style="color: var(--text-light);">No image</span>'
+                        }
+                    </td>
+                    <td>
+                        <strong>${activity.title}</strong>
+                        <div style="color: var(--text-light); font-size: 0.9rem; margin-top: 0.25rem;">
+                            ${activity.description.substring(0, 100)}${activity.description.length > 100 ? '...' : ''}
+                        </div>
+                    </td>
+                    <td>${new Date(activity.date_created).toLocaleDateString('lo-LA')}</td>
+                    <td>
+                        <button class="btn btn-small" onclick="editActivity(${activity.activity_id})">Edit</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteActivity(${activity.activity_id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('activities-table-body').innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: var(--spacing-3xl); color: #ef4444;">
+                        Error loading activities. Please refresh the page.
+                    </td>
+                </tr>
+            `;
+        });
+}
+
+// Open add modal
+function openAddModal() {
+    currentActivityId = null;
+    document.getElementById('modalTitle').textContent = 'Add New Activity';
+    document.getElementById('activityForm').reset();
+    document.getElementById('activity_id').value = '';
+    document.getElementById('date_created').value = new Date().toISOString().split('T')[0];
+    document.getElementById('imagePreview').innerHTML = '';
+    document.getElementById('activityModal').style.display = 'block';
+}
+
+// Edit activity
+function editActivity(id) {
+    fetch('../backend/fetch-activities.php')
+        .then(response => response.json())
+        .then(data => {
+            const activity = data.find(a => a.activity_id == id);
+            if (activity) {
+                currentActivityId = id;
+                document.getElementById('modalTitle').textContent = 'Edit Activity';
+                document.getElementById('activity_id').value = activity.activity_id;
+                document.getElementById('title').value = activity.title;
+                document.getElementById('description').value = activity.description;
+                document.getElementById('date_created').value = activity.date_created;
+                
+                if (activity.image_url) {
+                    const imageSrc = activity.image_url.startsWith('/') ? '..' + activity.image_url : '../' + activity.image_url;
+                    document.getElementById('imagePreview').innerHTML = `
+                        <img src="${imageSrc}" style="max-width: 200px; border-radius: var(--radius-md);">
+                    `;
+                }
+                
+                document.getElementById('activityModal').style.display = 'block';
+            }
+        });
+}
+
+// Delete activity
+function deleteActivity(id) {
+    if (!confirm('Are you sure you want to delete this activity?')) {
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('activity_id', id);
+    
+    fetch('../backend/delete-activity.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Activity deleted successfully');
+            loadActivities();
+        } else {
+            alert('Error: ' + (data.error || 'Failed to delete activity'));
+        }
+    })
+    .catch(error => {
+        alert('Error: ' + error.message);
+    });
+}
+
+// Close modal
+function closeModal() {
+    document.getElementById('activityModal').style.display = 'none';
+    currentActivityId = null;
+}
+
+// Handle form submission
+document.getElementById('activityForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    const cancelBtn = this.querySelector('button[type="button"]');
+    
+    // Disable buttons and show loading
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Saving...';
+    if (cancelBtn) cancelBtn.disabled = true;
+    
+    const formData = new FormData(this);
+    
+    // Use relative path - should work from admin folder
+    const url = currentActivityId ? '../backend/update-activity.php' : '../backend/add-activity.php';
+    
+    console.log('Uploading to:', url);
+    console.log('Current location:', window.location.href);
+    console.log('Form data:', {
+        title: formData.get('title'),
+        description: formData.get('description'),
+        date_created: formData.get('date_created'),
+        hasImage: formData.get('image') ? 'Yes' : 'No'
+    });
+    
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response URL:', response.url);
+        
+        if (!response.ok) {
+            // Try to parse JSON error, but handle non-JSON responses
+            return response.text().then(text => {
+                console.error('Error response:', text);
+                let errorData;
+                try {
+                    errorData = JSON.parse(text);
+                } catch (e) {
+                    errorData = { error: text || `Server error (${response.status}): ${response.statusText}` };
+                }
+                throw new Error(errorData.error || `Failed to save activity (${response.status})`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            alert('✅ Activity saved successfully!');
+            closeModal();
+            loadActivities();
+        } else {
+            alert('❌ Error: ' + (data.error || 'Failed to save activity'));
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+            if (cancelBtn) cancelBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error details:', error);
+        console.error('Error stack:', error.stack);
+        let errorMessage = error.message || 'Unknown error occurred';
+        
+        // Check if it's a network/404 error
+        if (errorMessage.includes('404') || errorMessage.includes('Not Found')) {
+            errorMessage = 'Backend file not found. Please check if the server is running and the file path is correct.';
+        }
+        
+        alert('❌ Error: ' + errorMessage + '\n\nPlease check the browser console (F12) for more details.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        if (cancelBtn) cancelBtn.disabled = false;
+    });
+});
+
+// Image preview
+document.getElementById('image').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('imagePreview').innerHTML = `
+                <img src="${e.target.result}" style="max-width: 200px; border-radius: var(--radius-md);">
+            `;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('activityModal');
+    if (event.target == modal) {
+        closeModal();
+    }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuth();
+    loadActivities();
+});
+</script>
+</body>
+</html>
+

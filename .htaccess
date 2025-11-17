@@ -1,0 +1,58 @@
+# Apache Configuration for Internal Education Worker Report System
+
+# Enable Rewrite Engine
+RewriteEngine On
+
+# Set base directory (adjust if needed)
+RewriteBase /internal-education-worker-report/
+
+# Prevent directory listing
+Options -Indexes +FollowSymLinks
+
+# Set default index file
+DirectoryIndex index.html index.php
+
+# Security: Protect sensitive files
+<FilesMatch "^(db\.php|\.env|\.git|composer\.(json|lock))$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Security: Block access to .htaccess itself
+<Files .htaccess>
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Enable CORS if needed (uncomment if required)
+# Header set Access-Control-Allow-Origin "*"
+
+# PHP Settings (if allowed by hosting)
+<IfModule mod_php7.c>
+    php_value upload_max_filesize 100M
+    php_value post_max_size 100M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>
+
+# Error pages (optional)
+# ErrorDocument 404 /404.html
+# ErrorDocument 500 /500.html
+
+# Compression (improve performance)
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Browser Caching (improve performance)
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/pdf "access plus 1 month"
+</IfModule>
