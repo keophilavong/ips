@@ -4,9 +4,9 @@ A web-based system for tracking internal education worker activities, documents,
 
 ## Prerequisites
 
-- XAMPP (or any PHP/MySQL server)
+- XAMPP (or any PHP server)
 - PHP 7.4 or higher
-- MySQL 5.7 or higher
+- PostgreSQL 12 or higher
 - Web browser
 
 ## Setup Instructions
@@ -19,24 +19,23 @@ A web-based system for tracking internal education worker activities, documents,
 
 ### Step 2: Create Database
 
-1. Open phpMyAdmin (http://localhost/phpmyadmin)
-2. Click on "SQL" tab
-3. Copy and paste the contents of `database_setup.sql`
-4. Click "Go" to execute the script
-5. This will create:
-   - Database: `education_worker_system`
-   - Tables: `users`, `reports`, `admins`
+1. Open pgAdmin or PostgreSQL command line
+2. Run the SQL script `database_setup_postgresql.sql`
+3. This will create:
+   - Database: `edu-pro`
+   - Tables: `users`, `reports`, `admins`, `activities`
    - Default admin account (username: `admin`, password: `admin123`)
 
 ### Step 3: Verify Database Configuration
 
 Check `backend/db.php` to ensure database credentials match your setup:
-- Host: `localhost`
-- User: `root`
-- Password: `` (empty by default in XAMPP)
-- Database: `education_worker_system`
+- Host: Your PostgreSQL host (e.g., `localhost` or remote server)
+- Port: `5432` (default PostgreSQL port)
+- User: Your PostgreSQL username
+- Password: Your PostgreSQL password
+- Database: `edu-pro`
 
-If your MySQL password is different, update the `$pass` variable in `backend/db.php`.
+Update the credentials in `backend/db.php` to match your PostgreSQL setup.
 
 ### Step 4: Create Required Directories
 
@@ -78,9 +77,10 @@ internal-education-worker-report/
 ## Troubleshooting
 
 ### Database Connection Error
-- Ensure MySQL is running in XAMPP
+- Ensure PostgreSQL is running
 - Check database credentials in `backend/db.php`
-- Verify database exists in phpMyAdmin
+- Verify database exists in PostgreSQL
+- Ensure PHP PostgreSQL extensions are enabled (`pdo_pgsql`, `pgsql`)
 
 ### File Upload Issues
 - Check that `files` directory exists and has write permissions
