@@ -1434,6 +1434,7 @@ tbody tr:last-child td {
     background: var(--primary-gradient);
     padding: var(--spacing-3xl) var(--spacing-xl);
     color: white;
+    margin-top: 80px; /* Space for fixed navbar */
     margin-bottom: var(--spacing-2xl);
     border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
     box-shadow: var(--shadow-xl);
@@ -1471,6 +1472,40 @@ tbody tr:last-child td {
     font-size: 1.2rem;
     position: relative;
     z-index: 1;
+}
+
+/* Page Header Selectors */
+.district-selector,
+.province-selector {
+    background: white;
+    color: var(--text-primary);
+    border: none;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: 1rem;
+    font-weight: 500;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="%23333" d="M6 9L1 4h10z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right var(--spacing-md) center;
+    padding-right: calc(var(--spacing-xl) + 20px);
+    transition: all 0.3s ease;
+}
+
+.district-selector:hover,
+.province-selector:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-1px);
+}
+
+.district-selector:focus,
+.province-selector:focus {
+    outline: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2), 0 0 0 3px rgba(255,255,255,0.3);
 }
 
 /* ===== Responsive Design ===== */
@@ -1623,6 +1658,7 @@ tbody tr:last-child td {
     
     .page-header {
         padding: var(--spacing-lg) var(--spacing-md);
+        margin-top: 70px; /* Space for fixed navbar on mobile */
     }
     
     .page-header h2 {
@@ -1726,6 +1762,7 @@ tbody tr:last-child td {
     
     .page-header {
         padding: var(--spacing-md) var(--spacing-sm);
+        margin-top: 70px; /* Space for fixed navbar on small mobile */
     }
     
     .page-header h2 {
@@ -1734,6 +1771,14 @@ tbody tr:last-child td {
     
     .page-header p {
         font-size: clamp(0.8rem, 3.5vw, 0.95rem);
+    }
+    
+    .district-selector,
+    .province-selector {
+        max-width: 100%;
+        font-size: clamp(0.9rem, 4vw, 1rem);
+        padding: var(--spacing-sm) var(--spacing-md);
+        padding-right: calc(var(--spacing-md) + 20px);
     }
 }
 
