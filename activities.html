@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activities</title>
+    <title>ກິດຈະກຳ</title>
     <link rel="icon" type="image/png" href="assets/images/edu.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -424,10 +424,10 @@
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div>
             <h2>📌 ກິດຈະກຳ</h2>
-            <p style="margin-bottom: 0;">View all activities, meetings, and work events</p>
+            <p style="margin-bottom: 0;">ເບິ່ງກິດຈະກຳ, ການປະຊຸມ, ແລະ ເຫດການວຽກທັງໝົດ</p>
         </div>
         <div id="admin-actions" style="display: none;">
-            <a href="admin/manage-activities.html" class="btn" style="background: white; color: var(--primary-color); border: 2px solid white;">Manage Activities</a>
+            <a href="admin/manage-activities.html" class="btn" style="background: white; color: var(--primary-color); border: 2px solid white;">ຈັດການກິດຈະກຳ</a>
         </div>
     </div>
 </div>
@@ -436,18 +436,18 @@
     <!-- Enhanced Toolbar with Search & Filters -->
     <div class="activities-toolbar">
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search activities by title or description..." autocomplete="off">
+            <input type="text" id="searchInput" placeholder="ຄົ້ນຫາກິດຈະກຳຕາມຫົວຂໍ້ ຫຼື ລາຍລະອຽດ..." autocomplete="off">
         </div>
         <div class="filter-group">
             <select id="sortSelect" class="filter-select">
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-                <option value="title-asc">Title (A-Z)</option>
-                <option value="title-desc">Title (Z-A)</option>
+                <option value="newest">ໃໝ່ທີ່ສຸດກ່ອນ</option>
+                <option value="oldest">ເກົ່າທີ່ສຸດກ່ອນ</option>
+                <option value="title-asc">ຫົວຂໍ້ (ກ-ຮ)</option>
+                <option value="title-desc">ຫົວຂໍ້ (ຮ-ກ)</option>
             </select>
         </div>
         <div class="activities-count">
-            <span id="activityCount">0</span> activities
+            <span id="activityCount">0</span> ກິດຈະກຳ
         </div>
     </div>
     
@@ -455,7 +455,7 @@
     <div id="activities-container">
         <div class="loading">
             <div class="loading"></div>
-            <p style="margin-top: 1rem;">Loading activities...</p>
+            <p style="margin-top: 1rem;">ກຳລັງໂຫຼດກິດຈະກຳ...</p>
         </div>
     </div>
 </section>
@@ -506,12 +506,12 @@ function openImageModal(imageUrl, title, description) {
     
     // Set image source
     modalImage.src = imageUrl;
-    modalImage.alt = title || 'Activity Image';
+    modalImage.alt = title || 'ຮູບພາບກິດຈະກຳ';
     
     // Handle image load error
     modalImage.onerror = function() {
         console.error('Failed to load image in modal:', imageUrl);
-        this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23f3f4f6" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%239ca3af" font-family="Arial" font-size="18"%3EImage not found%3C/text%3E%3C/svg%3E';
+        this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23f3f4f6" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%239ca3af" font-family="Arial" font-size="18"%3Eບໍ່ພົບຮູບພາບ%3C/text%3E%3C/svg%3E';
     };
     
     // Handle image load success
@@ -593,8 +593,8 @@ function displayActivities(activities) {
         container.innerHTML = `
             <div class="empty-state">
                 <div class="empty-state-icon">🔍</div>
-                <h3>No activities found</h3>
-                <p style="color: var(--text-secondary); font-size: 1.1rem;">Try adjusting your search criteria.</p>
+                <h3>ບໍ່ພົບກິດຈະກຳ</h3>
+                <p style="color: var(--text-secondary); font-size: 1.1rem;">ລອງປັບປ່ຽນເງື່ອນໄຂການຄົ້ນຫາຂອງທ່ານ.</p>
             </div>
         `;
         return;
@@ -607,7 +607,7 @@ function displayActivities(activities) {
                 const safeTitle = (activity.title || 'Untitled Activity').replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 const safeDescription = (activity.description || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 const safeImageUrl = imageUrl ? imageUrl.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
-                const date = new Date(activity.date_created).toLocaleDateString('en-US', { 
+                const date = new Date(activity.date_created).toLocaleDateString('lo-LA', { 
                     year: 'numeric', 
                     month: 'long', 
                     day: 'numeric' 
@@ -624,19 +624,19 @@ function displayActivities(activities) {
                                  <div class="activity-image-placeholder" style="display: none;">📷</div>` :
                                 `<div class="activity-image-placeholder">📷</div>`
                             }
-                            ${imageUrl ? `<div class="image-overlay">Click to view full image</div>` : ''}
+                            ${imageUrl ? `<div class="image-overlay">ກົດເພື່ອເບິ່ງຮູບພາບເຕັມ</div>` : ''}
                         </div>
                         <div class="activity-content">
-                            <h3 class="activity-title">${activity.title || 'Untitled Activity'}</h3>
+                            <h3 class="activity-title">${activity.title || 'ກິດຈະກຳທີ່ບໍ່ມີຫົວຂໍ້'}</h3>
                             <div class="activity-meta">
                                 <div class="activity-date">
                                     📅 ${date}
                                 </div>
                             </div>
-                            <div class="activity-description">${activity.description || 'No description available.'}</div>
+                            <div class="activity-description">${activity.description || 'ບໍ່ມີລາຍລະອຽດ.'}</div>
                             ${imageUrl ? `
                                 <a href="#" class="activity-read-more" onclick="event.preventDefault(); openImageModal('${safeImageUrl}', '${safeTitle}', '${safeDescription}');">
-                                    View Full Image →
+                                    ເບິ່ງຮູບພາບເຕັມ →
                                 </a>
                             ` : ''}
                         </div>
@@ -656,7 +656,7 @@ function loadActivities() {
                 document.getElementById('activities-container').innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">⚠️</div>
-                        <p style="font-size: 1.2rem; color: var(--text-secondary);">Error loading activities: ${data.error}</p>
+                        <p style="font-size: 1.2rem; color: var(--text-secondary);">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດກິດຈະກຳ: ${data.error}</p>
                     </div>
                 `;
                 return;
@@ -666,8 +666,8 @@ function loadActivities() {
                 document.getElementById('activities-container').innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📋</div>
-                        <h3>No activities yet</h3>
-                        <p style="color: var(--text-secondary); font-size: 1.1rem;">Activities will appear here once they are added by administrators.</p>
+                        <h3>ຍັງບໍ່ມີກິດຈະກຳ</h3>
+                        <p style="color: var(--text-secondary); font-size: 1.1rem;">ກິດຈະກຳຈະປາກົດຢູ່ທີ່ນີ້ເມື່ອຖືກເພີ່ມໂດຍຜູ້ດູແລລະບົບ.</p>
                     </div>
                 `;
                 document.getElementById('activityCount').textContent = '0';
@@ -682,7 +682,7 @@ function loadActivities() {
             container.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-state-icon">⚠️</div>
-                    <p style="font-size: 1.2rem; color: var(--text-secondary);">Error loading activities. Please try again later.</p>
+                    <p style="font-size: 1.2rem; color: var(--text-secondary);">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດກິດຈະກຳ. ກະລຸນາລອງໃໝ່ອີກຄັ້ງ.</p>
                 </div>
             `;
             console.error('Error:', error);

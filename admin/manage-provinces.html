@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ຈັດການແຂວງ - ຜູ້ດູແລລະບົບ</title>
+    <link rel="icon" type="image/png" href="../assets/images/edu.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+    <style>
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+<div id="adminNavbar"></div>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <div>
+            <h2>ຈັດການແຂວງ</h2>
+            <p>ເພີ່ມ, ແກ້ໄຂ, ຫຼື ລຶບຂໍ້ມູນກິດຈະກຳ ແລະ ຂໍ້ມູນລະດັບແຂວງ</p>
+        </div>
+        <button class="btn" onclick="openModal()">+ ເພີ່ມຂໍ້ມູນແຂວງໃໝ່</button>
+    </div>
+    
+    <div class="table-container">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ຊື່ແຂວງ</th>
+                    <th>ຫົວຂໍ້</th>
+                    <th>ລາຍລະອຽດ</th>
+                    <th>ເອກະສານ/ລິ້ງ</th>
+                    <th>ວັນທີ</th>
+                    <th>ສະຖານະ</th>
+                    <th>ການດຳເນີນການ</th>
+                </tr>
+            </thead>
+            <tbody id="provincesTableBody">
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: var(--spacing-3xl);">
+                        <div class="loading"></div>
+                        <p style="margin-top: 1rem; color: var(--text-secondary);">ກຳລັງໂຫຼດ...</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal for Add/Edit -->
+<div id="provinceModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">ເພີ່ມຂໍ້ມູນແຂວງ</h3>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <form id="provinceForm" enctype="multipart/form-data">
+            <input type="hidden" id="province_id" name="province_id">
+            <input type="hidden" id="file_path" name="file_path">
+            
+            <div class="form-group">
+                <label for="province_name">ຊື່ແຂວງ <span style="color: #ef4444;">*</span></label>
+                <input type="text" id="province_name" name="province_name" required placeholder="ຕົວຢ່າງ: ນະຄອນຫຼວງວຽງຈັນ">
+            </div>
+            
+            <div class="form-group">
+                <label for="title">ຫົວຂໍ້ <span style="color: #ef4444;">*</span></label>
+                <input type="text" id="title" name="title" required placeholder="ຕົວຢ່າງ: ລາຍງານກິດຈະກຳປີ 2024">
+            </div>
+            
+            <div class="form-group">
+                <label for="description">ລາຍລະອຽດ</label>
+                <textarea id="description" name="description" rows="4" placeholder="ອະທິບາຍລາຍລະອຽດກ່ຽວກັບຂໍ້ມູນນີ້..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="province_file">ໄຟລ໌ເອກະສານ</label>
+                <input type="file" id="province_file" name="province_file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.webp,.bmp">
+                <small style="color: var(--text-light); font-size: 0.875rem; display: block; margin-top: 0.5rem;">
+                    ຮູບແບບທີ່ຮອງຮັບ: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, JPG, PNG, GIF, WEBP, BMP (ສູງສຸດ 100MB)
+                </small>
+                <div id="filePreview" style="margin-top: 0.5rem;"></div>
+                <div id="currentFile" style="margin-top: 0.5rem; padding: 0.5rem; background: var(--bg-secondary); border-radius: 4px; display: none;">
+                    <span id="currentFileName"></span>
+                    <button type="button" onclick="clearFile()" style="margin-left: 0.5rem; color: #dc2626; background: none; border: none; cursor: pointer; text-decoration: underline;">ລຶບ</button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="link_url">ລິ້ງ URL (ວິດີໂອ ຫຼື ລິ້ງອື່ນໆ)</label>
+                <input type="url" id="link_url" name="link_url" placeholder="https://youtube.com/... ຫຼື https://...">
+                <small style="color: var(--text-light); font-size: 0.875rem; display: block; margin-top: 0.5rem;">
+                    ສາມາດເປັນລິ້ງ YouTube, Vimeo, ຫຼື ລິ້ງອື່ນໆ
+                </small>
+            </div>
+            
+            <div class="form-group">
+                <label for="date_created">ວັນທີ</label>
+                <input type="date" id="date_created" name="date_created">
+            </div>
+            
+            <div class="form-group" id="isActiveGroup" style="display: none;">
+                <label>
+                    <input type="checkbox" id="is_active" name="is_active" checked> ເປີດໃຊ້ງານ
+                </label>
+            </div>
+            
+            <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl);">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">ບັນທຶກ</button>
+                <button type="button" class="btn btn-outline" onclick="closeModal()" style="flex: 1;">ຍົກເລີກ</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+fetch('../components/admin-navbar.html')
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById('adminNavbar').innerHTML = data;
+    });
+
+function checkAuth() {
+    fetch('../backend/check-admin.php')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.is_admin) {
+                window.location.href = '../login.html';
+            }
+        })
+        .catch(() => {
+            window.location.href = '../login.html';
+        });
+}
+
+// Check if URL is a video URL
+function isVideoURL(url) {
+    if (!url) return false;
+    const videoDomains = ['youtube.com', 'youtu.be', 'vimeo.com', 'dailymotion.com', 'facebook.com/watch', 'video'];
+    return videoDomains.some(domain => url.toLowerCase().includes(domain));
+}
+
+// Check if URL is a document/file
+function isDocumentURL(url) {
+    if (!url) return false;
+    const docExtensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt'];
+    return docExtensions.some(ext => url.toLowerCase().includes(ext));
+}
+
+function loadProvinces() {
+    fetch('../backend/fetch-provinces.php')
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.getElementById('provincesTableBody');
+            
+            if (data.error) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: var(--spacing-xl); color: #ef4444;">ເກີດຂໍ້ຜິດພາດ: ${data.error}</td></tr>`;
+                return;
+            }
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: var(--spacing-3xl);">
+                            <p style="color: var(--text-secondary);">ບໍ່ພົບຂໍ້ມູນແຂວງ.</p>
+                            <button class="btn" onclick="openModal()" style="margin-top: var(--spacing-md);">ເພີ່ມຂໍ້ມູນແຂວງແບບທຳອິດ</button>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = data.map(province => {
+                const hasVideo = province.link_url && isVideoURL(province.link_url);
+                const hasDocument = province.file_path || (province.link_url && isDocumentURL(province.link_url));
+                const hasLink = province.link_url && !hasVideo && !hasDocument;
+                
+                let indicators = [];
+                if (hasVideo) indicators.push('🎥 ວິດີໂອ');
+                if (hasDocument) indicators.push('📄 ເອກະສານ');
+                if (hasLink) indicators.push('🔗 ລິ້ງ');
+                if (indicators.length === 0) indicators.push('-');
+                
+                return `
+                    <tr>
+                        <td>${province.province_id}</td>
+                        <td><strong>${province.province_name || '-'}</strong></td>
+                        <td>${province.title || '-'}</td>
+                        <td>${(province.description || '').substring(0, 50)}${(province.description || '').length > 50 ? '...' : ''}</td>
+                        <td>${indicators.join(' ')}</td>
+                        <td>${province.date_created ? new Date(province.date_created).toLocaleDateString('lo-LA') : '-'}</td>
+                        <td>
+                            <span class="badge" style="background: ${province.is_active !== false ? '#dbeafe' : '#fee2e2'}; color: ${province.is_active !== false ? '#1e40af' : '#dc2626'};">
+                                ${province.is_active !== false ? 'ເປີດໃຊ້ງານ' : 'ປິດໃຊ້ງານ'}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-small btn-success" onclick="editProvince(${province.province_id})">ແກ້ໄຂ</button>
+                            <button class="btn btn-small btn-danger" onclick="deleteProvince(${province.province_id})">ລຶບ</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        })
+        .catch(error => {
+            document.getElementById('provincesTableBody').innerHTML = `
+                <tr><td colspan="8" style="text-align: center; padding: var(--spacing-xl); color: #ef4444;">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດຂໍ້ມູນ</td></tr>
+            `;
+        });
+}
+
+// File upload handling
+let uploadedFilePath = null;
+
+document.getElementById('province_file').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    fetch('../backend/upload-district-file.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            uploadedFilePath = data.file_path;
+            document.getElementById('file_path').value = data.file_path;
+            document.getElementById('filePreview').innerHTML = `
+                <div style="padding: 0.5rem; background: #d1fae5; border-radius: 4px; color: #059669;">
+                    ✓ ອັບໂຫຼດໄຟລ໌ສຳເລັດ: ${file.name}
+                </div>
+            `;
+        } else {
+            alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ບໍ່ສາມາດອັບໂຫຼດໄຟລ໌ໄດ້'));
+        }
+    })
+    .catch(error => {
+        alert('ເກີດຂໍ້ຜິດພາດໃນການອັບໂຫຼດໄຟລ໌');
+        console.error(error);
+    });
+});
+
+function clearFile() {
+    document.getElementById('province_file').value = '';
+    document.getElementById('file_path').value = '';
+    document.getElementById('filePreview').innerHTML = '';
+    document.getElementById('currentFile').style.display = 'none';
+    uploadedFilePath = null;
+}
+
+function openModal(provinceId = null) {
+    const modal = document.getElementById('provinceModal');
+    const form = document.getElementById('provinceForm');
+    const modalTitle = document.getElementById('modalTitle');
+    const isActiveGroup = document.getElementById('isActiveGroup');
+    
+    form.reset();
+    document.getElementById('province_id').value = '';
+    document.getElementById('file_path').value = '';
+    document.getElementById('filePreview').innerHTML = '';
+    document.getElementById('currentFile').style.display = 'none';
+    uploadedFilePath = null;
+    
+    if (provinceId) {
+        modalTitle.textContent = 'ແກ້ໄຂຂໍ້ມູນແຂວງ';
+        isActiveGroup.style.display = 'block';
+        fetch('../backend/fetch-provinces.php')
+            .then(r => r.json())
+            .then(data => {
+                const province = data.find(p => p.province_id == provinceId);
+                if (province) {
+                    document.getElementById('province_id').value = province.province_id;
+                    document.getElementById('province_name').value = province.province_name || '';
+                    document.getElementById('title').value = province.title || '';
+                    document.getElementById('description').value = province.description || '';
+                    document.getElementById('link_url').value = province.link_url || '';
+                    document.getElementById('date_created').value = province.date_created || '';
+                    document.getElementById('is_active').checked = province.is_active !== false;
+                    
+                    if (province.file_path) {
+                        document.getElementById('file_path').value = province.file_path;
+                        const fileName = province.file_path.split('/').pop();
+                        document.getElementById('currentFileName').textContent = fileName;
+                        document.getElementById('currentFile').style.display = 'block';
+                    }
+                }
+            });
+    } else {
+        modalTitle.textContent = 'ເພີ່ມຂໍ້ມູນແຂວງ';
+        isActiveGroup.style.display = 'none';
+        document.getElementById('date_created').valueAsDate = new Date();
+    }
+    
+    modal.style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('provinceModal').style.display = 'none';
+}
+
+function editProvince(provinceId) {
+    openModal(provinceId);
+}
+
+function deleteProvince(provinceId) {
+    if (!confirm('ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບຂໍ້ມູນແຂວງນີ້?')) {
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('province_id', provinceId);
+    
+    fetch('../backend/delete-province.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('ລຶບຂໍ້ມູນແຂວງສຳເລັດແລ້ວ!');
+            loadProvinces();
+        } else {
+            alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ລຶບບໍ່ສຳເລັດ'));
+        }
+    })
+    .catch(error => {
+        alert('ເກີດຂໍ້ຜິດພາດໃນການລຶບຂໍ້ມູນແຂວງ');
+        console.error(error);
+    });
+}
+
+document.getElementById('provinceForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const provinceId = formData.get('province_id');
+    const url = provinceId ? '../backend/update-province.php' : '../backend/add-province.php';
+    
+    // If no file was uploaded but file_path exists, keep the existing file_path
+    if (!uploadedFilePath && formData.get('file_path')) {
+        // Keep existing file_path
+    } else if (uploadedFilePath) {
+        formData.set('file_path', uploadedFilePath);
+    } else {
+        formData.set('file_path', '');
+    }
+    
+    if (formData.get('is_active')) {
+        formData.set('is_active', document.getElementById('is_active').checked);
+    }
+    
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message || 'ບັນທຶກສຳເລັດແລ້ວ!');
+            closeModal();
+            loadProvinces();
+        } else {
+            alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ບັນທຶກບໍ່ສຳເລັດ'));
+        }
+    })
+    .catch(error => {
+        alert('ເກີດຂໍ້ຜິດພາດໃນການບັນທຶກຂໍ້ມູນ');
+        console.error(error);
+    });
+});
+
+window.onclick = function(event) {
+    const modal = document.getElementById('provinceModal');
+    if (event.target == modal) {
+        closeModal();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuth();
+    loadProvinces();
+});
+</script>
+</body>
+</html>

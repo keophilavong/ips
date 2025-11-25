@@ -3,12 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>District Education</title>
+    <title>ຫ້ອງການສຶກສາທິການ ແລະ ກິລາເມືອງ</title>
     <link rel="icon" type="image/png" href="assets/images/edu.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .upload-form-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+            border: 1px solid var(--border-color);
+        }
+        
+        .form-section {
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.1);
+        }
+        
+        .file-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: var(--spacing-xl);
+            text-align: center;
+            background: var(--bg-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .file-upload-area:hover {
+            border-color: var(--primary-color);
+            background: rgba(30, 64, 175, 0.05);
+        }
+        
+        .file-list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-sm);
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            margin-top: var(--spacing-sm);
+        }
+        
+        .required {
+            color: #dc2626;
+        }
+        
+        .form-hint {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-bottom: var(--spacing-sm);
+        }
+    </style>
 </head>
 
 <body>
@@ -18,40 +95,222 @@
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div>
             <h2>🏛 ຫ້ອງການສຶກສາທິການ ແລະ ກິລາເມືອງ</h2>
-            <p style="margin-bottom: 0;">Manage district education office information and activities</p>
+            <p style="margin-bottom: 0;">ຈັດການຂໍ້ມູນຫ້ອງການສຶກສາທິການ ແລະ ກິລາເມືອງ</p>
         </div>
-        <a href="uploads/upload-district.html" class="btn" style="background: white; color: var(--primary-color); border: 2px solid white;">+ Upload Data</a>
     </div>
     <div style="margin-top: 1.5rem; position: relative; z-index: 1;">
         <select id="districtSelector" class="district-selector" style="background: white; color: var(--text-primary); border: none; border-radius: var(--radius-lg); padding: var(--spacing-md) var(--spacing-xl); font-size: 1rem; font-weight: 500; width: 100%; max-width: 400px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12\" height=\"12\" viewBox=\"0 0 12 12\"><path fill=\"%23333\" d=\"M6 9L1 4h10z\"/></svg>'); background-repeat: no-repeat; background-position: right var(--spacing-md) center; padding-right: calc(var(--spacing-xl) + 20px);">
-            <option value="">ເລືອກເມືອງ (Select District)</option>
-            <option value="all">ທຸກເມືອງ (All Districts)</option>
-            <option value="vientiane">ນະຄອນຫຼວງວຽງຈັນ (Vientiane Capital)</option>
-            <option value="luangprabang">ຫຼວງພະບາງ (Luang Prabang)</option>
-            <option value="savannakhet">ສະຫວັນນະເຂດ (Savannakhet)</option>
-            <option value="pakse">ປາກເຊ (Pakse)</option>
-            <option value="phonsavan">ພອນສະຫວັນ (Phonsavan)</option>
+            <option value="">ເລືອກເມືອງ</option>
+            <option value="all">ທຸກເມືອງ</option>
+            <option value="vientiane">ນະຄອນຫຼວງວຽງຈັນ</option>
+            <option value="luangprabang">ຫຼວງພະບາງ</option>
+            <option value="savannakhet">ສະຫວັນນະເຂດ</option>
+            <option value="pakse">ປາກເຊ</option>
+            <option value="phonsavan">ພອນສະຫວັນ</option>
         </select>
     </div>
 </div>
 
 <section class="content">
-    <div class="card-grid" style="grid-template-columns: 1fr;">
-        <div class="card">
-            <div class="card-title">🏛 District Education Office</div>
-            <div class="card-body">
-                <p>Track and manage district-level education office activities and reports with comprehensive analytics. Upload new data using the button above to maintain up-to-date district information.</p>
-                <div style="margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%); border-radius: var(--radius-xl); border: 2px dashed var(--border-color); text-align: center;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🏢</div>
-                    <p style="color: var(--text-secondary); margin: 0; font-size: 1.1rem; font-weight: 500;">No district data yet. Upload district information to get started!</p>
-                    <a href="uploads/upload-district.html" class="btn" style="margin-top: 1.5rem;">Upload Data</a>
+    <div style="max-width: 900px; margin: 0 auto; padding: 0 var(--spacing-lg);">
+        <!-- ຟອມສົ່ງຂໍ້ມູນສຳລັບຜູ້ໃຊ້ -->
+        <div class="upload-form-container">
+            <div class="card-title" style="margin-bottom: var(--spacing-lg);">📤 ສົ່ງຂໍ້ມູນຫ້ອງການສຶກສາທິການເມືອງ</div>
+            <p style="color: var(--text-secondary); margin-bottom: var(--spacing-xl);">ກະລຸນາຕື່ມຂໍ້ມູນຂ້າງລຸ່ມເພື່ອສົ່ງຂໍ້ມູນຫ້ອງການສຶກສາທິການເມືອງຂອງທ່ານ. ຂໍ້ມູນຈະຖືກກວດສອບໂດຍຜູ້ດູແລລະບົບກ່ອນສະແດງຜົນ.</p>
+            
+            <form id="districtUploadForm" enctype="multipart/form-data">
+                <!-- District Name -->
+                <div class="form-section">
+                    <label for="district_name" class="form-label">
+                        1. ຊື່ເມືອງ <span class="required">*</span>
+                    </label>
+                    <input type="text" id="district_name" name="district_name" class="form-control" required placeholder="ຕົວຢ່າງ: ນະຄອນຫຼວງວຽງຈັນ">
                 </div>
-            </div>
+                
+                <!-- Title -->
+                <div class="form-section">
+                    <label for="title" class="form-label">
+                        2. ຫົວຂໍ້ <span class="required">*</span>
+                    </label>
+                    <input type="text" id="title" name="title" class="form-control" required placeholder="ຕົວຢ່າງ: ລາຍງານກິດຈະກຳປີ 2024">
+                </div>
+                
+                <!-- Description -->
+                <div class="form-section">
+                    <label for="description" class="form-label">
+                        3. ລາຍລະອຽດ
+                    </label>
+                    <textarea id="description" name="description" class="form-control" rows="4" placeholder="ອະທິບາຍລາຍລະອຽດກ່ຽວກັບຂໍ້ມູນນີ້..."></textarea>
+                </div>
+                
+                <!-- Document Upload -->
+                <div class="form-section">
+                    <label class="form-label">
+                        4. ເອກະສານ (ຖ້າມີ)
+                    </label>
+                    <div class="form-hint">
+                        ຮູບແບບທີ່ຮອງຮັບ: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, JPG, PNG, GIF, WEBP, BMP (ສູງສຸດ 100MB)
+                    </div>
+                    <div class="file-upload-area" onclick="document.getElementById('district_file').click()">
+                        <div style="font-size: 2.5rem; margin-bottom: var(--spacing-sm);">☁️</div>
+                        <button type="button" class="btn" style="display: inline-flex; align-items: center; gap: var(--spacing-xs);">
+                            ↑ ເພີ່ມໄຟລ໌
+                        </button>
+                        <input type="file" id="district_file" name="district_file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.webp,.bmp" style="display: none;">
+                    </div>
+                    <div id="filePreview" style="margin-top: var(--spacing-sm);"></div>
+                </div>
+                
+                <!-- Link URL -->
+                <div class="form-section">
+                    <label for="link_url" class="form-label">
+                        5. ລິ້ງ URL (ຖ້າມີ)
+                    </label>
+                    <input type="url" id="link_url" name="link_url" class="form-control" placeholder="https://example.com">
+                    <div class="form-hint">ສາມາດເປັນລິ້ງເວັບໄຊທ໌, ວິດີໂອ, ຫຼື ລິ້ງອື່ນໆ</div>
+                </div>
+                
+                <!-- Contact Information -->
+                <div class="form-section">
+                    <label class="form-label">6. ຂໍ້ມູນຕິດຕໍ່</label>
+                    <div class="form-hint">ຂໍ້ມູນຕິດຕໍ່ຈະຖືກໃຊ້ເພື່ອຕິດຕໍ່ກັບທ່ານຖ້າມີຄຳຖາມ</div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-md); margin-top: var(--spacing-md);">
+                        <div>
+                            <label for="contact_name" class="form-label" style="font-size: 0.9rem;">ຊື່</label>
+                            <input type="text" id="contact_name" name="contact_name" class="form-control" placeholder="ຊື່ຜູ້ຕິດຕໍ່">
+                        </div>
+                        <div>
+                            <label for="contact_email" class="form-label" style="font-size: 0.9rem;">ອີເມວ</label>
+                            <input type="email" id="contact_email" name="contact_email" class="form-control" placeholder="email@example.com">
+                        </div>
+                        <div>
+                            <label for="contact_phone" class="form-label" style="font-size: 0.9rem;">ເບີໂທ</label>
+                            <input type="tel" id="contact_phone" name="contact_phone" class="form-control" placeholder="020 xxxxxxxx">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Date -->
+                <div class="form-section">
+                    <label for="date_created" class="form-label">
+                        7. ວັນທີ <span class="required">*</span>
+                    </label>
+                    <input type="date" id="date_created" name="date_created" class="form-control" required>
+                </div>
+                
+                <div id="result"></div>
+                
+                <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl); padding-top: var(--spacing-lg); border-top: 2px solid var(--border-color);">
+                    <button type="submit" class="btn btn-primary" id="submitBtn" style="flex: 1;">ສົ່ງຂໍ້ມູນ</button>
+                    <button type="button" class="btn btn-outline" onclick="clearForm()" style="flex: 1;">ລ້າງຟອມ</button>
+                </div>
+            </form>
         </div>
     </div>
 </section>
 
 <div id="footer"></div>
 <script src="assets/js/main.js"></script>
+<script>
+let uploadedFilePath = null;
+
+// File upload handling
+document.getElementById('district_file').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    fetch('backend/upload-district-file-user.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            uploadedFilePath = data.file_path;
+            document.getElementById('filePreview').innerHTML = `
+                <div class="file-list-item">
+                    <div>
+                        <strong>${file.name}</strong>
+                        <div style="font-size: 0.875rem; color: var(--text-light);">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+                    </div>
+                    <button type="button" onclick="clearFile()" style="color: #dc2626; background: none; border: none; cursor: pointer; text-decoration: underline;">ລຶບ</button>
+                </div>
+            `;
+        } else {
+            alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ບໍ່ສາມາດອັບໂຫຼດໄຟລ໌ໄດ້'));
+        }
+    })
+    .catch(error => {
+        alert('ເກີດຂໍ້ຜິດພາດໃນການອັບໂຫຼດໄຟລ໌');
+        console.error(error);
+    });
+});
+
+function clearFile() {
+    document.getElementById('district_file').value = '';
+    document.getElementById('filePreview').innerHTML = '';
+    uploadedFilePath = null;
+}
+
+function clearForm() {
+    if (confirm('ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລ້າງຟອມ?')) {
+        document.getElementById('districtUploadForm').reset();
+        clearFile();
+        document.getElementById('result').innerHTML = '';
+        document.getElementById('date_created').valueAsDate = new Date();
+    }
+}
+
+// Form submission
+document.getElementById('districtUploadForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    if (uploadedFilePath) {
+        formData.append('file_path', uploadedFilePath);
+    }
+    
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.textContent;
+    const result = document.getElementById('result');
+    
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'ກຳລັງສົ່ງ...';
+    result.innerHTML = '';
+    
+    fetch('backend/submit-district-info.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            result.innerHTML = '<div class="alert alert-success" style="padding: var(--spacing-md); background: #d1fae5; color: #059669; border-radius: 8px; margin-top: var(--spacing-md);">✅ ' + data.message + '</div>';
+            setTimeout(() => {
+                clearForm();
+                result.innerHTML = '';
+            }, 3000);
+        } else {
+            result.innerHTML = '<div class="alert alert-error" style="padding: var(--spacing-md); background: #fee2e2; color: #dc2626; border-radius: 8px; margin-top: var(--spacing-md);">❌ ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ສົ່ງບໍ່ສຳເລັດ') + '</div>';
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
+    })
+    .catch(error => {
+        result.innerHTML = '<div class="alert alert-error" style="padding: var(--spacing-md); background: #fee2e2; color: #dc2626; border-radius: 8px; margin-top: var(--spacing-md);">❌ ເກີດຂໍ້ຜິດພາດໃນການສົ່ງຂໍ້ມູນ</div>';
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        console.error('Error:', error);
+    });
+});
+
+// Set today's date as default
+document.getElementById('date_created').valueAsDate = new Date();
+</script>
 </body>
 </html>

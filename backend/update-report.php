@@ -1,5 +1,13 @@
 <?php
+session_start();
 include "db.php";
+
+// Check if user is admin - only admins can update documents
+if (!isset($_SESSION['admin_id'])) {
+    http_response_code(403);
+    echo "error: Only administrators can update documents";
+    exit;
+}
 
 $report_id = $_POST['report_id'];
 $category = $_POST['category'];

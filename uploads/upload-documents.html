@@ -588,6 +588,24 @@ document.getElementById('uploadForm').addEventListener('submit', function(e) {
 
 // Set today's date as default
 document.getElementById('date').valueAsDate = new Date();
+
+// Check admin authentication on page load
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('../backend/check-admin.php')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.is_admin) {
+                // Not an admin - redirect to login
+                alert('Only administrators can upload documents. Redirecting to login...');
+                window.location.href = '../login.html';
+            }
+        })
+        .catch(() => {
+            // Error checking auth - redirect to login
+            alert('Authentication error. Redirecting to login...');
+            window.location.href = '../login.html';
+        });
+});
 </script>
 </body>
 </html>

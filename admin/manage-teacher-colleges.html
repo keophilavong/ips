@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Teacher Colleges - Admin</title>
+    <link rel="icon" type="image/png" href="../assets/images/edu.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+    <style>
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+<div id="adminNavbar"></div>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <div>
+            <h2>Manage Teacher Colleges</h2>
+            <p>Add, edit, or delete teacher college information and movement data</p>
+        </div>
+        <button class="btn" onclick="openModal()">+ Add New College Data</button>
+    </div>
+    
+    <div class="table-container">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>College Name</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="collegesTableBody">
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: var(--spacing-3xl);">
+                        <div class="loading"></div>
+                        <p style="margin-top: 1rem; color: var(--text-secondary);">Loading...</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal for Add/Edit -->
+<div id="collegeModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Add Teacher College Data</h3>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <form id="collegeForm">
+            <input type="hidden" id="college_id" name="college_id">
+            
+            <div class="form-group">
+                <label for="college_name">College Name <span style="color: #ef4444;">*</span></label>
+                <input type="text" id="college_name" name="college_name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="title">Title <span style="color: #ef4444;">*</span></label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="4"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="date_created">Date</label>
+                <input type="date" id="date_created" name="date_created">
+            </div>
+            
+            <div class="form-group" id="isActiveGroup" style="display: none;">
+                <label>
+                    <input type="checkbox" id="is_active" name="is_active" checked> Active
+                </label>
+            </div>
+            
+            <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl);">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Save</button>
+                <button type="button" class="btn btn-outline" onclick="closeModal()" style="flex: 1;">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Load admin navbar
+fetch('../components/admin-navbar.html')
+    .then(res => res.text())
+    .then(data => {
+        const navbarEl = document.getElementById('adminNavbar');
+        if (navbarEl) {
+            navbarEl.innerHTML = data;
+        }
+    })
+    .catch(error => {
+        console.error('Error loading admin navbar:', error);
+    });
+
+// Check admin authentication
+function checkAuth() {
+    fetch('../backend/check-admin.php')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.is_admin) {
+                window.location.href = '../login.html';
+            }
+        })
+        .catch(() => {
+            window.location.href = '../login.html';
+        });
+}
+
+// Load colleges
+function loadColleges() {
+    fetch('../backend/fetch-teacher-colleges.php')
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.getElementById('collegesTableBody');
+            
+            if (data.error) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: #ef4444;">Error: ${data.error}</td></tr>`;
+                return;
+            }
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: var(--spacing-3xl);">
+                            <p style="color: var(--text-secondary);">No teacher college data found.</p>
+                            <button class="btn" onclick="openModal()" style="margin-top: var(--spacing-md);">Add First College Data</button>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = data.map(college => `
+                <tr>
+                    <td>${college.college_id}</td>
+                    <td><strong>${college.college_name || '-'}</strong></td>
+                    <td>${college.title || '-'}</td>
+                    <td>${(college.description || '').substring(0, 50)}${(college.description || '').length > 50 ? '...' : ''}</td>
+                    <td>${college.date_created ? new Date(college.date_created).toLocaleDateString('lo-LA') : '-'}</td>
+                    <td>
+                        <span class="badge" style="background: ${college.is_active !== false ? '#dbeafe' : '#fee2e2'}; color: ${college.is_active !== false ? '#1e40af' : '#dc2626'};">
+                            ${college.is_active !== false ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-small btn-success" onclick="editCollege(${college.college_id})">Edit</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteCollege(${college.college_id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        })
+        .catch(error => {
+            document.getElementById('collegesTableBody').innerHTML = `
+                <tr><td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: #ef4444;">Error loading data</td></tr>
+            `;
+        });
+}
+
+// Open modal for add/edit
+function openModal(collegeId = null) {
+    const modal = document.getElementById('collegeModal');
+    const form = document.getElementById('collegeForm');
+    const modalTitle = document.getElementById('modalTitle');
+    const isActiveGroup = document.getElementById('isActiveGroup');
+    
+    form.reset();
+    document.getElementById('college_id').value = '';
+    
+    if (collegeId) {
+        modalTitle.textContent = 'Edit Teacher College Data';
+        isActiveGroup.style.display = 'block';
+        // Load college data
+        fetch('../backend/fetch-teacher-colleges.php')
+            .then(r => r.json())
+            .then(data => {
+                const college = data.find(c => c.college_id == collegeId);
+                if (college) {
+                    document.getElementById('college_id').value = college.college_id;
+                    document.getElementById('college_name').value = college.college_name || '';
+                    document.getElementById('title').value = college.title || '';
+                    document.getElementById('description').value = college.description || '';
+                    document.getElementById('date_created').value = college.date_created || '';
+                    document.getElementById('is_active').checked = college.is_active !== false;
+                }
+            });
+    } else {
+        modalTitle.textContent = 'Add Teacher College Data';
+        isActiveGroup.style.display = 'none';
+        document.getElementById('date_created').valueAsDate = new Date();
+    }
+    
+    modal.style.display = 'block';
+}
+
+// Close modal
+function closeModal() {
+    document.getElementById('collegeModal').style.display = 'none';
+}
+
+// Edit college
+function editCollege(collegeId) {
+    openModal(collegeId);
+}
+
+// Delete college
+function deleteCollege(collegeId) {
+    if (!confirm('Are you sure you want to delete this teacher college data?')) {
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('college_id', collegeId);
+    
+    fetch('../backend/delete-teacher-college.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Teacher college data deleted successfully!');
+            loadColleges();
+        } else {
+            alert('Error: ' + (data.error || 'Failed to delete'));
+        }
+    })
+    .catch(error => {
+        alert('Error deleting teacher college data');
+        console.error(error);
+    });
+}
+
+// Form submission
+document.getElementById('collegeForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const collegeId = formData.get('college_id');
+    const url = collegeId ? '../backend/update-teacher-college.php' : '../backend/add-teacher-college.php';
+    
+    if (formData.get('is_active')) {
+        formData.set('is_active', document.getElementById('is_active').checked);
+    }
+    
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message || 'Saved successfully!');
+            closeModal();
+            loadColleges();
+        } else {
+            alert('Error: ' + (data.error || 'Failed to save'));
+        }
+    })
+    .catch(error => {
+        alert('Error saving data');
+        console.error(error);
+    });
+});
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('collegeModal');
+    if (event.target == modal) {
+        closeModal();
+    }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuth();
+    loadColleges();
+});
+</script>
+</body>
+</html>
+

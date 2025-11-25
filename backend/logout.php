@@ -12,6 +12,13 @@ if (isset($_COOKIE[session_name()])) {
 // Destroy the session
 session_destroy();
 
-header('Content-Type: application/json; charset=utf-8');
-echo json_encode(['success' => true, 'message' => 'Logged out successfully'], JSON_UNESCAPED_UNICODE);
+// Check if this is an AJAX request
+if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['success' => true, 'message' => 'Logged out successfully'], JSON_UNESCAPED_UNICODE);
+} else {
+    // Direct access - redirect to login
+    header('Location: ../login.html');
+    exit;
+}
 ?>

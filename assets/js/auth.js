@@ -68,7 +68,7 @@ document.getElementById("loginForm")?.addEventListener("submit", function(e){
                 if (data.type === "admin") {
                     window.location = "admin/dashboard.html";
                 } else {
-                    window.location = "index.html";
+                    window.location = "dashboard.html";
                 }
             }, 1000);
         } else {

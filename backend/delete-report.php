@@ -1,5 +1,13 @@
 <?php
+session_start();
 include "db.php";
+
+// Check if user is admin - only admins can delete documents
+if (!isset($_SESSION['admin_id'])) {
+    http_response_code(403);
+    echo "error: Only administrators can delete documents";
+    exit;
+}
 
 $report_id = $_POST['report_id'];
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documents</title>
+    <title>ເອກະສານ</title>
     <link rel="icon" type="image/png" href="assets/images/edu.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1032,9 +1032,9 @@
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div>
             <h2>📄 ເອກະສານທີ່ກ່ຽວຂ້ອງ</h2>
-            <p style="margin-bottom: 0;">Upload, manage, and access all related educational documents in one place</p>
+            <p style="margin-bottom: 0;">ອັບໂຫຼດ, ຈັດການ, ແລະ ເຂົ້າເຖິງເອກະສານການສຶກສາທັງໝົດທີ່ກ່ຽວຂ້ອງໃນບ່ອນດຽວ</p>
         </div>
-        <a href="/internal-education-worker-report/uploads/upload-documents.html" class="btn" style="background: white; color: var(--primary-color); border: 2px solid white;">+ Upload Document</a>
+        <a href="/internal-education-worker-report/uploads/upload-documents.html" class="btn" id="uploadDocumentBtn" style="background: white; color: var(--primary-color); border: 2px solid white; display: none;">+ ອັບໂຫຼດເອກະສານ</a>
     </div>
 </div>
 
@@ -1042,28 +1042,28 @@
     <!-- Enhanced Toolbar with Search & Filters -->
     <div class="documents-toolbar">
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search documents by title or description..." autocomplete="off">
+            <input type="text" id="searchInput" placeholder="ຄົ້ນຫາເອກະສານຕາມຫົວຂໍ້ ຫຼື ລາຍລະອຽດ..." autocomplete="off">
         </div>
         <div class="filter-group">
             <select id="categoryFilter" class="filter-select">
-                <option value="">All Categories</option>
+                <option value="">ໝວດໝູ່ທັງໝົດ</option>
             </select>
             <select id="sortSelect" class="filter-select">
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-                <option value="title-asc">Title (A-Z)</option>
-                <option value="title-desc">Title (Z-A)</option>
+                <option value="newest">ໃໝ່ທີ່ສຸດກ່ອນ</option>
+                <option value="oldest">ເກົ່າທີ່ສຸດກ່ອນ</option>
+                <option value="title-asc">ຫົວຂໍ້ (ກ-ຮ)</option>
+                <option value="title-desc">ຫົວຂໍ້ (ຮ-ກ)</option>
             </select>
         </div>
         <div class="view-toggle">
-            <button id="docsListViewBtn" class="active" title="Documents List">📋</button>
-            <button id="tableViewBtn" title="Table View">☷</button>
+            <button id="docsListViewBtn" class="active" title="ລາຍການເອກະສານ">📋</button>
+            <button id="tableViewBtn" title="ຕາຕະລາງ">☷</button>
         </div>
         <div style="font-size: 0.85rem; color: var(--text-light); white-space: nowrap;">
-            <span id="currentViewText">Documents List</span>
+            <span id="currentViewText">ລາຍການເອກະສານ</span>
         </div>
         <div class="documents-count">
-            <span id="documentCount">0</span> documents
+            <span id="documentCount">0</span> ເອກະສານ
         </div>
     </div>
     
@@ -1071,7 +1071,7 @@
     <div id="documents-container">
         <div class="loading">
             <div class="loading"></div>
-            <p style="margin-top: 1rem;">Loading documents...</p>
+            <p style="margin-top: 1rem;">ກຳລັງໂຫຼດເອກະສານ...</p>
         </div>
     </div>
 </section>
@@ -1080,17 +1080,17 @@
 <div id="previewModal" class="preview-modal">
     <div class="preview-modal-content">
         <div class="preview-modal-header">
-            <h3 class="preview-modal-title" id="previewTitle">Document Preview</h3>
+            <h3 class="preview-modal-title" id="previewTitle">ຕົວຢ່າງເອກະສານ</h3>
             <button class="preview-modal-close" onclick="closePreview()">&times;</button>
         </div>
         <div class="preview-modal-body" id="previewBody">
-            <div class="loading">Loading preview...</div>
+            <div class="loading">ກຳລັງໂຫຼດຕົວຢ່າງ...</div>
         </div>
         <div class="preview-modal-footer">
             <a id="previewDownloadBtn" href="#" class="btn-download" download>
-                📥 Download
+                📥 ດາວໂຫຼດ
             </a>
-            <button class="btn-preview" onclick="closePreview()">Close</button>
+            <button class="btn-preview" onclick="closePreview()">ປິດ</button>
         </div>
     </div>
 </div>
@@ -1154,7 +1154,7 @@ function openPreview(fileUrl, title, filename) {
     const modalBody = document.getElementById('previewBody');
     const downloadBtn = document.getElementById('previewDownloadBtn');
     
-    modalTitle.textContent = title || 'Document Preview';
+    modalTitle.textContent = title || 'ຕົວຢ່າງເອກະສານ';
     downloadBtn.href = fileUrl;
     downloadBtn.download = filename;
     
@@ -1191,9 +1191,9 @@ function openPreview(fileUrl, title, filename) {
             modalBody.innerHTML = `
                 <div class="preview-unsupported">
                     <div class="preview-unsupported-icon">📄</div>
-                    <h3>Preview Not Available</h3>
-                    <p>This file type cannot be previewed in the browser.</p>
-                    <p style="margin-top: var(--spacing-md);">Please download the file to view it.</p>
+                    <h3>ບໍ່ສາມາດເບິ່ງຕົວຢ່າງໄດ້</h3>
+                    <p>ປະເພດໄຟລ໌ນີ້ບໍ່ສາມາດເບິ່ງຕົວຢ່າງໃນບຣາວເຊີໄດ້.</p>
+                    <p style="margin-top: var(--spacing-md);">ກະລຸນາດາວໂຫຼດໄຟລ໌ເພື່ອເບິ່ງ.</p>
                 </div>
             `;
     }
@@ -1212,9 +1212,9 @@ function showPreviewError() {
     modalBody.innerHTML = `
         <div class="preview-unsupported">
             <div class="preview-unsupported-icon">⚠️</div>
-            <h3>Error Loading Preview</h3>
-            <p>Unable to load the document preview.</p>
-            <p style="margin-top: var(--spacing-md);">Please try downloading the file instead.</p>
+            <h3>ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດຕົວຢ່າງ</h3>
+            <p>ບໍ່ສາມາດໂຫຼດຕົວຢ່າງເອກະສານໄດ້.</p>
+            <p style="margin-top: var(--spacing-md);">ກະລຸນາລອງດາວໂຫຼດໄຟລ໌ແທນ.</p>
         </div>
     `;
 }
@@ -1227,7 +1227,7 @@ function closePreview() {
     
     // Clear preview content
     setTimeout(() => {
-        document.getElementById('previewBody').innerHTML = '<div class="loading">Loading preview...</div>';
+        document.getElementById('previewBody').innerHTML = '<div class="loading">ກຳລັງໂຫຼດຕົວຢ່າງ...</div>';
     }, 300);
 }
 
@@ -1260,7 +1260,7 @@ function loadDocuments() {
                 document.getElementById('documents-container').innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">⚠️</div>
-                        <p style="font-size: 1.2rem; color: var(--text-secondary);">Error loading documents: ${data.error}</p>
+                        <p style="font-size: 1.2rem; color: var(--text-secondary);">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດເອກະສານ: ${data.error}</p>
                     </div>
                 `;
                 return;
@@ -1270,9 +1270,10 @@ function loadDocuments() {
                 document.getElementById('documents-container').innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📁</div>
-                        <h3 style="margin-bottom: 1rem;">No documents yet</h3>
-                        <p style="color: var(--text-secondary); font-size: 1.1rem;">Upload your first document to get started!</p>
-                        <a href="/internal-education-worker-report/uploads/upload-documents.html" class="btn" style="margin-top: 1.5rem;">Upload Document</a>
+                        <h3 style="margin-bottom: 1rem;">ຍັງບໍ່ມີເອກະສານ</h3>
+                        <p style="color: var(--text-secondary); font-size: 1.1rem;">ອັບໂຫຼດເອກະສານຄັ້ງທຳອິດຂອງທ່ານເພື່ອເລີ່ມຕົ້ນ!</p>
+                        <a href="/internal-education-worker-report/uploads/upload-documents.html" class="btn" id="emptyStateUploadBtn" style="margin-top: 1.5rem; display: none;">ອັບໂຫຼດເອກະສານ</a>
+                        <p id="emptyStateAdminOnly" style="color: var(--text-secondary); font-size: 1.1rem; margin-top: 1.5rem; display: none;">ມີແຕ່ຜູ້ດູແລລະບົບເທົ່ານັ້ນທີ່ສາມາດອັບໂຫຼດເອກະສານໄດ້.</p>
                     </div>
                 `;
                 document.getElementById('documentCount').textContent = '0';
@@ -1302,7 +1303,7 @@ function loadDocuments() {
             document.getElementById('documents-container').innerHTML = `
                 <div class="empty-state">
                     <div class="empty-state-icon">⚠️</div>
-                    <p style="font-size: 1.2rem; color: var(--text-secondary);">Error loading documents. Please try again later.</p>
+                    <p style="font-size: 1.2rem; color: var(--text-secondary);">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດເອກະສານ. ກະລຸນາລອງໃໝ່ອີກຄັ້ງ.</p>
                 </div>
             `;
         });
@@ -1323,8 +1324,8 @@ function displayDocuments(documents) {
         container.innerHTML = `
             <div class="empty-state">
                 <div class="empty-state-icon">🔍</div>
-                <h3>No documents found</h3>
-                <p style="color: var(--text-secondary); font-size: 1.1rem;">Try adjusting your search or filter criteria.</p>
+                <h3>ບໍ່ພົບເອກະສານ</h3>
+                <p style="color: var(--text-secondary); font-size: 1.1rem;">ລອງປັບປ່ຽນເງື່ອນໄຂການຄົ້ນຫາ ຫຼື ການກອງຂໍ້ມູນຂອງທ່ານ.</p>
             </div>
         `;
         return;
@@ -1344,8 +1345,8 @@ function displayDocuments(documents) {
                     const isImage = isImageFile(filename);
                     const canPreviewFile = canPreview(filename);
                     const fileExt = getFileExtension(filename);
-                    const safeTitle = (doc.title || 'Untitled Document').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                    const date = new Date(doc.created_at).toLocaleDateString('en-GB', { 
+                    const safeTitle = (doc.title || 'ເອກະສານທີ່ບໍ່ມີຫົວຂໍ້').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    const date = new Date(doc.created_at).toLocaleDateString('lo-LA', { 
                         year: 'numeric', 
                         month: 'short', 
                         day: 'numeric' 
@@ -1362,7 +1363,7 @@ function displayDocuments(documents) {
                             </div>
                             <div class="doc-list-content">
                                 <div class="doc-list-title">
-                                    ${doc.title || 'Untitled Document'}
+                                    ${doc.title || 'ເອກະສານທີ່ບໍ່ມີຫົວຂໍ້'}
                                 </div>
                                 <div class="doc-list-meta">
                                     ${doc.category ? `<span class="doc-list-category">${doc.category}</span>` : ''}
@@ -1374,11 +1375,11 @@ function displayDocuments(documents) {
                             <div class="doc-list-actions" onclick="event.stopPropagation();">
                                 ${canPreviewFile ? `
                                     <button class="btn-list-view" onclick="event.stopPropagation(); openPreview('${fileUrl}', '${safeTitle}', '${filename}')" title="Preview Document">
-                                        <span style="font-size: 0.875rem;">👁</span> View
+                                        <span style="font-size: 0.875rem;">👁</span> ເບິ່ງ
                                     </button>
                                 ` : ''}
-                                <a href="${fileUrl}" target="_blank" class="btn-list-download" download onclick="event.stopPropagation();" title="Download Document">
-                                    <span style="font-size: 0.875rem;">⬇</span> Download
+                                <a href="${fileUrl}" target="_blank" class="btn-list-download" download onclick="event.stopPropagation();" title="ດາວໂຫຼດເອກະສານ">
+                                    <span style="font-size: 0.875rem;">⬇</span> ດາວໂຫຼດ
                                 </a>
                             </div>
                         </div>
@@ -1411,8 +1412,8 @@ function displayDocuments(documents) {
                             const fileUrl = doc.file_path.startsWith('http') ? doc.file_path : '/' + doc.file_path.replace(/^\.\.\//, '');
                             const canPreviewFile = canPreview(filename);
                             const fileExt = getFileExtension(filename);
-                            const safeTitle = (doc.title || 'Untitled Document').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                            const date = new Date(doc.created_at).toLocaleDateString('en-GB', { 
+                            const safeTitle = (doc.title || 'ເອກະສານທີ່ບໍ່ມີຫົວຂໍ້').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                            const date = new Date(doc.created_at).toLocaleDateString('lo-LA', { 
                                 year: 'numeric', 
                                 month: '2-digit', 
                                 day: '2-digit' 
@@ -1422,8 +1423,8 @@ function displayDocuments(documents) {
                                 <tr>
                                     <td>${index + 1}</td>
                                     <td>
-                                        <div class="table-doc-title">${doc.title || 'Untitled Document'}</div>
-                                        <div class="table-doc-description">${doc.description || 'No description available.'}</div>
+                                        <div class="table-doc-title">${doc.title || 'ເອກະສານທີ່ບໍ່ມີຫົວຂໍ້'}</div>
+                                        <div class="table-doc-description">${doc.description || 'ບໍ່ມີລາຍລະອຽດ.'}</div>
                                     </td>
                                     <td>
                                         ${doc.category ? `<span class="table-doc-category">${doc.category}</span>` : '<span style="color: var(--text-light);">-</span>'}
@@ -1437,12 +1438,12 @@ function displayDocuments(documents) {
                                     <td>
                                         <div class="table-actions">
                                             ${canPreviewFile ? `
-                                                <button class="btn-view" onclick="openPreview('${fileUrl}', '${safeTitle}', '${filename}')" title="Preview Document">
-                                                    <span style="font-size: 0.875rem;">👁</span> View
+                                                <button class="btn-view" onclick="openPreview('${fileUrl}', '${safeTitle}', '${filename}')" title="ເບິ່ງຕົວຢ່າງເອກະສານ">
+                                                    <span style="font-size: 0.875rem;">👁</span> ເບິ່ງ
                                                 </button>
                                             ` : ''}
-                                            <a href="${fileUrl}" target="_blank" class="btn-table-download" download title="Download Document">
-                                                <span style="font-size: 0.875rem;">⬇</span> Download
+                                            <a href="${fileUrl}" target="_blank" class="btn-table-download" download title="ດາວໂຫຼດເອກະສານ">
+                                                <span style="font-size: 0.875rem;">⬇</span> ດາວໂຫຼດ
                                             </a>
                                         </div>
                                     </td>
@@ -1518,11 +1519,11 @@ function toggleView(viewType) {
     if (viewType === 'docs-list') {
         container.classList.add('docs-list-view');
         docsListBtn.classList.add('active');
-        if (viewText) viewText.textContent = 'Documents List';
+        if (viewText) viewText.textContent = 'ລາຍການເອກະສານ';
     } else if (viewType === 'table') {
         container.classList.add('table-view');
         tableBtn.classList.add('active');
-        if (viewText) viewText.textContent = 'Table View';
+        if (viewText) viewText.textContent = 'ຕາຕະລາງ';
     }
     
     // Re-render to apply view changes
@@ -1533,8 +1534,40 @@ function toggleView(viewType) {
     }
 }
 
+// Check if user is admin and show/hide upload buttons
+function checkAdminAndShowUploadButtons() {
+    fetch('backend/check-admin.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.is_admin) {
+                // Show upload buttons for admin
+                const uploadBtn = document.getElementById('uploadDocumentBtn');
+                const emptyStateBtn = document.getElementById('emptyStateUploadBtn');
+                if (uploadBtn) uploadBtn.style.display = 'block';
+                if (emptyStateBtn) emptyStateBtn.style.display = 'block';
+            } else {
+                // Hide upload buttons for non-admin users
+                const uploadBtn = document.getElementById('uploadDocumentBtn');
+                const emptyStateBtn = document.getElementById('emptyStateUploadBtn');
+                const adminOnlyMsg = document.getElementById('emptyStateAdminOnly');
+                if (uploadBtn) uploadBtn.style.display = 'none';
+                if (emptyStateBtn) emptyStateBtn.style.display = 'none';
+                if (adminOnlyMsg) adminOnlyMsg.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('Error checking admin status:', error);
+            // On error, hide upload buttons for security
+            const uploadBtn = document.getElementById('uploadDocumentBtn');
+            const emptyStateBtn = document.getElementById('emptyStateUploadBtn');
+            if (uploadBtn) uploadBtn.style.display = 'none';
+            if (emptyStateBtn) emptyStateBtn.style.display = 'none';
+        });
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
+    checkAdminAndShowUploadButtons();
     loadDocuments();
     
     // Search functionality

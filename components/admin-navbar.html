@@ -1,0 +1,203 @@
+<nav class="admin-navbar">
+    <div class="admin-navbar-container">
+        <div class="admin-navbar-brand">
+            <div class="admin-logo-wrapper">
+                <img src="../assets/images/edu.png" alt="MOES Logo" class="admin-logo" onerror="this.style.display='none';">
+            </div>
+            <div class="admin-brand-text">
+                <span class="admin-brand-main">ແຜງຄວບຄຸມຜູ້ດູແລລະບົບ</span>
+                <span class="admin-brand-sub">ລະບົບລາຍງານຜູ້ເຮັດວຽກສຶກສາ</span>
+            </div>
+        </div>
+        
+        <div class="admin-navbar-menu">
+            <a href="dashboard.html" class="admin-nav-link" data-page="dashboard">
+                <span class="admin-nav-icon">📊</span>
+                <span>ແຜງຄວບຄຸມ</span>
+            </a>
+            <a href="manage-activities.html" class="admin-nav-link" data-page="activities">
+                <span class="admin-nav-icon">📌</span>
+                <span>ກິດຈະກຳ</span>
+            </a>
+            <a href="view-reports.html" class="admin-nav-link" data-page="reports">
+                <span class="admin-nav-icon">📄</span>
+                <span>ເອກະສານ</span>
+            </a>
+            <div class="admin-nav-dropdown">
+                <a href="#" class="admin-nav-link" id="contentDropdownToggle">
+                    <span class="admin-nav-icon">📋</span>
+                    <span>ເນື້ອຫາ</span>
+                    <span style="margin-left: auto;">▼</span>
+                </a>
+                <div class="admin-dropdown-menu">
+                    <a href="manage-teacher-colleges.html" class="admin-dropdown-item">
+                        <span style="margin-right: 10px;">🏫</span> ວິທະຍາໄລຄູ
+                    </a>
+                    <a href="manage-internal-workers.html" class="admin-dropdown-item">
+                        <span style="margin-right: 10px;">👨‍🏫</span> ຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ
+                    </a>
+                    <a href="manage-districts.html" class="admin-dropdown-item">
+                        <span style="margin-right: 10px;">🏛</span> ເມືອງ
+                    </a>
+                    <a href="manage-provinces.html" class="admin-dropdown-item">
+                        <span style="margin-right: 10px;">🗺</span> ແຂວງ
+                    </a>
+                    <a href="manage-cpd.html" class="admin-dropdown-item">
+                        <span style="margin-right: 10px;">🎓</span> ເນື້ອຫາ CPD
+                    </a>
+                    <a href="manage-menu-items.html" class="admin-dropdown-item">
+                        <span style="margin-right: 10px;">📋</span> ລາຍການເມນູ
+                    </a>
+                </div>
+            </div>
+            <a href="manage-users.html" class="admin-nav-link" data-page="users">
+                <span class="admin-nav-icon">👥</span>
+                <span>ຜູ້ໃຊ້</span>
+            </a>
+            <a href="system-settings.html" class="admin-nav-link" data-page="settings">
+                <span class="admin-nav-icon">⚙️</span>
+                <span>ການຕັ້ງຄ່າ</span>
+            </a>
+        </div>
+        
+        <div class="admin-navbar-user">
+            <a href="../backend/logout.php" class="admin-logout-btn" id="adminLogoutBtn" onclick="return handleLogoutClick(event);">ອອກຈາກລະບົບ</a>
+        </div>
+    </div>
+</nav>
+
+<style>
+/* Admin navbar styles are now in admin.css for better organization */
+</style>
+
+<script>
+// Initialize admin navbar functionality
+function initAdminNavbar() {
+    const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
+    const navLinks = document.querySelectorAll('.admin-nav-link[data-page]');
+    
+    navLinks.forEach(link => {
+        const page = link.getAttribute('data-page');
+        if (currentPage.includes(page) || (page === 'dashboard' && currentPage === 'dashboard.html')) {
+            link.classList.add('active');
+        }
+    });
+    
+    
+    // Logout button handler - simplified
+    const logoutBtn = document.getElementById('adminLogoutBtn');
+    if (logoutBtn) {
+        // Ensure onclick is set
+        logoutBtn.setAttribute('onclick', 'return handleLogoutClick(event);');
+        
+        // Also add event listener as backup
+        logoutBtn.addEventListener('click', function(e) {
+            return handleLogoutClick(e);
+        }, true); // Use capture phase
+    }
+    
+    // Dropdown toggle handler - improved
+    setTimeout(function() {
+        const dropdownToggle = document.getElementById('contentDropdownToggle');
+        const dropdown = dropdownToggle ? dropdownToggle.closest('.admin-nav-dropdown') : null;
+        
+        if (dropdownToggle && dropdown) {
+            // Add click event to toggle dropdown
+            dropdownToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const isActive = dropdown.classList.contains('active');
+                
+                // Close all other dropdowns
+                document.querySelectorAll('.admin-nav-dropdown').forEach(d => {
+                    if (d !== dropdown) {
+                        d.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current dropdown
+                dropdown.classList.toggle('active');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (dropdown && !dropdown.contains(e.target)) {
+                    dropdown.classList.remove('active');
+                }
+            });
+        }
+    }, 100);
+}
+
+// Run when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAdminNavbar);
+} else {
+    initAdminNavbar();
+}
+
+// Also run after a short delay to ensure navbar is loaded
+setTimeout(initAdminNavbar, 200);
+
+// Simple click handler for logout link
+function handleLogoutClick(event) {
+    if (!confirm('ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການອອກຈາກລະບົບ?')) {
+        event.preventDefault();
+        return false;
+    }
+    
+    const logoutBtn = document.getElementById('adminLogoutBtn');
+    if (logoutBtn) {
+        logoutBtn.textContent = 'ກຳລັງອອກຈາກລະບົບ...';
+        logoutBtn.style.pointerEvents = 'none';
+    }
+    
+    // Let the link navigate naturally, or use fetch
+    event.preventDefault();
+    
+    fetch('../backend/logout.php', {
+        method: 'POST',
+        credentials: 'same-origin'
+    })
+    .then(() => {
+        window.location.href = '../login.html';
+    })
+    .catch(() => {
+        window.location.href = '../login.html';
+    });
+    
+    return false;
+}
+
+// Global logout handler function (works even if event listeners fail)
+function handleLogout(event) {
+    return handleLogoutClick(event);
+}
+
+// Additional logout button handler as fallback - ensure it works
+document.addEventListener('DOMContentLoaded', function() {
+    function setupLogout() {
+        const logoutBtn = document.getElementById('adminLogoutBtn');
+        if (logoutBtn) {
+            // Ensure onclick handler is present
+            logoutBtn.setAttribute('onclick', 'return handleLogoutClick(event);');
+            
+            // Add event listener as additional backup
+            if (!logoutBtn.hasAttribute('data-listener-attached')) {
+                logoutBtn.setAttribute('data-listener-attached', 'true');
+                logoutBtn.addEventListener('click', function(e) {
+                    return handleLogoutClick(e);
+                }, true);
+            }
+        }
+    }
+    
+    // Try immediately
+    setupLogout();
+    
+    // Also try after delay
+    setTimeout(setupLogout, 100);
+    setTimeout(setupLogout, 500);
+});
+</script>
+

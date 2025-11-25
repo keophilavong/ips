@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ຈັດການເນື້ອຫາ CPD - ຜູ້ດູແລລະບົບ</title>
+    <link rel="icon" type="image/png" href="../assets/images/edu.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+    <style>
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+<div id="adminNavbar"></div>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <div>
+            <h2>ຈັດການເນື້ອຫາ CPD</h2>
+            <p>ເພີ່ມ, ແກ້ໄຂ, ຫຼື ລຶບເນື້ອຫາການພັດທະນາອາຊີບຕໍ່ເນື່ອງ</p>
+        </div>
+        <button class="btn" onclick="openModal()">+ ເພີ່ມເນື້ອຫາ CPD ໃໝ່</button>
+    </div>
+    
+    <div class="table-container">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ຫົວຂໍ້</th>
+                    <th>ປະເພດ</th>
+                    <th>ລາຍລະອຽດ</th>
+                    <th>ວິດີໂອ/ເອກະສານ/ລິ້ງ</th>
+                    <th>ວັນທີ</th>
+                    <th>ສະຖານະ</th>
+                    <th>ການດຳເນີນການ</th>
+                </tr>
+            </thead>
+            <tbody id="cpdTableBody">
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: var(--spacing-3xl);">
+                        <div class="loading"></div>
+                        <p style="margin-top: 1rem; color: var(--text-secondary);">ກຳລັງໂຫຼດ...</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal for Add/Edit -->
+<div id="cpdModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">ເພີ່ມເນື້ອຫາ CPD</h3>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <form id="cpdForm" enctype="multipart/form-data">
+            <input type="hidden" id="cpd_id" name="cpd_id">
+            <input type="hidden" id="file_path" name="file_path">
+            
+            <div class="form-group">
+                <label for="title">ຫົວຂໍ້ <span style="color: #ef4444;">*</span></label>
+                <input type="text" id="title" name="title" required placeholder="ຕົວຢ່າງ: ການຝຶກອົບຮົມການສອນ">
+            </div>
+            
+            <div class="form-group">
+                <label for="content_type">ປະເພດເນື້ອຫາ</label>
+                <select id="content_type" name="content_type">
+                    <option value="resource">ຊັບພະຍາກອນ</option>
+                    <option value="program">ໂຄງການ</option>
+                    <option value="certificate">ໃບຢັ້ງຢືນ</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">ລາຍລະອຽດ</label>
+                <textarea id="description" name="description" rows="4" placeholder="ອະທິບາຍເນື້ອຫາ CPD ນີ້..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="cpd_file">ໄຟລ໌ເອກະສານ</label>
+                <input type="file" id="cpd_file" name="cpd_file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.webp,.bmp">
+                <small style="color: var(--text-light); font-size: 0.875rem; display: block; margin-top: 0.5rem;">
+                    ຮູບແບບທີ່ຮອງຮັບ: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, JPG, PNG, GIF, WEBP, BMP (ສູງສຸດ 100MB)
+                </small>
+                <div id="filePreview" style="margin-top: 0.5rem;"></div>
+                <div id="currentFile" style="margin-top: 0.5rem; padding: 0.5rem; background: var(--bg-secondary); border-radius: 4px; display: none;">
+                    <span id="currentFileName"></span>
+                    <button type="button" onclick="clearFile()" style="margin-left: 0.5rem; color: #dc2626; background: none; border: none; cursor: pointer; text-decoration: underline;">ລຶບ</button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="link_url">ລິ້ງ URL (ວິດີໂອ ຫຼື ລິ້ງອື່ນໆ)</label>
+                <input type="url" id="link_url" name="link_url" placeholder="https://youtube.com/... ຫຼື https://...">
+                <small style="color: var(--text-light); font-size: 0.875rem; display: block; margin-top: 0.5rem;">
+                    ສາມາດເປັນລິ້ງ YouTube, Vimeo, ຫຼື ລິ້ງອື່ນໆ
+                </small>
+            </div>
+            
+            <div class="form-group">
+                <label for="date_created">ວັນທີ</label>
+                <input type="date" id="date_created" name="date_created">
+            </div>
+            
+            <div class="form-group" id="isActiveGroup" style="display: none;">
+                <label>
+                    <input type="checkbox" id="is_active" name="is_active" checked> ເປີດໃຊ້ງານ
+                </label>
+            </div>
+            
+            <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl);">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">ບັນທຶກ</button>
+                <button type="button" class="btn btn-outline" onclick="closeModal()" style="flex: 1;">ຍົກເລີກ</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+fetch('../components/admin-navbar.html')
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById('adminNavbar').innerHTML = data;
+    });
+
+function checkAuth() {
+    fetch('../backend/check-admin.php')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.is_admin) {
+                window.location.href = '../login.html';
+            }
+        })
+        .catch(() => {
+            window.location.href = '../login.html';
+        });
+}
+
+// Check if URL is a video URL
+function isVideoURL(url) {
+    if (!url) return false;
+    const videoDomains = ['youtube.com', 'youtu.be', 'vimeo.com', 'dailymotion.com', 'facebook.com/watch', 'video'];
+    return videoDomains.some(domain => url.toLowerCase().includes(domain));
+}
+
+// Check if URL is a document/file
+function isDocumentURL(url) {
+    if (!url) return false;
+    const docExtensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt'];
+    return docExtensions.some(ext => url.toLowerCase().includes(ext));
+}
+
+function getContentTypeLabel(type) {
+    const labels = {
+        'resource': 'ຊັບພະຍາກອນ',
+        'program': 'ໂຄງການ',
+        'certificate': 'ໃບຢັ້ງຢືນ'
+    };
+    return labels[type] || type;
+}
+
+function loadCPD() {
+    fetch('../backend/fetch-cpd.php')
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.getElementById('cpdTableBody');
+            
+            if (data.error) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: var(--spacing-xl); color: #ef4444;">ເກີດຂໍ້ຜິດພາດ: ${data.error}</td></tr>`;
+                return;
+            }
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: var(--spacing-3xl);">
+                            <p style="color: var(--text-secondary);">ບໍ່ພົບເນື້ອຫາ CPD.</p>
+                            <button class="btn" onclick="openModal()" style="margin-top: var(--spacing-md);">ເພີ່ມເນື້ອຫາ CPD ແບບທຳອິດ</button>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = data.map(cpd => {
+                const hasVideo = cpd.link_url && isVideoURL(cpd.link_url);
+                const hasDocument = cpd.file_path || (cpd.link_url && isDocumentURL(cpd.link_url));
+                const hasLink = cpd.link_url && !hasVideo && !hasDocument;
+                
+                let indicators = [];
+                if (hasVideo) indicators.push('🎥 ວິດີໂອ');
+                if (hasDocument) indicators.push('📄 ເອກະສານ');
+                if (hasLink) indicators.push('🔗 ລິ້ງ');
+                if (indicators.length === 0) indicators.push('-');
+                
+                return `
+                    <tr>
+                        <td>${cpd.cpd_id}</td>
+                        <td><strong>${cpd.title || '-'}</strong></td>
+                        <td><span class="badge">${getContentTypeLabel(cpd.content_type || 'resource')}</span></td>
+                        <td>${(cpd.description || '').substring(0, 50)}${(cpd.description || '').length > 50 ? '...' : ''}</td>
+                        <td>${indicators.join(' ')}</td>
+                        <td>${cpd.date_created ? new Date(cpd.date_created).toLocaleDateString('lo-LA') : '-'}</td>
+                        <td>
+                            <span class="badge" style="background: ${cpd.is_active !== false ? '#dbeafe' : '#fee2e2'}; color: ${cpd.is_active !== false ? '#1e40af' : '#dc2626'};">
+                                ${cpd.is_active !== false ? 'ເປີດໃຊ້ງານ' : 'ປິດໃຊ້ງານ'}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-small btn-success" onclick="editCPD(${cpd.cpd_id})">ແກ້ໄຂ</button>
+                            <button class="btn btn-small btn-danger" onclick="deleteCPD(${cpd.cpd_id})">ລຶບ</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        })
+        .catch(error => {
+            document.getElementById('cpdTableBody').innerHTML = `
+                <tr><td colspan="8" style="text-align: center; padding: var(--spacing-xl); color: #ef4444;">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດຂໍ້ມູນ</td></tr>
+            `;
+        });
+}
+
+// File upload handling
+let uploadedFilePath = null;
+
+document.getElementById('cpd_file').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    fetch('../backend/upload-district-file.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            uploadedFilePath = data.file_path;
+            document.getElementById('file_path').value = data.file_path;
+            document.getElementById('filePreview').innerHTML = `
+                <div style="padding: 0.5rem; background: #d1fae5; border-radius: 4px; color: #059669;">
+                    ✓ ອັບໂຫຼດໄຟລ໌ສຳເລັດ: ${file.name}
+                </div>
+            `;
+        } else {
+            alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ບໍ່ສາມາດອັບໂຫຼດໄຟລ໌ໄດ້'));
+        }
+    })
+    .catch(error => {
+        alert('ເກີດຂໍ້ຜິດພາດໃນການອັບໂຫຼດໄຟລ໌');
+        console.error(error);
+    });
+});
+
+function clearFile() {
+    document.getElementById('cpd_file').value = '';
+    document.getElementById('file_path').value = '';
+    document.getElementById('filePreview').innerHTML = '';
+    document.getElementById('currentFile').style.display = 'none';
+    uploadedFilePath = null;
+}
+
+function openModal(cpdId = null) {
+    const modal = document.getElementById('cpdModal');
+    const form = document.getElementById('cpdForm');
+    const modalTitle = document.getElementById('modalTitle');
+    const isActiveGroup = document.getElementById('isActiveGroup');
+    
+    form.reset();
+    document.getElementById('cpd_id').value = '';
+    document.getElementById('file_path').value = '';
+    document.getElementById('filePreview').innerHTML = '';
+    document.getElementById('currentFile').style.display = 'none';
+    uploadedFilePath = null;
+    
+    if (cpdId) {
+        modalTitle.textContent = 'ແກ້ໄຂເນື້ອຫາ CPD';
+        isActiveGroup.style.display = 'block';
+        fetch('../backend/fetch-cpd.php')
+            .then(r => r.json())
+            .then(data => {
+                const cpd = data.find(c => c.cpd_id == cpdId);
+                if (cpd) {
+                    document.getElementById('cpd_id').value = cpd.cpd_id;
+                    document.getElementById('title').value = cpd.title || '';
+                    document.getElementById('content_type').value = cpd.content_type || 'resource';
+                    document.getElementById('description').value = cpd.description || '';
+                    document.getElementById('link_url').value = cpd.link_url || '';
+                    document.getElementById('date_created').value = cpd.date_created || '';
+                    document.getElementById('is_active').checked = cpd.is_active !== false;
+                    
+                    if (cpd.file_path) {
+                        document.getElementById('file_path').value = cpd.file_path;
+                        const fileName = cpd.file_path.split('/').pop();
+                        document.getElementById('currentFileName').textContent = fileName;
+                        document.getElementById('currentFile').style.display = 'block';
+                    }
+                }
+            });
+    } else {
+        modalTitle.textContent = 'ເພີ່ມເນື້ອຫາ CPD';
+        isActiveGroup.style.display = 'none';
+        document.getElementById('date_created').valueAsDate = new Date();
+    }
+    
+    modal.style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('cpdModal').style.display = 'none';
+}
+
+function editCPD(cpdId) {
+    openModal(cpdId);
+}
+
+function deleteCPD(cpdId) {
+    if (!confirm('ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບເນື້ອຫາ CPD ນີ້?')) {
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('cpd_id', cpdId);
+    
+    fetch('../backend/delete-cpd.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('ລຶບເນື້ອຫາ CPD ສຳເລັດແລ້ວ!');
+            loadCPD();
+        } else {
+            alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ລຶບບໍ່ສຳເລັດ'));
+        }
+    })
+    .catch(error => {
+        alert('ເກີດຂໍ້ຜິດພາດໃນການລຶບເນື້ອຫາ CPD');
+        console.error(error);
+    });
+}
+
+document.getElementById('cpdForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const cpdId = formData.get('cpd_id');
+    const url = cpdId ? '../backend/update-cpd.php' : '../backend/add-cpd.php';
+    
+    // If no file was uploaded but file_path exists, keep the existing file_path
+    if (!uploadedFilePath && formData.get('file_path')) {
+        // Keep existing file_path
+    } else if (uploadedFilePath) {
+        formData.set('file_path', uploadedFilePath);
+    } else {
+        formData.set('file_path', '');
+    }
+    
+    if (formData.get('is_active')) {
+        formData.set('is_active', document.getElementById('is_active').checked);
+    }
+    
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message || 'ບັນທຶກສຳເລັດແລ້ວ!');
+            closeModal();
+            loadCPD();
+        } else {
+            alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ບັນທຶກບໍ່ສຳເລັດ'));
+        }
+    })
+    .catch(error => {
+        alert('ເກີດຂໍ້ຜິດພາດໃນການບັນທຶກຂໍ້ມູນ');
+        console.error(error);
+    });
+});
+
+window.onclick = function(event) {
+    const modal = document.getElementById('cpdModal');
+    if (event.target == modal) {
+        closeModal();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuth();
+    loadCPD();
+});
+</script>
+</body>
+</html>

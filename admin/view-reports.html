@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
     <style>
         .admin-container {
             max-width: 1400px;
@@ -78,7 +79,7 @@
 </head>
 <body>
 
-<div id="navbar"></div>
+<div id="adminNavbar"></div>
 
 <div class="admin-container">
     <div class="admin-header">
@@ -114,8 +115,20 @@
     </div>
 </div>
 
-<div id="footer"></div>
-<script src="../assets/js/main.js"></script>
+<script>
+// Load admin navbar instead of regular navbar
+fetch('../components/admin-navbar.html')
+    .then(res => res.text())
+    .then(data => {
+        const navbarEl = document.getElementById('adminNavbar');
+        if (navbarEl) {
+            navbarEl.innerHTML = data;
+        }
+    })
+    .catch(error => {
+        console.error('Error loading admin navbar:', error);
+    });
+</script>
 <script>
 // Check admin authentication
 function checkAuth() {

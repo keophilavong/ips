@@ -1,5 +1,13 @@
 <?php
+session_start();
 include "db.php";
+
+// Check if user is admin - only admins can upload documents
+if (!isset($_SESSION['admin_id'])) {
+    http_response_code(403);
+    echo "error: Only administrators can upload documents";
+    exit;
+}
 
 // Allowed file extensions
 $allowed_extensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
@@ -124,12 +132,15 @@ if (!empty($errors)) {
 $success_count = 0;
 $failed_files = [];
 
+// Documents uploaded by admin - set user_id to null (admin-only documents)
+$user_id = null;
+
 foreach ($uploaded_files as $file_info) {
     try {
         // Use created_at (timestamp) instead of date_created
         // The date field from form can be stored in description or we can add it to title
-        $sql = "INSERT INTO reports (category, title, description, file_path) 
-                VALUES (:category, :title, :description, :file_path)";
+        $sql = "INSERT INTO reports (category, title, description, file_path, user_id) 
+                VALUES (:category, :title, :description, :file_path, :user_id)";
         $stmt = $conn->prepare($sql);
         $description_text = $description;
         if (!empty($date)) {
@@ -139,7 +150,8 @@ foreach ($uploaded_files as $file_info) {
             ':category' => $category,
             ':title' => $title . (count($uploaded_files) > 1 ? ' (' . $file_info['original_name'] . ')' : ''),
             ':description' => $description_text,
-            ':file_path' => $file_info['stored_path']
+            ':file_path' => $file_info['stored_path'],
+            ':user_id' => $user_id
         ]);
         $success_count++;
     } catch(PDOException $e) {

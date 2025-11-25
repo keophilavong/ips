@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
     <style>
         .admin-container {
             max-width: 1200px;
@@ -62,59 +63,13 @@
 </head>
 <body>
 
-<div id="navbar"></div>
+<div id="adminNavbar"></div>
 
 <div class="admin-container">
     <div class="admin-header">
         <h2>System Settings</h2>
         <p style="margin-top: 0.5rem; color: var(--text-secondary);">System information and configuration</p>
         <a href="dashboard.html" class="btn btn-outline" style="margin-top: 1rem;">← Back to Dashboard</a>
-    </div>
-    
-    <!-- System Information -->
-    <div class="settings-section">
-        <h3>System Information</h3>
-        <div class="info-grid">
-            <div class="info-item">
-                <div class="info-label">PHP Version</div>
-                <div class="info-value" id="phpVersion">-</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">Database Type</div>
-                <div class="info-value">PostgreSQL</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">Database Name</div>
-                <div class="info-value">edu-pro</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">Server Time</div>
-                <div class="info-value" id="serverTime">-</div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Database Statistics -->
-    <div class="settings-section">
-        <h3>Database Statistics</h3>
-        <div class="info-grid">
-            <div class="info-item">
-                <div class="info-label">Total Users</div>
-                <div class="info-value" id="totalUsers">-</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">Total Activities</div>
-                <div class="info-value" id="totalActivities">-</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">Total Reports</div>
-                <div class="info-value" id="totalReports">-</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">Admin Accounts</div>
-                <div class="info-value" id="totalAdmins">-</div>
-            </div>
-        </div>
     </div>
     
     <!-- Quick Actions -->
@@ -124,24 +79,24 @@
             <a href="manage-activities.html" class="btn">Manage Activities</a>
             <a href="manage-users.html" class="btn">Manage Users</a>
             <a href="view-reports.html" class="btn">View Reports</a>
-            <a href="../test-connection.php" target="_blank" class="btn btn-outline">Test Database Connection</a>
-        </div>
-    </div>
-    
-    <!-- System Health -->
-    <div class="settings-section">
-        <h3>System Health</h3>
-        <div id="systemHealth" style="padding: var(--spacing-lg); background: var(--bg-secondary); border-radius: var(--radius-lg);">
-            <div style="text-align: center; color: var(--text-secondary);">
-                <div class="loading"></div>
-                <p style="margin-top: 1rem;">Checking system health...</p>
-            </div>
         </div>
     </div>
 </div>
 
-<div id="footer"></div>
-<script src="../assets/js/main.js"></script>
+<script>
+// Load admin navbar instead of regular navbar
+fetch('../components/admin-navbar.html')
+    .then(res => res.text())
+    .then(data => {
+        const navbarEl = document.getElementById('adminNavbar');
+        if (navbarEl) {
+            navbarEl.innerHTML = data;
+        }
+    })
+    .catch(error => {
+        console.error('Error loading admin navbar:', error);
+    });
+</script>
 <script>
 // Check admin authentication
 function checkAuth() {
@@ -157,61 +112,9 @@ function checkAuth() {
         });
 }
 
-// Load system information
-function loadSystemInfo() {
-    // PHP Version
-    fetch('../backend/system-info.php')
-        .then(response => response.json())
-        .then(data => {
-            if (data.php_version) {
-                document.getElementById('phpVersion').textContent = data.php_version;
-            }
-            if (data.server_time) {
-                document.getElementById('serverTime').textContent = new Date(data.server_time).toLocaleString('lo-LA');
-            }
-        })
-        .catch(() => {
-            document.getElementById('phpVersion').textContent = 'Unknown';
-        });
-    
-    // Update server time every second
-    setInterval(() => {
-        document.getElementById('serverTime').textContent = new Date().toLocaleString('lo-LA');
-    }, 1000);
-    
-    // Load statistics
-    Promise.all([
-        fetch('../backend/fetch-users.php').then(r => r.json()),
-        fetch('../backend/fetch-activities.php').then(r => r.json()),
-        fetch('../backend/fetch-reports.php').then(r => r.json())
-    ])
-    .then(([users, activities, reports]) => {
-        document.getElementById('totalUsers').textContent = (users && !users.error) ? users.length : '0';
-        document.getElementById('totalActivities').textContent = (activities && !activities.error) ? activities.length : '0';
-        document.getElementById('totalReports').textContent = (reports && !reports.error) ? reports.length : '0';
-        
-        // Check system health
-        const health = [];
-        if (users && !users.error) health.push('✅ Users table accessible');
-        else health.push('❌ Users table error');
-        
-        if (activities && !activities.error) health.push('✅ Activities table accessible');
-        else health.push('❌ Activities table error');
-        
-        if (reports && !reports.error) health.push('✅ Reports table accessible');
-        else health.push('❌ Reports table error');
-        
-        document.getElementById('systemHealth').innerHTML = health.map(h => `<div style="margin: 0.5rem 0;">${h}</div>`).join('');
-    })
-    .catch(error => {
-        document.getElementById('systemHealth').innerHTML = '<div style="color: #ef4444;">Error checking system health</div>';
-    });
-}
-
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     checkAuth();
-    loadSystemInfo();
 });
 </script>
 </body>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Internal Workers - Admin</title>
+    <link rel="icon" type="image/png" href="../assets/images/edu.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+    <style>
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+<div id="adminNavbar"></div>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <div>
+            <h2>Manage Internal Workers</h2>
+            <p>Add, edit, or delete internal worker information and movement data</p>
+        </div>
+        <button class="btn" onclick="openModal()">+ Add New Worker Data</button>
+    </div>
+    
+    <div class="table-container">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Worker Name</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="workersTableBody">
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: var(--spacing-3xl);">
+                        <div class="loading"></div>
+                        <p style="margin-top: 1rem; color: var(--text-secondary);">Loading...</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal for Add/Edit -->
+<div id="workerModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Add Internal Worker Data</h3>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <form id="workerForm">
+            <input type="hidden" id="worker_id" name="worker_id">
+            
+            <div class="form-group">
+                <label for="worker_name">Worker Name <span style="color: #ef4444;">*</span></label>
+                <input type="text" id="worker_name" name="worker_name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="title">Title <span style="color: #ef4444;">*</span></label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="4"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="date_created">Date</label>
+                <input type="date" id="date_created" name="date_created">
+            </div>
+            
+            <div class="form-group" id="isActiveGroup" style="display: none;">
+                <label>
+                    <input type="checkbox" id="is_active" name="is_active" checked> Active
+                </label>
+            </div>
+            
+            <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl);">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Save</button>
+                <button type="button" class="btn btn-outline" onclick="closeModal()" style="flex: 1;">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+fetch('../components/admin-navbar.html')
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById('adminNavbar').innerHTML = data;
+    });
+
+function checkAuth() {
+    fetch('../backend/check-admin.php')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.is_admin) {
+                window.location.href = '../login.html';
+            }
+        })
+        .catch(() => {
+            window.location.href = '../login.html';
+        });
+}
+
+function loadWorkers() {
+    fetch('../backend/fetch-internal-workers.php')
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.getElementById('workersTableBody');
+            
+            if (data.error) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: #ef4444;">Error: ${data.error}</td></tr>`;
+                return;
+            }
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: var(--spacing-3xl);">
+                            <p style="color: var(--text-secondary);">No worker data found.</p>
+                            <button class="btn" onclick="openModal()" style="margin-top: var(--spacing-md);">Add First Worker Data</button>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = data.map(worker => `
+                <tr>
+                    <td>${worker.worker_id}</td>
+                    <td><strong>${worker.worker_name || '-'}</strong></td>
+                    <td>${worker.title || '-'}</td>
+                    <td>${(worker.description || '').substring(0, 50)}${(worker.description || '').length > 50 ? '...' : ''}</td>
+                    <td>${worker.date_created ? new Date(worker.date_created).toLocaleDateString('lo-LA') : '-'}</td>
+                    <td>
+                        <span class="badge" style="background: ${worker.is_active !== false ? '#dbeafe' : '#fee2e2'}; color: ${worker.is_active !== false ? '#1e40af' : '#dc2626'};">
+                            ${worker.is_active !== false ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-small btn-success" onclick="editWorker(${worker.worker_id})">Edit</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteWorker(${worker.worker_id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        })
+        .catch(error => {
+            document.getElementById('workersTableBody').innerHTML = `
+                <tr><td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: #ef4444;">Error loading data</td></tr>
+            `;
+        });
+}
+
+function openModal(workerId = null) {
+    const modal = document.getElementById('workerModal');
+    const form = document.getElementById('workerForm');
+    const modalTitle = document.getElementById('modalTitle');
+    const isActiveGroup = document.getElementById('isActiveGroup');
+    
+    form.reset();
+    document.getElementById('worker_id').value = '';
+    
+    if (workerId) {
+        modalTitle.textContent = 'Edit Internal Worker Data';
+        isActiveGroup.style.display = 'block';
+        fetch('../backend/fetch-internal-workers.php')
+            .then(r => r.json())
+            .then(data => {
+                const worker = data.find(w => w.worker_id == workerId);
+                if (worker) {
+                    document.getElementById('worker_id').value = worker.worker_id;
+                    document.getElementById('worker_name').value = worker.worker_name || '';
+                    document.getElementById('title').value = worker.title || '';
+                    document.getElementById('description').value = worker.description || '';
+                    document.getElementById('date_created').value = worker.date_created || '';
+                    document.getElementById('is_active').checked = worker.is_active !== false;
+                }
+            });
+    } else {
+        modalTitle.textContent = 'Add Internal Worker Data';
+        isActiveGroup.style.display = 'none';
+        document.getElementById('date_created').valueAsDate = new Date();
+    }
+    
+    modal.style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('workerModal').style.display = 'none';
+}
+
+function editWorker(workerId) {
+    openModal(workerId);
+}
+
+function deleteWorker(workerId) {
+    if (!confirm('Are you sure you want to delete this worker data?')) {
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('worker_id', workerId);
+    
+    fetch('../backend/delete-internal-worker.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Worker data deleted successfully!');
+            loadWorkers();
+        } else {
+            alert('Error: ' + (data.error || 'Failed to delete'));
+        }
+    })
+    .catch(error => {
+        alert('Error deleting worker data');
+        console.error(error);
+    });
+}
+
+document.getElementById('workerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const workerId = formData.get('worker_id');
+    const url = workerId ? '../backend/update-internal-worker.php' : '../backend/add-internal-worker.php';
+    
+    if (formData.get('is_active')) {
+        formData.set('is_active', document.getElementById('is_active').checked);
+    }
+    
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message || 'Saved successfully!');
+            closeModal();
+            loadWorkers();
+        } else {
+            alert('Error: ' + (data.error || 'Failed to save'));
+        }
+    })
+    .catch(error => {
+        alert('Error saving data');
+        console.error(error);
+    });
+});
+
+window.onclick = function(event) {
+    const modal = document.getElementById('workerModal');
+    if (event.target == modal) {
+        closeModal();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuth();
+    loadWorkers();
+});
+</script>
+</body>
+</html>
+

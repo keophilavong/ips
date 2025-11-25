@@ -3,158 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>ແຜງຄວບຄຸມຜູ້ດູແລລະບົບ</title>
     <link rel="icon" type="image/png" href="../assets/images/edu.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
-    <style>
-        .admin-dashboard {
-            max-width: 1600px;
-            margin: var(--spacing-3xl) auto;
-            padding: var(--spacing-xl);
-        }
-        
-        .dashboard-header {
-            margin-bottom: var(--spacing-2xl);
-        }
-        
-        .dashboard-header h1 {
-            margin-bottom: var(--spacing-sm);
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-2xl);
-        }
-        
-        .stat-card {
-            background: var(--bg-primary);
-            padding: var(--spacing-xl);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border-light);
-            transition: all var(--transition-base);
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-xl);
-        }
-        
-        .stat-icon {
-            font-size: 3rem;
-            margin-bottom: var(--spacing-md);
-        }
-        
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--primary-color);
-            margin-bottom: var(--spacing-xs);
-        }
-        
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-        
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-2xl);
-        }
-        
-        .action-card {
-            background: var(--bg-primary);
-            padding: var(--spacing-xl);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border-light);
-            transition: all var(--transition-base);
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-        
-        .action-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-2xl);
-            border-color: var(--primary-color);
-        }
-        
-        .action-icon {
-            font-size: 3rem;
-            margin-bottom: var(--spacing-md);
-        }
-        
-        .action-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: var(--spacing-sm);
-        }
-        
-        .action-description {
-            color: var(--text-secondary);
-            line-height: 1.7;
-        }
-        
-        .recent-activity {
-            background: var(--bg-primary);
-            padding: var(--spacing-xl);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border-light);
-        }
-        
-        .activity-item {
-            padding: var(--spacing-md);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-        }
-        
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-        
-        .activity-icon {
-            font-size: 2rem;
-            width: 50px;
-            text-align: center;
-        }
-        
-        .activity-content {
-            flex-grow: 1;
-        }
-        
-        .activity-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.25rem;
-        }
-        
-        .activity-time {
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-    </style>
+    <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
 
-<div id="navbar"></div>
+<div id="adminNavbar"></div>
 
 <div class="admin-dashboard">
-    <div class="dashboard-header">
-        <h1>Admin Dashboard</h1>
-        <p style="color: var(--text-secondary); font-size: 1.1rem;">Manage all aspects of the Education Worker Report System</p>
+    <div class="admin-header">
+        <div>
+            <h1>ແຜງຄວບຄຸມຜູ້ດູແລລະບົບ</h1>
+            <p>ຈັດການທຸກດ້ານຂອງລະບົບລາຍງານຜູ້ເຮັດວຽກສຶກສາ</p>
+        </div>
     </div>
     
     <!-- Statistics -->
@@ -162,68 +28,129 @@
         <div class="stat-card">
             <div class="stat-icon">👥</div>
             <div class="stat-value" id="totalUsers">-</div>
-            <div class="stat-label">Total Users</div>
+            <div class="stat-label">ຜູ້ໃຊ້ທັງໝົດ</div>
         </div>
         <div class="stat-card">
             <div class="stat-icon">📋</div>
             <div class="stat-value" id="totalActivities">-</div>
-            <div class="stat-label">Activities</div>
+            <div class="stat-label">ກິດຈະກຳ</div>
         </div>
         <div class="stat-card">
             <div class="stat-icon">📄</div>
             <div class="stat-value" id="totalReports">-</div>
-            <div class="stat-label">Reports</div>
+            <div class="stat-label">ລາຍງານ</div>
         </div>
         <div class="stat-card">
             <div class="stat-icon">✅</div>
             <div class="stat-value" id="activeActivities">-</div>
-            <div class="stat-label">Active Activities</div>
+            <div class="stat-label">ກິດຈະກຳທີ່ເປີດໃຊ້ງານ</div>
         </div>
     </div>
     
     <!-- Quick Actions -->
-    <h2 style="margin-bottom: var(--spacing-lg);">Quick Actions</h2>
+    <h2 style="margin-bottom: var(--spacing-lg);">ການຈັດການເນື້ອຫາ</h2>
     <div class="quick-actions">
         <a href="manage-activities.html" class="action-card">
             <div class="action-icon">📌</div>
-            <div class="action-title">Manage Activities</div>
-            <div class="action-description">Add, edit, or delete activities and meetings. Upload images and manage activity descriptions.</div>
-        </a>
-        
-        <a href="manage-users.html" class="action-card">
-            <div class="action-icon">👥</div>
-            <div class="action-title">Manage Users</div>
-            <div class="action-description">View all registered users, edit user information, activate or deactivate accounts.</div>
+            <div class="action-title">ຈັດການກິດຈະກຳ</div>
+            <div class="action-description">ເພີ່ມ, ແກ້ໄຂ, ຫຼື ລຶບກິດຈະກຳ ແລະ ການປະຊຸມ. ອັບໂຫຼດຮູບພາບ ແລະ ຈັດການລາຍລະອຽດກິດຈະກຳ.</div>
         </a>
         
         <a href="view-reports.html" class="action-card">
             <div class="action-icon">📄</div>
-            <div class="action-title">View Reports</div>
-            <div class="action-description">Review all uploaded reports, manage report categories, and download files.</div>
+            <div class="action-title">ຈັດການເອກະສານ</div>
+            <div class="action-description">ກວດສອບລາຍງານທັງໝົດທີ່ອັບໂຫຼດ, ຈັດການໝວດໝູ່ລາຍງານ, ແລະ ດາວໂຫຼດໄຟລ໌. ການດຳເນີນງານ CRUD ແບບຄົບວົງຈອນ.</div>
+        </a>
+        
+        <a href="manage-teacher-colleges.html" class="action-card">
+            <div class="action-icon">🏫</div>
+            <div class="action-title">ຈັດການວິທະຍາໄລຄູ</div>
+            <div class="action-description">ເພີ່ມ, ແກ້ໄຂ, ຫຼື ລຶບຂໍ້ມູນວິທະຍາໄລຄູ ແລະ ຂໍ້ມູນການເຄື່ອນໄຫວ. ການຈັດການເນື້ອຫາແບບຄົບວົງຈອນ.</div>
+        </a>
+        
+        <a href="manage-internal-workers.html" class="action-card">
+            <div class="action-icon">👨‍🏫</div>
+            <div class="action-title">ຈັດການຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ</div>
+            <div class="action-description">ເພີ່ມ, ແກ້ໄຂ, ຫຼື ລຶບຂໍ້ມູນຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ ແລະ ການຕິດຕາມການເຄື່ອນໄຫວ. ການເຂົ້າເຖິງ CRUD ແບບຄົບວົງຈອນ.</div>
+        </a>
+        
+        <a href="manage-districts.html" class="action-card">
+            <div class="action-icon">🏛</div>
+            <div class="action-title">ຈັດການເມືອງ</div>
+            <div class="action-description">ເພີ່ມ, ແກ້ໄຂ, ຫຼື ລຶບຂໍ້ມູນຫ້ອງການສຶກສາທິການເມືອງ ແລະ ກິດຈະກຳ. ການຈັດການແບບຄົບວົງຈອນ.</div>
+        </a>
+        
+        <a href="manage-provinces.html" class="action-card">
+            <div class="action-icon">🗺</div>
+            <div class="action-title">ຈັດການແຂວງ</div>
+            <div class="action-description">ເພີ່ມ, ແກ້ໄຂ, ຫຼື ລຶບກິດຈະກຳລະດັບແຂວງ ແລະ ຂໍ້ມູນການສຶກສາ. ການຄວບຄຸມ CRUD ແບບຄົບວົງຈອນ.</div>
+        </a>
+        
+        <a href="manage-cpd.html" class="action-card">
+            <div class="action-icon">🎓</div>
+            <div class="action-title">ຈັດການເນື້ອຫາ CPD</div>
+            <div class="action-description">ເພີ່ມ, ແກ້ໄຂ, ຫຼື ລຶບຊັບພະຍາກອນ, ໂຄງການ, ແລະ ໃບຢັ້ງຢືນການພັດທະນາອາຊີບຕໍ່ເນື່ອງ.</div>
+        </a>
+        
+        <a href="manage-menu-items.html" class="action-card">
+            <div class="action-icon">📋</div>
+            <div class="action-title">ຈັດການລາຍການເມນູ</div>
+            <div class="action-description">ເພີ່ມ, ແກ້ໄຂ, ຫຼື ລຶບລາຍການເມນູການນຳທາງ. ຈັດລຳດັບ ແລະ ຈັດການລາຍການເມນູທັງແຖວເທິງ ແລະ ແຖວລຸ່ມ.</div>
+        </a>
+        
+        <a href="manage-users.html" class="action-card">
+            <div class="action-icon">👥</div>
+            <div class="action-title">ຈັດການຜູ້ໃຊ້</div>
+            <div class="action-description">ເບິ່ງຜູ້ໃຊ້ທັງໝົດທີ່ລົງທະບຽນ, ແກ້ໄຂຂໍ້ມູນຜູ້ໃຊ້, ເປີດ ຫຼື ປິດໃຊ້ງານບັນຊີ.</div>
         </a>
         
         <a href="system-settings.html" class="action-card">
             <div class="action-icon">⚙️</div>
-            <div class="action-title">System Settings</div>
-            <div class="action-description">Configure system settings, manage admin accounts, and view system information.</div>
+            <div class="action-title">ການຕັ້ງຄ່າລະບົບ</div>
+            <div class="action-description">ຕັ້ງຄ່າລະບົບ, ຈັດການບັນຊີຜູ້ດູແລລະບົບ, ແລະ ເບິ່ງຂໍ້ມູນລະບົບ.</div>
         </a>
+    </div>
+    
+    <!-- Pending Submissions from Clients -->
+    <div class="pending-submissions" style="margin-top: var(--spacing-2xl);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+            <h2>📥 ການສົ່ງຂໍ້ມູນທີ່ລໍຖ້າກວດສອບ</h2>
+            <span id="pendingCount" class="badge" style="background: #fef3c7; color: #92400e; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">0</span>
+        </div>
+        <div id="pendingSubmissions" style="background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); padding: var(--spacing-xl); border: 1px solid #e2e8f0;">
+            <div style="text-align: center; padding: var(--spacing-xl); color: var(--text-secondary);">
+                <div class="loading"></div>
+                <p style="margin-top: 1rem;">ກຳລັງໂຫຼດການສົ່ງຂໍ້ມູນທີ່ລໍຖ້າກວດສອບ...</p>
+            </div>
+        </div>
     </div>
     
     <!-- Recent Activity -->
     <div class="recent-activity" style="margin-top: var(--spacing-2xl);">
-        <h2 style="margin-bottom: var(--spacing-lg);">Recent Activity</h2>
+        <h2 style="margin-bottom: var(--spacing-lg);">ກິດຈະກຳຫຼ້າສຸດ</h2>
         <div id="recentActivity">
             <div style="text-align: center; padding: var(--spacing-xl); color: var(--text-secondary);">
                 <div class="loading"></div>
-                <p style="margin-top: 1rem;">Loading recent activity...</p>
+                <p style="margin-top: 1rem;">ກຳລັງໂຫຼດກິດຈະກຳຫຼ້າສຸດ...</p>
             </div>
         </div>
     </div>
 </div>
 
-<div id="footer"></div>
-<script src="../assets/js/main.js"></script>
 <script>
+// Load admin navbar instead of regular navbar
+fetch('../components/admin-navbar.html')
+    .then(res => res.text())
+    .then(data => {
+        const navbarEl = document.getElementById('adminNavbar');
+        if (navbarEl) {
+            navbarEl.innerHTML = data;
+        }
+    })
+    .catch(error => {
+        console.error('Error loading admin navbar:', error);
+    });
+
 // Check admin authentication
 function checkAuth() {
     fetch('../backend/check-admin.php')
@@ -281,6 +208,145 @@ function loadStats() {
         });
 }
 
+// Load pending submissions from clients
+function loadPendingSubmissions() {
+    fetch('../backend/fetch-pending-submissions.php')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('pendingSubmissions');
+            const countBadge = document.getElementById('pendingCount');
+            
+            if (data.error) {
+                container.innerHTML = `<p style="text-align: center; color: #dc2626; padding: var(--spacing-xl);">ເກີດຂໍ້ຜິດພາດ: ${data.error}</p>`;
+                countBadge.textContent = '0';
+                return;
+            }
+            
+            if (!data || data.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: var(--spacing-2xl);">
+                        <div style="font-size: 4rem; margin-bottom: var(--spacing-md);">✅</div>
+                        <p style="color: var(--text-secondary); font-size: 1.1rem;">ບໍ່ມີການສົ່ງຂໍ້ມູນທີ່ລໍຖ້າກວດສອບ</p>
+                    </div>
+                `;
+                countBadge.textContent = '0';
+                return;
+            }
+            
+            countBadge.textContent = data.length;
+            
+            container.innerHTML = `
+                <div style="display: grid; gap: var(--spacing-md);">
+                    ${data.map(submission => {
+                        const typeLabels = {
+                            'teacher_college': '🏫 ວິທະຍາໄລຄູ',
+                            'district': '🏛 ເມືອງ',
+                            'province': '🗺 ແຂວງ'
+                        };
+                        
+                        const typeLabel = typeLabels[submission.type] || submission.type;
+                        const hasVideo = submission.link_url && (submission.link_url.includes('youtube.com') || submission.link_url.includes('youtu.be') || submission.link_url.includes('vimeo.com'));
+                        const hasDocument = submission.file_path;
+                        const hasLink = submission.link_url && !hasVideo;
+                        
+                        return `
+                            <div style="border: 2px solid var(--border-color); border-radius: 12px; padding: var(--spacing-lg); background: var(--bg-secondary);">
+                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-md);">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-sm);">
+                                            <span class="badge" style="background: #dbeafe; color: #1e40af;">${typeLabel}</span>
+                                            <span style="font-weight: 600; color: var(--text-primary);">${submission.name || '-'}</span>
+                                        </div>
+                                        <h4 style="margin: 0 0 var(--spacing-xs) 0; color: var(--text-primary);">${submission.title || 'ບໍ່ມີຫົວຂໍ້'}</h4>
+                                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin: var(--spacing-xs) 0; line-height: 1.5;">
+                                            ${(submission.description || '').substring(0, 150)}${(submission.description || '').length > 150 ? '...' : ''}
+                                        </p>
+                                        <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-sm); flex-wrap: wrap;">
+                                            ${hasDocument ? '<span style="font-size: 0.875rem; color: var(--text-secondary);">📄 ມີເອກະສານ</span>' : ''}
+                                            ${hasVideo ? '<span style="font-size: 0.875rem; color: var(--text-secondary);">🎥 ມີວິດີໂອ</span>' : ''}
+                                            ${hasLink ? '<span style="font-size: 0.875rem; color: var(--text-secondary);">🔗 ມີລິ້ງ</span>' : ''}
+                                            <span style="font-size: 0.875rem; color: var(--text-light);">📅 ${new Date(submission.created_at).toLocaleDateString('lo-LA')}</span>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; gap: var(--spacing-sm); flex-direction: column;">
+                                        <button class="btn btn-small btn-success" onclick="approveSubmission('${submission.type}', ${submission.id})" style="white-space: nowrap;">✅ ອະນຸມັດ</button>
+                                        <button class="btn btn-small btn-danger" onclick="rejectSubmission('${submission.type}', ${submission.id})" style="white-space: nowrap;">❌ ປະຕິເສດ</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        })
+        .catch(error => {
+            document.getElementById('pendingSubmissions').innerHTML = `
+                <p style="text-align: center; color: #dc2626; padding: var(--spacing-xl);">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດຂໍ້ມູນ</p>
+            `;
+            console.error('Error loading pending submissions:', error);
+        });
+}
+
+function approveSubmission(type, id) {
+    if (!confirm('ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການອະນຸມັດການສົ່ງຂໍ້ມູນນີ້?')) {
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('type', type);
+    formData.append('id', id);
+    formData.append('action', 'approve');
+    
+    fetch('../backend/approve-submission.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            loadPendingSubmissions();
+            loadStats();
+        } else {
+            alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ອະນຸມັດບໍ່ສຳເລັດ'));
+        }
+    })
+    .catch(error => {
+        alert('ເກີດຂໍ້ຜິດພາດໃນການອະນຸມັດ');
+        console.error(error);
+    });
+}
+
+function rejectSubmission(type, id) {
+    if (!confirm('ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການປະຕິເສດການສົ່ງຂໍ້ມູນນີ້? ການສົ່ງຂໍ້ມູນຈະຖືກລຶບຖາວອນ.')) {
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('type', type);
+    formData.append('id', id);
+    formData.append('action', 'reject');
+    
+    fetch('../backend/approve-submission.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            loadPendingSubmissions();
+            loadStats();
+        } else {
+            alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ປະຕິເສດບໍ່ສຳເລັດ'));
+        }
+    })
+    .catch(error => {
+        alert('ເກີດຂໍ້ຜິດພາດໃນການປະຕິເສດ');
+        console.error(error);
+    });
+}
+
 // Load recent activity
 function loadRecentActivity() {
     Promise.all([
@@ -319,7 +385,7 @@ function loadRecentActivity() {
         
         const container = document.getElementById('recentActivity');
         if (recent.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: var(--spacing-xl);">No recent activity</p>';
+            container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: var(--spacing-xl);">ບໍ່ມີກິດຈະກຳຫຼ້າສຸດ</p>';
         } else {
             container.innerHTML = recent.slice(0, 5).map(item => `
                 <div class="activity-item">
@@ -333,7 +399,7 @@ function loadRecentActivity() {
         }
     })
     .catch(error => {
-        document.getElementById('recentActivity').innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: var(--spacing-xl);">Error loading recent activity</p>';
+        document.getElementById('recentActivity').innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: var(--spacing-xl);">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດກິດຈະກຳຫຼ້າສຸດ</p>';
     });
 }
 
@@ -341,10 +407,14 @@ function loadRecentActivity() {
 document.addEventListener('DOMContentLoaded', function() {
     checkAuth();
     loadStats();
+    loadPendingSubmissions();
     loadRecentActivity();
     
-    // Refresh stats every 30 seconds
-    setInterval(loadStats, 30000);
+    // Refresh stats and pending submissions every 30 seconds
+    setInterval(() => {
+        loadStats();
+        loadPendingSubmissions();
+    }, 30000);
 });
 </script>
 </body>

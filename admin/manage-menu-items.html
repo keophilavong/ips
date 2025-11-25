@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ຈັດການລາຍການເມນູ - ຜູ້ດູແລລະບົບ</title>
+    <link rel="icon" type="image/png" href="../assets/images/edu.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+    <style>
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .menu-row-section {
+            margin-bottom: var(--spacing-2xl);
+        }
+        .menu-row-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+<div id="adminNavbar"></div>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <div>
+            <h2>ຈັດການລາຍການເມນູ</h2>
+            <p>ເພີ່ມ, ແກ້ໄຂ, ຫຼື ລຶບລາຍການເມນູການນຳທາງ</p>
+        </div>
+        <button class="btn" onclick="openModal()">+ ເພີ່ມລາຍການເມນູໃໝ່</button>
+    </div>
+    
+    <div class="table-container">
+        <!-- Top Row Menu Items -->
+        <div class="menu-row-section">
+            <div class="menu-row-title">📌 ແຖວເທິງ (Top Row)</div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>ໄອຄອນ</th>
+                        <th>ຂໍ້ຄວາມ</th>
+                        <th>URL</th>
+                        <th>ລຳດັບ</th>
+                        <th>ສະຖານະ</th>
+                        <th>ການດຳເນີນການ</th>
+                    </tr>
+                </thead>
+                <tbody id="topMenuTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: var(--spacing-3xl);">
+                            <div class="loading"></div>
+                            <p style="margin-top: 1rem; color: var(--text-secondary);">ກຳລັງໂຫຼດ...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Bottom Row Menu Items -->
+        <div class="menu-row-section">
+            <div class="menu-row-title">📌 ແຖວລຸ່ມ (Bottom Row)</div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>ໄອຄອນ</th>
+                        <th>ຂໍ້ຄວາມ</th>
+                        <th>URL</th>
+                        <th>ລຳດັບ</th>
+                        <th>ສະຖານະ</th>
+                        <th>ການດຳເນີນການ</th>
+                    </tr>
+                </thead>
+                <tbody id="bottomMenuTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: var(--spacing-3xl);">
+                            <div class="loading"></div>
+                            <p style="margin-top: 1rem; color: var(--text-secondary);">ກຳລັງໂຫຼດ...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Add/Edit -->
+<div id="menuModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">ເພີ່ມລາຍການເມນູ</h3>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <form id="menuForm">
+            <input type="hidden" id="menu_id" name="menu_id">
+            
+            <div class="form-group">
+                <label for="menu_text">ຂໍ້ຄວາມເມນູ <span style="color: #ef4444;">*</span></label>
+                <input type="text" id="menu_text" name="menu_text" required placeholder="ຕົວຢ່າງ: ໜ້າຫຼັກ">
+            </div>
+            
+            <div class="form-group">
+                <label for="menu_icon">ໄອຄອນ (Emoji)</label>
+                <input type="text" id="menu_icon" name="menu_icon" placeholder="ຕົວຢ່າງ: 🏠">
+                <small style="color: var(--text-light); font-size: 0.875rem;">ໃຊ້ emoji ຫຼື ອັດຕະໂນມັດອື່ນໆ</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="menu_url">URL <span style="color: #ef4444;">*</span></label>
+                <input type="text" id="menu_url" name="menu_url" required placeholder="ຕົວຢ່າງ: index.html ຫຼື activities.html">
+                <small style="color: var(--text-light); font-size: 0.875rem;">URL ສຳລັບລາຍການເມນູນີ້</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="menu_row">ແຖວ <span style="color: #ef4444;">*</span></label>
+                <select id="menu_row" name="menu_row" required>
+                    <option value="top">ແຖວເທິງ (Top Row)</option>
+                    <option value="bottom">ແຖວລຸ່ມ (Bottom Row)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="display_order">ລຳດັບການສະແດງ</label>
+                <input type="number" id="display_order" name="display_order" min="0" value="0">
+                <small style="color: var(--text-light); font-size: 0.875rem;">ຕົວເລກນ້ອຍກວ່າ = ສະແດງກ່ອນ</small>
+            </div>
+            
+            <div class="form-group" id="isActiveGroup" style="display: none;">
+                <label>
+                    <input type="checkbox" id="is_active" name="is_active" checked> ເປີດໃຊ້ງານ
+                </label>
+            </div>
+            
+            <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl);">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">ບັນທຶກ</button>
+                <button type="button" class="btn btn-outline" onclick="closeModal()" style="flex: 1;">ຍົກເລີກ</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+fetch('../components/admin-navbar.html')
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById('adminNavbar').innerHTML = data;
+    });
+
+function checkAuth() {
+    fetch('../backend/check-admin.php')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.is_admin) {
+                window.location.href = '../login.html';
+            }
+        })
+        .catch(() => {
+            window.location.href = '../login.html';
+        });
+}
+
+function loadMenuItems() {
+    fetch('../backend/fetch-menu-items.php')
+        .then(response => response.json())
+        .then(data => {
+            const topTbody = document.getElementById('topMenuTableBody');
+            const bottomTbody = document.getElementById('bottomMenuTableBody');
+            
+            if (data.error) {
+                topTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: #ef4444;">ເກີດຂໍ້ຜິດພາດ: ${data.error}</td></tr>`;
+                bottomTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: #ef4444;">ເກີດຂໍ້ຜິດພາດ: ${data.error}</td></tr>`;
+                return;
+            }
+            
+            const topItems = data.top || [];
+            const bottomItems = data.bottom || [];
+            
+            // Display top row items
+            if (topItems.length === 0) {
+                topTbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: var(--spacing-3xl);">
+                            <p style="color: var(--text-secondary);">ບໍ່ມີລາຍການເມນູແຖວເທິງ.</p>
+                            <button class="btn" onclick="openModal()" style="margin-top: var(--spacing-md);">ເພີ່ມລາຍການເມນູແຖວເທິງ</button>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                topTbody.innerHTML = topItems.map(item => `
+                    <tr>
+                        <td>${item.menu_id}</td>
+                        <td style="font-size: 1.5rem;">${item.menu_icon || '-'}</td>
+                        <td><strong>${item.menu_text || '-'}</strong></td>
+                        <td>${item.menu_url || '-'}</td>
+                        <td>${item.display_order || 0}</td>
+                        <td>
+                            <span class="badge" style="background: ${item.is_active !== false ? '#dbeafe' : '#fee2e2'}; color: ${item.is_active !== false ? '#1e40af' : '#dc2626'};">
+                                ${item.is_active !== false ? 'ເປີດໃຊ້ງານ' : 'ປິດໃຊ້ງານ'}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-small btn-success" onclick="editMenuItem(${item.menu_id})">ແກ້ໄຂ</button>
+                            <button class="btn btn-small btn-danger" onclick="deleteMenuItem(${item.menu_id})">ລຶບ</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+            
+            // Display bottom row items
+            if (bottomItems.length === 0) {
+                bottomTbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: var(--spacing-3xl);">
+                            <p style="color: var(--text-secondary);">ບໍ່ມີລາຍການເມນູແຖວລຸ່ມ.</p>
+                            <button class="btn" onclick="openModal()" style="margin-top: var(--spacing-md);">ເພີ່ມລາຍການເມນູແຖວລຸ່ມ</button>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                bottomTbody.innerHTML = bottomItems.map(item => `
+                    <tr>
+                        <td>${item.menu_id}</td>
+                        <td style="font-size: 1.5rem;">${item.menu_icon || '-'}</td>
+                        <td><strong>${item.menu_text || '-'}</strong></td>
+                        <td>${item.menu_url || '-'}</td>
+                        <td>${item.display_order || 0}</td>
+                        <td>
+                            <span class="badge" style="background: ${item.is_active !== false ? '#dbeafe' : '#fee2e2'}; color: ${item.is_active !== false ? '#1e40af' : '#dc2626'};">
+                                ${item.is_active !== false ? 'ເປີດໃຊ້ງານ' : 'ປິດໃຊ້ງານ'}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-small btn-success" onclick="editMenuItem(${item.menu_id})">ແກ້ໄຂ</button>
+                            <button class="btn btn-small btn-danger" onclick="deleteMenuItem(${item.menu_id})">ລຶບ</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        })
+        .catch(error => {
+            document.getElementById('topMenuTableBody').innerHTML = `
+                <tr><td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: #ef4444;">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດຂໍ້ມູນ</td></tr>
+            `;
+            document.getElementById('bottomMenuTableBody').innerHTML = `
+                <tr><td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: #ef4444;">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດຂໍ້ມູນ</td></tr>
+            `;
+        });
+}
+
+function openModal(menuId = null) {
+    const modal = document.getElementById('menuModal');
+    const form = document.getElementById('menuForm');
+    const modalTitle = document.getElementById('modalTitle');
+    const isActiveGroup = document.getElementById('isActiveGroup');
+    
+    form.reset();
+    document.getElementById('menu_id').value = '';
+    
+    if (menuId) {
+        modalTitle.textContent = 'ແກ້ໄຂລາຍການເມນູ';
+        isActiveGroup.style.display = 'block';
+        fetch('../backend/fetch-menu-items.php')
+            .then(r => r.json())
+            .then(data => {
+                const allItems = [...(data.top || []), ...(data.bottom || [])];
+                const menuItem = allItems.find(m => m.menu_id == menuId);
+                if (menuItem) {
+                    document.getElementById('menu_id').value = menuItem.menu_id;
+                    document.getElementById('menu_text').value = menuItem.menu_text || '';
+                    document.getElementById('menu_icon').value = menuItem.menu_icon || '';
+                    document.getElementById('menu_url').value = menuItem.menu_url || '';
+                    document.getElementById('menu_row').value = menuItem.menu_row || 'top';
+                    document.getElementById('display_order').value = menuItem.display_order || 0;
+                    document.getElementById('is_active').checked = menuItem.is_active !== false;
+                }
+            });
+    } else {
+        modalTitle.textContent = 'ເພີ່ມລາຍການເມນູ';
+        isActiveGroup.style.display = 'none';
+    }
+    
+    modal.style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('menuModal').style.display = 'none';
+}
+
+function editMenuItem(menuId) {
+    openModal(menuId);
+}
+
+function deleteMenuItem(menuId) {
+    if (!confirm('ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບລາຍການເມນູນີ້?')) {
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('menu_id', menuId);
+    
+    fetch('../backend/delete-menu-item.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('ລຶບລາຍການເມນູສຳເລັດແລ້ວ!');
+            loadMenuItems();
+        } else {
+            alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ລຶບບໍ່ສຳເລັດ'));
+        }
+    })
+    .catch(error => {
+        alert('ເກີດຂໍ້ຜິດພາດໃນການລຶບລາຍການເມນູ');
+        console.error(error);
+    });
+}
+
+document.getElementById('menuForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const menuId = formData.get('menu_id');
+    const url = menuId ? '../backend/update-menu-item.php' : '../backend/add-menu-item.php';
+    
+    if (formData.get('is_active')) {
+        formData.set('is_active', document.getElementById('is_active').checked);
+    }
+    
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message || 'ບັນທຶກສຳເລັດແລ້ວ!');
+            closeModal();
+            loadMenuItems();
+        } else {
+            alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ບັນທຶກບໍ່ສຳເລັດ'));
+        }
+    })
+    .catch(error => {
+        alert('ເກີດຂໍ້ຜິດພາດໃນການບັນທຶກຂໍ້ມູນ');
+        console.error(error);
+    });
+});
+
+window.onclick = function(event) {
+    const modal = document.getElementById('menuModal');
+    if (event.target == modal) {
+        closeModal();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuth();
+    loadMenuItems();
+});
+</script>
+</body>
+</html>
+

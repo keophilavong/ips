@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard</title>
+    <link rel="icon" type="image/png" href="assets/images/edu.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .staff-dashboard {
+            max-width: 1600px;
+            margin: var(--spacing-3xl) auto;
+            padding: var(--spacing-xl);
+        }
+        
+        .dashboard-header {
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .dashboard-header h1 {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .welcome-message {
+            background: linear-gradient(135deg, var(--primary-color), #4f46e5);
+            color: white;
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--spacing-2xl);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .welcome-message h2 {
+            color: white;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .stat-card {
+            background: var(--bg-primary);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+            transition: all var(--transition-base);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .action-card {
+            background: var(--bg-primary);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+            transition: all var(--transition-base);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-2xl);
+            border-color: var(--primary-color);
+        }
+        
+        .action-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .action-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .action-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        
+        .recent-activity {
+            background: var(--bg-primary);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+        }
+        
+        .activity-item {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            font-size: 2rem;
+            width: 50px;
+            text-align: center;
+        }
+        
+        .activity-content {
+            flex-grow: 1;
+        }
+        
+        .activity-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .activity-time {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<div id="navbar"></div>
+
+<div class="staff-dashboard">
+    <div class="dashboard-header">
+        <h1>Staff Dashboard</h1>
+        <p style="color: var(--text-secondary); font-size: 1.1rem;">Welcome to your personal dashboard</p>
+    </div>
+    
+    <!-- Welcome Message -->
+    <div class="welcome-message">
+        <h2 id="welcomeName">Welcome!</h2>
+        <p style="opacity: 0.95; font-size: 1.1rem;">Manage your reports, view activities, and track your contributions to the Education Worker Report System.</p>
+    </div>
+    
+    <!-- Statistics -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">📄</div>
+            <div class="stat-value" id="myReports">-</div>
+            <div class="stat-label">My Reports</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📌</div>
+            <div class="stat-value" id="totalActivities">-</div>
+            <div class="stat-label">Available Activities</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📁</div>
+            <div class="stat-value" id="myDocuments">-</div>
+            <div class="stat-label">My Documents</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-value" id="recentReports">-</div>
+            <div class="stat-label">Recent Reports (7 days)</div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <h2 style="margin-bottom: var(--spacing-lg);">Quick Actions</h2>
+    <div class="quick-actions">
+        <a href="uploads/upload-documents.html" class="action-card">
+            <div class="action-icon">📤</div>
+            <div class="action-title">Upload Document</div>
+            <div class="action-description">Upload a new document or report. Support for PDF, Word, Excel, and image files.</div>
+        </a>
+        
+        <a href="documents.html" class="action-card">
+            <div class="action-icon">📄</div>
+            <div class="action-title">View My Documents</div>
+            <div class="action-description">Browse and manage all your uploaded documents and reports in one place.</div>
+        </a>
+        
+        <a href="activities.html" class="action-card">
+            <div class="action-icon">📌</div>
+            <div class="action-title">View Activities</div>
+            <div class="action-description">Explore all available activities, meetings, and events in the system.</div>
+        </a>
+        
+        <a href="internal-worker.html" class="action-card">
+            <div class="action-icon">👨‍🏫</div>
+            <div class="action-title">Internal Workers</div>
+            <div class="action-description">View information about internal education workers and their activities.</div>
+        </a>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="recent-activity" style="margin-top: var(--spacing-2xl);">
+        <h2 style="margin-bottom: var(--spacing-lg);">My Recent Reports</h2>
+        <div id="recentActivity">
+            <div style="text-align: center; padding: var(--spacing-xl); color: var(--text-secondary);">
+                <div class="loading"></div>
+                <p style="margin-top: 1rem;">Loading recent activity...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="footer"></div>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/navbar.js"></script>
+<script>
+// Check user authentication
+function checkAuth() {
+    fetch('backend/check-auth.php')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.logged_in || data.type !== 'user') {
+                window.location.href = 'login.html';
+            } else {
+                // Update welcome message
+                const welcomeName = document.getElementById('welcomeName');
+                if (welcomeName && data.name) {
+                    welcomeName.textContent = `Welcome, ${data.name}!`;
+                }
+            }
+        })
+        .catch(() => {
+            window.location.href = 'login.html';
+        });
+}
+
+// Load statistics
+function loadStats() {
+    // Load user's reports count
+    fetch('backend/fetch-my-reports.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data && !data.error) {
+                const total = data.length || 0;
+                document.getElementById('myReports').textContent = total;
+                document.getElementById('myDocuments').textContent = total;
+                
+                // Count recent reports (last 7 days)
+                const sevenDaysAgo = new Date();
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                const recent = data.filter(report => {
+                    const reportDate = new Date(report.created_at);
+                    return reportDate >= sevenDaysAgo;
+                }).length;
+                document.getElementById('recentReports').textContent = recent;
+            }
+        })
+        .catch(() => {
+            document.getElementById('myReports').textContent = '0';
+            document.getElementById('myDocuments').textContent = '0';
+            document.getElementById('recentReports').textContent = '0';
+        });
+    
+    // Load activities count
+    fetch('backend/fetch-activities.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data && !data.error) {
+                const active = data.filter(a => a.is_active !== false).length;
+                document.getElementById('totalActivities').textContent = active;
+            }
+        })
+        .catch(() => {
+            document.getElementById('totalActivities').textContent = '0';
+        });
+}
+
+// Load recent activity
+function loadRecentActivity() {
+    fetch('backend/fetch-my-reports.php')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('recentActivity');
+            
+            if (data.error) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: var(--spacing-xl);">Error loading recent activity</p>';
+                return;
+            }
+            
+            if (!data || data.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: var(--spacing-xl);">
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">No reports yet</p>
+                        <a href="uploads/upload-documents.html" class="btn">Upload Your First Report</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Show latest 5 reports
+            const recent = data.slice(0, 5);
+            container.innerHTML = recent.map(report => `
+                <div class="activity-item">
+                    <div class="activity-icon">📄</div>
+                    <div class="activity-content">
+                        <div class="activity-title">${report.title || 'Untitled Report'}</div>
+                        <div class="activity-time">${new Date(report.created_at).toLocaleString('lo-LA')} • ${report.category || 'Uncategorized'}</div>
+                    </div>
+                </div>
+            `).join('');
+        })
+        .catch(error => {
+            document.getElementById('recentActivity').innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: var(--spacing-xl);">Error loading recent activity</p>';
+        });
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuth();
+    loadStats();
+    loadRecentActivity();
+    
+    // Refresh stats every 30 seconds
+    setInterval(loadStats, 30000);
+});
+</script>
+</body>
+</html>
+
