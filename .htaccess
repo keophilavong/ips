@@ -4,7 +4,8 @@
 RewriteEngine On
 
 # Set base directory (adjust if needed)
-RewriteBase /internal-education-worker-report/
+# Commented out for Docker deployment - uncomment if deploying to subdirectory
+# RewriteBase /internal-education-worker-report/
 
 # Prevent directory listing
 Options -Indexes +FollowSymLinks

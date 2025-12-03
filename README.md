@@ -4,12 +4,109 @@ A web-based system for tracking internal education worker activities, documents,
 
 ## Prerequisites
 
+### Option 1: Docker (Recommended for Production)
+- Docker Desktop (or Docker Engine + Docker Compose)
+- Web browser
+
+### Option 2: Local Development
 - XAMPP (or any PHP server)
 - PHP 7.4 or higher
 - PostgreSQL 12 or higher
 - Web browser
 
 ## Setup Instructions
+
+## 🐳 Docker Setup (Recommended)
+
+### Quick Start with Docker
+
+1. **Make sure Docker is running**
+   - Start Docker Desktop (Windows/Mac) or Docker service (Linux)
+
+2. **Build and start containers**
+   ```bash
+   docker-compose up -d
+   ```
+   This will:
+   - Build the PHP/Apache web server
+   - Start PostgreSQL database
+   - Initialize the database with schema
+   - Make the app available at `http://localhost:8080`
+
+3. **Access the application**
+   - Open browser: `http://localhost:8080`
+   - Default admin: username `admin`, password `admin123`
+
+4. **View logs** (optional)
+   ```bash
+   docker-compose logs -f
+   ```
+
+5. **Stop containers**
+   ```bash
+   docker-compose down
+   ```
+
+6. **Stop and remove all data** (clean slate)
+   ```bash
+   docker-compose down -v
+   ```
+
+### Docker Configuration
+
+The `docker-compose.yml` file includes:
+- **Web service**: PHP 8.1 with Apache on port 8080
+- **Database service**: PostgreSQL 15 on port 5433
+- **Environment variables**: Set in `docker-compose.yml` or use `.env` file
+
+### Using External Database
+
+If you want to use an existing PostgreSQL database instead of the Docker one:
+
+1. Update `docker-compose.yml`:
+   ```yaml
+   web:
+     environment:
+       - DB_HOST=your-database-host
+       - DB_PORT=5432
+       - DB_USER=your-username
+       - DB_PASS=your-password
+       - DB_NAME=your-database
+   ```
+
+2. Remove or comment out the `db` service and `depends_on` section
+
+3. Restart: `docker-compose up -d`
+
+### Docker Commands Reference
+
+```bash
+# Start services
+docker-compose up -d
+
+# Stop services
+docker-compose down
+
+# Rebuild after changes
+docker-compose up -d --build
+
+# View logs
+docker-compose logs -f web
+docker-compose logs -f db
+
+# Access database directly
+docker-compose exec db psql -U edu_user -d edu_pro
+
+# Access web container shell
+docker-compose exec web bash
+
+# Restart a specific service
+docker-compose restart web
+```
+
+---
+
+## Local Development Setup (XAMPP)
 
 ### Step 1: Start XAMPP Services
 

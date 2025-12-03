@@ -1,0 +1,65 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+DEPLOY*.md
+SETUP*.md
+QUICK*.md
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node modules (if any)
+node_modules
+
+# Logs
+*.log
+logs
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Database files
+*.sql
+*.db
+*.sqlite
+
+# Migration files (keep structure, ignore data)
+migrate_*.php
+migration_*.sql
+
+# Uploads and files (will be mounted as volumes)
+files/*
+uploads/*
+!files/.gitkeep
+!uploads/.gitkeep
+
+# Composer
+vendor/
+composer.lock
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Docker files themselves
+docker-compose.yml
+Dockerfile
+.dockerignore
+
