@@ -14,7 +14,10 @@ try {
     foreach ($reports as &$report) {
         if ($report['file_path']) {
             // Remove ../ if present and ensure proper path
-            $report['file_url'] = '/' . ltrim(str_replace('../', '', $report['file_path']), '/');
+            $cleanPath = str_replace('../', '', $report['file_path']);
+            $cleanPath = ltrim($cleanPath, '/');
+            // Construct full URL with base path
+            $report['file_url'] = '/internal-education-worker-report/' . $cleanPath;
         } else {
             $report['file_url'] = null;
         }

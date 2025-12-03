@@ -54,6 +54,7 @@
             .admin-container {
                 padding: var(--spacing-md);
                 margin: var(--spacing-lg) auto;
+                padding-top: calc(var(--spacing-lg) + 120px);
             }
             
             .admin-header {
@@ -71,18 +72,25 @@
                 max-width: 100%;
             }
             
-            table {
-                font-size: 0.875rem;
+            .table-container {
+                margin: var(--spacing-md) calc(-1 * var(--spacing-md));
+                border-radius: 0;
             }
             
-            table th,
-            table td {
+            .activities-table {
+                font-size: 0.875rem;
+                min-width: 600px;
+            }
+            
+            .activities-table th,
+            .activities-table td {
                 padding: var(--spacing-xs) var(--spacing-sm);
             }
             
             .btn {
                 padding: var(--spacing-xs) var(--spacing-md);
                 font-size: 0.875rem;
+                min-height: 44px;
             }
         }
         
@@ -119,6 +127,15 @@
             color: var(--text-primary);
         }
         
+        .table-container {
+            overflow-x: auto;
+            overflow-y: visible;
+            -webkit-overflow-scrolling: touch;
+            width: 100%;
+            box-sizing: border-box;
+            margin: var(--spacing-xl) 0;
+        }
+        
         .activities-table {
             width: 100%;
             border-collapse: collapse;
@@ -126,6 +143,7 @@
             border-radius: var(--radius-xl);
             overflow: hidden;
             box-shadow: var(--shadow-lg);
+            min-width: 800px; /* Minimum width for table content */
         }
         
         .activities-table th {
@@ -228,10 +246,33 @@
             </div>
             
             <div class="form-group">
+                <label for="category">Category (ປະເພດ)</label>
+                <select id="category" name="category" class="form-control">
+                    <option value="">-- ເລືອກປະເພດ --</option>
+                    <option value="ພະແນກບໍລິຫານ">ພະແນກບໍລິຫານ</option>
+                    <option value="ກິດຈະກຳທົ່ວໄປ">ກິດຈະກຳທົ່ວໄປ</option>
+                </select>
+                <small style="color: var(--text-light);">ເລືອກປະເພດກິດຈະກຳ (ຖ້າບໍ່ເລືອກຈະສະແດງທຸກປະເພດ)</small>
+            </div>
+            
+            <div class="form-group">
                 <label for="image">Image (ຮູບພາບ)</label>
                 <input type="file" id="image" name="image" class="form-control" accept="image/*">
                 <small style="color: var(--text-light);">Leave empty to keep current image when editing</small>
                 <div id="imagePreview" style="margin-top: 1rem;"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="video_url">Video URL (ລິ້ງວິດີໂອ)</label>
+                <input type="url" id="video_url" name="video_url" class="form-control" placeholder="https://www.youtube.com/watch?v=... or https://vimeo.com/...">
+                <small style="color: var(--text-light);">ລິ້ງ YouTube, Vimeo, ຫຼື ວິດີໂອອື່ນໆ</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="document">Document (ເອກະສານ)</label>
+                <input type="file" id="document" name="document" class="form-control" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
+                <small style="color: var(--text-light);">PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT (ສູງສຸດ 100MB). Leave empty to keep current document when editing.</small>
+                <div id="documentPreview" style="margin-top: 1rem;"></div>
             </div>
             
             <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl);">
@@ -333,6 +374,7 @@ function openAddModal() {
     document.getElementById('activity_id').value = '';
     document.getElementById('date_created').value = new Date().toISOString().split('T')[0];
     document.getElementById('imagePreview').innerHTML = '';
+    document.getElementById('documentPreview').innerHTML = '';
     document.getElementById('activityModal').style.display = 'block';
 }
 
@@ -349,12 +391,28 @@ function editActivity(id) {
                 document.getElementById('title').value = activity.title;
                 document.getElementById('description').value = activity.description;
                 document.getElementById('date_created').value = activity.date_created;
+                document.getElementById('video_url').value = activity.video_url || '';
+                document.getElementById('category').value = activity.category || '';
                 
                 if (activity.image_url) {
                     const imageSrc = activity.image_url.startsWith('/') ? '..' + activity.image_url : '../' + activity.image_url;
                     document.getElementById('imagePreview').innerHTML = `
                         <img src="${imageSrc}" style="max-width: 200px; border-radius: var(--radius-md);">
                     `;
+                } else {
+                    document.getElementById('imagePreview').innerHTML = '';
+                }
+                
+                if (activity.document_url) {
+                    const docSrc = activity.document_url.startsWith('/') ? '..' + activity.document_url : '../' + activity.document_url;
+                    const fileName = activity.document_url.split('/').pop();
+                    document.getElementById('documentPreview').innerHTML = `
+                        <a href="${docSrc}" target="_blank" style="color: var(--primary-color); text-decoration: none;">
+                            📄 ${fileName}
+                        </a>
+                    `;
+                } else {
+                    document.getElementById('documentPreview').innerHTML = '';
                 }
                 
                 document.getElementById('activityModal').style.display = 'block';
@@ -485,6 +543,22 @@ document.getElementById('image').addEventListener('change', function(e) {
             `;
         };
         reader.readAsDataURL(file);
+    } else {
+        document.getElementById('imagePreview').innerHTML = '';
+    }
+});
+
+// Document preview
+document.getElementById('document').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        document.getElementById('documentPreview').innerHTML = `
+            <div style="padding: var(--spacing-sm); background: var(--bg-secondary); border-radius: var(--radius-md);">
+                📄 ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)
+            </div>
+        `;
+    } else {
+        document.getElementById('documentPreview').innerHTML = '';
     }
 });
 

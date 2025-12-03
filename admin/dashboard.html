@@ -10,6 +10,748 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+        
+        .admin-dashboard {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: calc(80px + var(--spacing-md)) var(--spacing-lg) var(--spacing-md);
+            min-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+        
+        .admin-header {
+            margin-bottom: 0;
+        }
+        
+        .admin-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .admin-header p {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-sm);
+            margin-bottom: 0;
+        }
+        
+        .stat-card {
+            padding: var(--spacing-sm) var(--spacing-md);
+            min-height: auto;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6 0%, #6366f1 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .stat-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+            transition: transform 0.3s ease;
+            display: inline-block;
+        }
+        
+        .stat-card:hover .stat-icon {
+            transform: scale(1.1);
+        }
+        
+        .stat-value {
+            font-size: 1.75rem;
+            margin-bottom: 0.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover .stat-value {
+            transform: scale(1.05);
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            transition: color 0.3s ease;
+        }
+        
+        .stat-card:hover .stat-label {
+            color: var(--primary-color);
+        }
+        
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--spacing-md);
+            flex: 1;
+            min-height: 0;
+        }
+        
+        .quick-actions-section {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        
+        .quick-actions-section h2 {
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-sm);
+            margin-top: 0;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-sm);
+            flex: 1;
+            overflow-y: auto;
+            padding-right: var(--spacing-xs);
+        }
+        
+        .quick-actions::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .quick-actions::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 3px;
+        }
+        
+        .quick-actions::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+        
+        .quick-actions::-webkit-scrollbar-thumb:hover {
+            background: var(--text-light);
+        }
+        
+        .action-card {
+            padding: var(--spacing-sm) var(--spacing-md);
+            min-height: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6 0%, #6366f1 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
+            border-color: #3b82f6;
+        }
+        
+        .action-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .action-icon {
+            font-size: 1.75rem;
+            margin-bottom: 0;
+            transition: transform 0.3s ease;
+            display: inline-block;
+        }
+        
+        .action-card:hover .action-icon {
+            transform: scale(1.15) rotate(5deg);
+        }
+        
+        .action-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0;
+            transition: color 0.3s ease;
+        }
+        
+        .action-card:hover .action-title {
+            color: var(--primary-color);
+        }
+        
+        .action-description {
+            font-size: 0.75rem;
+            line-height: 1.4;
+            margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.3s ease;
+        }
+        
+        .action-card:hover .action-description {
+            color: var(--text-primary);
+        }
+        
+        .pending-submissions-section {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        
+        .pending-submissions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .pending-submissions-header h2 {
+            font-size: 1.25rem;
+            margin: 0;
+        }
+        
+        .pending-submissions-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: var(--spacing-md);
+            border: 1px solid var(--border-color);
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+        }
+        
+        .pending-submissions-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .pending-submissions-content::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 3px;
+        }
+        
+        .pending-submissions-content::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+        
+        .pending-submissions-content::-webkit-scrollbar-thumb:hover {
+            background: var(--text-light);
+        }
+        
+        .pending-item {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: var(--spacing-sm);
+            background: var(--bg-secondary);
+            margin-bottom: var(--spacing-sm);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .pending-item:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+            transform: translateX(4px);
+        }
+        
+        .pending-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .pending-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #3b82f6 0%, #6366f1 100%);
+            border-radius: 8px 0 0 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .pending-item:hover::before {
+            opacity: 1;
+        }
+        
+        .pending-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: var(--spacing-sm);
+            margin-bottom: 0.5rem;
+        }
+        
+        .pending-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .pending-item-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0 0 0.25rem 0;
+            color: var(--text-primary);
+        }
+        
+        .pending-item-meta {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .pending-item-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        
+        .btn-small {
+            padding: 0.4rem 0.75rem;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-small::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+        
+        .btn-small:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+        
+        .btn-small:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-small:active {
+            transform: scale(0.98);
+        }
+        
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .badge:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Loading animation for stats */
+        .stat-value.loading {
+            background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s ease-in-out infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Smooth number animation */
+        .stat-value {
+            transition: all 0.3s ease;
+        }
+        
+        /* Empty state improvements */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-lg);
+            color: var(--text-secondary);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        /* Section headers with icons */
+        .quick-actions-section h2,
+        .pending-submissions-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+        }
+        
+        .quick-actions-section h2::after,
+        .pending-submissions-header h2::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, var(--border-color) 0%, transparent 100%);
+            margin-left: 0.5rem;
+        }
+        
+        /* Focus states for accessibility */
+        .action-card:focus,
+        .stat-card:focus,
+        .btn-small:focus {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+        
+        /* Smooth scrollbar */
+        .quick-actions::-webkit-scrollbar-thumb:hover,
+        .pending-submissions-content::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+        
+        @media (max-width: 1200px) {
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 968px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .admin-dashboard {
+                padding: calc(120px + var(--spacing-sm)) var(--spacing-md) var(--spacing-sm);
+            }
+            
+            .admin-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .admin-header p {
+                font-size: 0.85rem;
+            }
+            
+            .stat-card {
+                padding: var(--spacing-xs) var(--spacing-sm);
+            }
+            
+            .stat-icon {
+                font-size: 1.25rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .stat-label {
+                font-size: 0.75rem;
+            }
+            
+            .action-card {
+                padding: var(--spacing-xs) var(--spacing-sm);
+            }
+            
+            .action-icon {
+                font-size: 1.5rem;
+            }
+            
+            .action-title {
+                font-size: 0.875rem;
+            }
+            
+            .action-description {
+                font-size: 0.7rem;
+            }
+            
+            .quick-actions-section h2,
+            .pending-submissions-header h2 {
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .admin-dashboard {
+                padding: calc(140px + var(--spacing-xs)) var(--spacing-sm) var(--spacing-xs);
+                gap: var(--spacing-sm);
+            }
+            
+            .admin-header {
+                margin-bottom: var(--spacing-sm);
+            }
+            
+            .admin-header h1 {
+                font-size: 1.25rem;
+                margin-bottom: 0.125rem;
+            }
+            
+            .admin-header p {
+                font-size: 0.8rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--spacing-xs);
+                margin-bottom: var(--spacing-sm);
+            }
+            
+            .stat-card {
+                padding: var(--spacing-xs);
+                min-height: 80px;
+            }
+            
+            .stat-icon {
+                font-size: 1.1rem;
+                margin-bottom: 0.125rem;
+            }
+            
+            .stat-value {
+                font-size: 1.25rem;
+                margin-bottom: 0.125rem;
+            }
+            
+            .stat-label {
+                font-size: 0.7rem;
+                line-height: 1.2;
+            }
+            
+            .dashboard-content {
+                gap: var(--spacing-sm);
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions-section {
+                margin-bottom: var(--spacing-sm);
+            }
+            
+            .quick-actions-section h2 {
+                font-size: 1rem;
+                margin-bottom: var(--spacing-xs);
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-xs);
+                max-height: none;
+            }
+            
+            .action-card {
+                padding: var(--spacing-sm);
+                min-height: auto;
+            }
+            
+            .action-icon {
+                font-size: 1.5rem;
+                margin-bottom: 0.25rem;
+            }
+            
+            .action-title {
+                font-size: 0.875rem;
+                margin-bottom: 0.25rem;
+            }
+            
+            .action-description {
+                font-size: 0.75rem;
+                -webkit-line-clamp: 3;
+                line-height: 1.4;
+            }
+            
+            .pending-submissions-section {
+                margin-top: var(--spacing-sm);
+            }
+            
+            .pending-submissions-header {
+                margin-bottom: var(--spacing-xs);
+                flex-wrap: wrap;
+                gap: var(--spacing-xs);
+            }
+            
+            .pending-submissions-header h2 {
+                font-size: 1rem;
+                flex: 1;
+                min-width: 200px;
+            }
+            
+            .pending-submissions-content {
+                padding: var(--spacing-sm);
+                max-height: 400px;
+            }
+            
+            .pending-item {
+                padding: var(--spacing-xs) var(--spacing-sm);
+                margin-bottom: var(--spacing-xs);
+            }
+            
+            .pending-item-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: var(--spacing-xs);
+            }
+            
+            .pending-item-info {
+                width: 100%;
+            }
+            
+            .pending-item-title {
+                font-size: 0.85rem;
+                margin-bottom: 0.25rem;
+            }
+            
+            .pending-item-meta {
+                font-size: 0.7rem;
+                -webkit-line-clamp: 2;
+            }
+            
+            .pending-item-actions {
+                width: 100%;
+                justify-content: flex-end;
+                margin-top: var(--spacing-xs);
+            }
+            
+            .btn-small {
+                padding: 0.35rem 0.6rem;
+                font-size: 0.75rem;
+                flex: 1;
+                max-width: 80px;
+            }
+            
+            .badge {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.4rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .admin-dashboard {
+                padding: calc(160px + var(--spacing-xs)) var(--spacing-xs) var(--spacing-xs);
+            }
+            
+            .stats-grid {
+                gap: 0.5rem;
+            }
+            
+            .stat-card {
+                padding: 0.5rem;
+                min-height: 70px;
+            }
+            
+            .stat-icon {
+                font-size: 1rem;
+            }
+            
+            .stat-value {
+                font-size: 1.1rem;
+            }
+            
+            .stat-label {
+                font-size: 0.65rem;
+            }
+            
+            .quick-actions {
+                gap: 0.5rem;
+            }
+            
+            .action-card {
+                padding: 0.75rem;
+            }
+            
+            .action-icon {
+                font-size: 1.25rem;
+            }
+            
+            .action-title {
+                font-size: 0.8rem;
+            }
+            
+            .action-description {
+                font-size: 0.7rem;
+                -webkit-line-clamp: 2;
+            }
+            
+            .pending-submissions-content {
+                padding: 0.75rem;
+                max-height: 350px;
+            }
+            
+            .pending-item {
+                padding: 0.75rem;
+            }
+            
+            .pending-item-title {
+                font-size: 0.8rem;
+            }
+            
+            .pending-item-meta {
+                font-size: 0.65rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -47,9 +789,12 @@
         </div>
     </div>
     
-    <!-- Quick Actions -->
-    <h2 style="margin-bottom: var(--spacing-lg);">ການຈັດການເນື້ອຫາ</h2>
-    <div class="quick-actions">
+    <!-- Main Content Grid -->
+    <div class="dashboard-content">
+        <!-- Quick Actions -->
+        <div class="quick-actions-section">
+            <h2>ການຈັດການເນື້ອຫາ</h2>
+            <div class="quick-actions">
         <a href="manage-activities.html" class="action-card">
             <div class="action-icon">📌</div>
             <div class="action-title">ຈັດການກິດຈະກຳ</div>
@@ -109,29 +854,20 @@
             <div class="action-title">ການຕັ້ງຄ່າລະບົບ</div>
             <div class="action-description">ຕັ້ງຄ່າລະບົບ, ຈັດການບັນຊີຜູ້ດູແລລະບົບ, ແລະ ເບິ່ງຂໍ້ມູນລະບົບ.</div>
         </a>
-    </div>
-    
-    <!-- Pending Submissions from Clients -->
-    <div class="pending-submissions" style="margin-top: var(--spacing-2xl);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
-            <h2>📥 ການສົ່ງຂໍ້ມູນທີ່ລໍຖ້າກວດສອບ</h2>
-            <span id="pendingCount" class="badge" style="background: #fef3c7; color: #92400e; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">0</span>
-        </div>
-        <div id="pendingSubmissions" style="background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); padding: var(--spacing-xl); border: 1px solid #e2e8f0;">
-            <div style="text-align: center; padding: var(--spacing-xl); color: var(--text-secondary);">
-                <div class="loading"></div>
-                <p style="margin-top: 1rem;">ກຳລັງໂຫຼດການສົ່ງຂໍ້ມູນທີ່ລໍຖ້າກວດສອບ...</p>
             </div>
         </div>
-    </div>
-    
-    <!-- Recent Activity -->
-    <div class="recent-activity" style="margin-top: var(--spacing-2xl);">
-        <h2 style="margin-bottom: var(--spacing-lg);">ກິດຈະກຳຫຼ້າສຸດ</h2>
-        <div id="recentActivity">
-            <div style="text-align: center; padding: var(--spacing-xl); color: var(--text-secondary);">
-                <div class="loading"></div>
-                <p style="margin-top: 1rem;">ກຳລັງໂຫຼດກິດຈະກຳຫຼ້າສຸດ...</p>
+        
+        <!-- Pending Submissions from Clients -->
+        <div class="pending-submissions-section">
+            <div class="pending-submissions-header">
+                <h2>📥 ການສົ່ງຂໍ້ມູນທີ່ລໍຖ້າກວດສອບ</h2>
+                <span id="pendingCount" class="badge" style="background: #fef3c7; color: #92400e;">0</span>
+            </div>
+            <div id="pendingSubmissions" class="pending-submissions-content">
+                <div style="text-align: center; padding: var(--spacing-lg); color: var(--text-secondary);">
+                    <div class="loading"></div>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem;">ກຳລັງໂຫຼດ...</p>
+                </div>
             </div>
         </div>
     </div>
@@ -165,18 +901,50 @@ function checkAuth() {
         });
 }
 
+// Animate number counting
+function animateValue(element, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const current = Math.floor(progress * (end - start) + start);
+        element.textContent = current;
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        }
+    };
+    window.requestAnimationFrame(step);
+}
+
 // Load statistics
 function loadStats() {
+    // Add loading class
+    const statValues = ['totalUsers', 'totalActivities', 'totalReports', 'activeActivities'];
+    statValues.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.classList.add('loading');
+            el.textContent = '0';
+        }
+    });
+    
     // Load user count
     fetch('../backend/fetch-users.php')
         .then(response => response.json())
         .then(data => {
-            if (data && !data.error) {
-                document.getElementById('totalUsers').textContent = data.length || 0;
+            const el = document.getElementById('totalUsers');
+            if (el) {
+                el.classList.remove('loading');
+                const count = data && !data.error ? (data.length || 0) : 0;
+                animateValue(el, 0, count, 800);
             }
         })
         .catch(() => {
-            document.getElementById('totalUsers').textContent = '0';
+            const el = document.getElementById('totalUsers');
+            if (el) {
+                el.classList.remove('loading');
+                el.textContent = '0';
+            }
         });
     
     // Load activities count
@@ -186,25 +954,48 @@ function loadStats() {
             if (data && !data.error) {
                 const total = data.length || 0;
                 const active = data.filter(a => a.is_active !== false).length;
-                document.getElementById('totalActivities').textContent = total;
-                document.getElementById('activeActivities').textContent = active;
+                const totalEl = document.getElementById('totalActivities');
+                const activeEl = document.getElementById('activeActivities');
+                if (totalEl) {
+                    totalEl.classList.remove('loading');
+                    animateValue(totalEl, 0, total, 800);
+                }
+                if (activeEl) {
+                    activeEl.classList.remove('loading');
+                    animateValue(activeEl, 0, active, 800);
+                }
             }
         })
         .catch(() => {
-            document.getElementById('totalActivities').textContent = '0';
-            document.getElementById('activeActivities').textContent = '0';
+            const totalEl = document.getElementById('totalActivities');
+            const activeEl = document.getElementById('activeActivities');
+            if (totalEl) {
+                totalEl.classList.remove('loading');
+                totalEl.textContent = '0';
+            }
+            if (activeEl) {
+                activeEl.classList.remove('loading');
+                activeEl.textContent = '0';
+            }
         });
     
     // Load reports count
     fetch('../backend/fetch-reports.php')
         .then(response => response.json())
         .then(data => {
-            if (data && !data.error) {
-                document.getElementById('totalReports').textContent = data.length || 0;
+            const el = document.getElementById('totalReports');
+            if (el) {
+                el.classList.remove('loading');
+                const count = data && !data.error ? (data.length || 0) : 0;
+                animateValue(el, 0, count, 800);
             }
         })
         .catch(() => {
-            document.getElementById('totalReports').textContent = '0';
+            const el = document.getElementById('totalReports');
+            if (el) {
+                el.classList.remove('loading');
+                el.textContent = '0';
+            }
         });
 }
 
@@ -224,60 +1015,63 @@ function loadPendingSubmissions() {
             
             if (!data || data.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align: center; padding: var(--spacing-2xl);">
-                        <div style="font-size: 4rem; margin-bottom: var(--spacing-md);">✅</div>
-                        <p style="color: var(--text-secondary); font-size: 1.1rem;">ບໍ່ມີການສົ່ງຂໍ້ມູນທີ່ລໍຖ້າກວດສອບ</p>
+                    <div class="empty-state">
+                        <div style="font-size: 2.5rem; margin-bottom: 0.5rem; animation: float 3s ease-in-out infinite;">✅</div>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">ບໍ່ມີການສົ່ງຂໍ້ມູນທີ່ລໍຖ້າກວດສອບ</p>
                     </div>
                 `;
                 countBadge.textContent = '0';
                 return;
             }
             
+            // Add fade-in animation
+            container.style.opacity = '0';
+            setTimeout(() => {
+                container.style.transition = 'opacity 0.3s ease';
+                container.style.opacity = '1';
+            }, 50);
+            
             countBadge.textContent = data.length;
             
-            container.innerHTML = `
-                <div style="display: grid; gap: var(--spacing-md);">
-                    ${data.map(submission => {
-                        const typeLabels = {
-                            'teacher_college': '🏫 ວິທະຍາໄລຄູ',
-                            'district': '🏛 ເມືອງ',
-                            'province': '🗺 ແຂວງ'
-                        };
-                        
-                        const typeLabel = typeLabels[submission.type] || submission.type;
-                        const hasVideo = submission.link_url && (submission.link_url.includes('youtube.com') || submission.link_url.includes('youtu.be') || submission.link_url.includes('vimeo.com'));
-                        const hasDocument = submission.file_path;
-                        const hasLink = submission.link_url && !hasVideo;
-                        
-                        return `
-                            <div style="border: 2px solid var(--border-color); border-radius: 12px; padding: var(--spacing-lg); background: var(--bg-secondary);">
-                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--spacing-md);">
-                                    <div style="flex: 1;">
-                                        <div style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-sm);">
-                                            <span class="badge" style="background: #dbeafe; color: #1e40af;">${typeLabel}</span>
-                                            <span style="font-weight: 600; color: var(--text-primary);">${submission.name || '-'}</span>
-                                        </div>
-                                        <h4 style="margin: 0 0 var(--spacing-xs) 0; color: var(--text-primary);">${submission.title || 'ບໍ່ມີຫົວຂໍ້'}</h4>
-                                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin: var(--spacing-xs) 0; line-height: 1.5;">
-                                            ${(submission.description || '').substring(0, 150)}${(submission.description || '').length > 150 ? '...' : ''}
-                                        </p>
-                                        <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-sm); flex-wrap: wrap;">
-                                            ${hasDocument ? '<span style="font-size: 0.875rem; color: var(--text-secondary);">📄 ມີເອກະສານ</span>' : ''}
-                                            ${hasVideo ? '<span style="font-size: 0.875rem; color: var(--text-secondary);">🎥 ມີວິດີໂອ</span>' : ''}
-                                            ${hasLink ? '<span style="font-size: 0.875rem; color: var(--text-secondary);">🔗 ມີລິ້ງ</span>' : ''}
-                                            <span style="font-size: 0.875rem; color: var(--text-light);">📅 ${new Date(submission.created_at).toLocaleDateString('lo-LA')}</span>
-                                        </div>
-                                    </div>
-                                    <div style="display: flex; gap: var(--spacing-sm); flex-direction: column;">
-                                        <button class="btn btn-small btn-success" onclick="approveSubmission('${submission.type}', ${submission.id})" style="white-space: nowrap;">✅ ອະນຸມັດ</button>
-                                        <button class="btn btn-small btn-danger" onclick="rejectSubmission('${submission.type}', ${submission.id})" style="white-space: nowrap;">❌ ປະຕິເສດ</button>
-                                    </div>
+            container.innerHTML = data.map(submission => {
+                const typeLabels = {
+                    'teacher_college': '🏫 ວິທະຍາໄລຄູ',
+                    'district': '🏛 ເມືອງ',
+                    'province': '🗺 ແຂວງ'
+                };
+                
+                const typeLabel = typeLabels[submission.type] || submission.type;
+                const hasVideo = submission.link_url && (submission.link_url.includes('youtube.com') || submission.link_url.includes('youtu.be') || submission.link_url.includes('vimeo.com'));
+                const hasDocument = submission.file_path;
+                const hasLink = submission.link_url && !hasVideo;
+                
+                return `
+                    <div class="pending-item">
+                        <div class="pending-item-header">
+                            <div class="pending-item-info">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                                    <span class="badge" style="background: #dbeafe; color: #1e40af;">${typeLabel}</span>
+                                    <span style="font-weight: 600; color: var(--text-primary); font-size: 0.85rem;">${submission.name || '-'}</span>
+                                </div>
+                                <div class="pending-item-title">${submission.title || 'ບໍ່ມີຫົວຂໍ້'}</div>
+                                <p class="pending-item-meta">
+                                    ${(submission.description || '').substring(0, 100)}${(submission.description || '').length > 100 ? '...' : ''}
+                                </p>
+                                <div style="display: flex; gap: 0.75rem; margin-top: 0.25rem; flex-wrap: wrap; font-size: 0.7rem; color: var(--text-light);">
+                                    ${hasDocument ? '<span>📄</span>' : ''}
+                                    ${hasVideo ? '<span>🎥</span>' : ''}
+                                    ${hasLink ? '<span>🔗</span>' : ''}
+                                    <span>📅 ${new Date(submission.created_at).toLocaleDateString('lo-LA', {month: 'short', day: 'numeric'})}</span>
                                 </div>
                             </div>
-                        `;
-                    }).join('')}
-                </div>
-            `;
+                            <div class="pending-item-actions">
+                                <button class="btn btn-small btn-success" onclick="approveSubmission('${submission.type}', ${submission.id})">✅</button>
+                                <button class="btn btn-small btn-danger" onclick="rejectSubmission('${submission.type}', ${submission.id})">❌</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         })
         .catch(error => {
             document.getElementById('pendingSubmissions').innerHTML = `
@@ -347,68 +1141,11 @@ function rejectSubmission(type, id) {
     });
 }
 
-// Load recent activity
-function loadRecentActivity() {
-    Promise.all([
-        fetch('../backend/fetch-activities.php').then(r => r.json()),
-        fetch('../backend/fetch-reports.php').then(r => r.json())
-    ])
-    .then(([activities, reports]) => {
-        const recent = [];
-        
-        // Add recent activities
-        if (activities && !activities.error) {
-            activities.slice(0, 3).forEach(activity => {
-                recent.push({
-                    type: 'activity',
-                    title: activity.title,
-                    time: new Date(activity.created_at).toLocaleString('lo-LA'),
-                    icon: '📌'
-                });
-            });
-        }
-        
-        // Add recent reports
-        if (reports && !reports.error) {
-            reports.slice(0, 2).forEach(report => {
-                recent.push({
-                    type: 'report',
-                    title: report.title,
-                    time: new Date(report.created_at).toLocaleString('lo-LA'),
-                    icon: '📄'
-                });
-            });
-        }
-        
-        // Sort by time and show latest 5
-        recent.sort((a, b) => new Date(b.time) - new Date(a.time));
-        
-        const container = document.getElementById('recentActivity');
-        if (recent.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: var(--spacing-xl);">ບໍ່ມີກິດຈະກຳຫຼ້າສຸດ</p>';
-        } else {
-            container.innerHTML = recent.slice(0, 5).map(item => `
-                <div class="activity-item">
-                    <div class="activity-icon">${item.icon}</div>
-                    <div class="activity-content">
-                        <div class="activity-title">${item.title}</div>
-                        <div class="activity-time">${item.time}</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-    })
-    .catch(error => {
-        document.getElementById('recentActivity').innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: var(--spacing-xl);">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດກິດຈະກຳຫຼ້າສຸດ</p>';
-    });
-}
-
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     checkAuth();
     loadStats();
     loadPendingSubmissions();
-    loadRecentActivity();
     
     // Refresh stats and pending submissions every 30 seconds
     setInterval(() => {

@@ -104,12 +104,9 @@
 <div id="navbar"></div>
 
 <div class="page-header">
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-        <div>
-            <h2>🏫 ຂໍ້ມູນການເຄື່ອນໄຫວຂອງວິທະຍາໄລຄູ</h2>
-            <p style="margin-bottom: 0;">ຕິດຕາມ ແລະ ຈັດການຂໍ້ມູນການເຄື່ອນໄຫວ ແລະ ກິດຈະກຳຂອງວິທະຍາໄລຄູ</p>
-        </div>
-        <a href="uploads/upload-teacher-college.html" class="btn" style="background: white; color: var(--primary-color); border: 2px solid white;">+ ອັບໂຫຼດຂໍ້ມູນ</a>
+    <div>
+        <h2>🏫 ຂໍ້ມູນການເຄື່ອນໄຫວຂອງວິທະຍາໄລຄູ</h2>
+        <p style="margin-bottom: 0;">ຕິດຕາມ ແລະ ຈັດການຂໍ້ມູນການເຄື່ອນໄຫວ ແລະ ກິດຈະກຳຂອງວິທະຍາໄລຄູ</p>
     </div>
 </div>
 
@@ -130,12 +127,12 @@
                             <option value="">-- ເລືອກວິທະຍາໄລຄູ --</option>
                             <option value="ຫຼວງນໍ້າທາ">1. ຫຼວງນໍ້າທາ</option>
                             <option value="ຫຼວງພະບາງ">2. ຫຼວງພະບາງ</option>
-                            <option value="ປານເກີນ">3. ປານເກີນ</option>
-                            <option value="ຄົງຄໍາຊາງ">4. ຄົງຄໍາຊາງ</option>
+                            <option value="ປານເກີນ">3. ບ້ານເກີນ</option>
+                            <option value="ຄົງຄໍາຊາງ">4. ດົງຄໍາຊາງ</option>
                             <option value="ຄັງໄຂ">5. ຄັງໄຂ</option>
-                            <option value="ອະຫວັນນະເຂດ">6. ອະຫວັນນະເຂດ</option>
+                            <option value="ອະຫວັນນະເຂດ">6. ສະຫວັນນະເຂດ</option>
                             <option value="ປາກເຊ">7. ປາກເຊ</option>
-                            <option value="ອາລະວັນ">8. ອາລະວັນ</option>
+                            <option value="ອາລະວັນ">8. ສາລະວັນ</option>
                         </select>
                     </div>
                     
@@ -354,19 +351,19 @@ document.getElementById('teacherCollegeForm').addEventListener('submit', functio
     submitBtn.textContent = 'ກຳລັງອັບໂຫຼດ...';
     result.innerHTML = '';
     
-    fetch('backend/upload-handler.php', {
+    fetch('backend/upload-teacher-college-user.php', {
         method: 'POST',
         body: formData
     })
-    .then(res => res.text())
+    .then(res => res.json())
     .then(data => {
-        if (data.trim() === 'success' || data.trim().startsWith('partial_success')) {
-            result.innerHTML = '<div class="alert alert-success">✅ ອັບໂຫຼດເອກະສານສຳເລັດແລ້ວ! ກຳລັງໂຫຼດໃໝ່...</div>';
+        if (data.success) {
+            result.innerHTML = '<div class="alert alert-success">✅ ' + data.message + '</div>';
             setTimeout(() => {
                 window.location.reload();
-            }, 1500);
+            }, 2000);
         } else {
-            result.innerHTML = '<div class="alert alert-error">❌ ເກີດຂໍ້ຜິດພາດ: ' + (data.includes('error') ? data : 'ອັບໂຫຼດເອກະສານບໍ່ສຳເລັດ. ກະລຸນາລອງໃໝ່.') + '</div>';
+            result.innerHTML = '<div class="alert alert-error">❌ ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ອັບໂຫຼດເອກະສານບໍ່ສຳເລັດ. ກະລຸນາລອງໃໝ່.') + '</div>';
             submitBtn.disabled = false;
             submitBtn.textContent = originalText;
         }

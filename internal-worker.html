@@ -9,6 +9,229 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Ensure content is visible and responsive */
+        .page-header {
+            overflow: visible !important;
+            margin-top: 200px !important; /* Significantly increased to account for taller navbar with multiple rows */
+            padding-top: var(--spacing-xl) !important;
+            padding-bottom: var(--spacing-xl) !important;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Ensure navbar doesn't overlap content */
+        body {
+            padding-top: 0;
+        }
+        
+        #navbar {
+            position: relative;
+            z-index: 1000;
+        }
+        
+        .page-header > div {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        /* Ensure button in page-header is visible */
+        .page-header .btn {
+            position: relative;
+            z-index: 2;
+            flex-shrink: 0;
+            white-space: nowrap;
+            visibility: visible !important;
+            opacity: 1 !important;
+            display: inline-flex !important;
+        }
+        
+        .content {
+            overflow: visible !important;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        
+        #districtsContainer {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            overflow: visible;
+        }
+        
+        /* Responsive card grid - smaller cards for many districts */
+        .card-grid {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr));
+            gap: var(--spacing-sm);
+        }
+        
+        /* Smaller district cards */
+        .district-card {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .district-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Ensure cards don't overflow */
+        .card {
+            max-width: 100%;
+            box-sizing: border-box;
+            overflow: visible;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        /* Compact district card styling */
+        .district-card {
+            padding: var(--spacing-sm) !important;
+        }
+        
+        .district-card .card-title {
+            font-size: 0.95rem !important;
+            padding-bottom: var(--spacing-xs) !important;
+            margin-bottom: var(--spacing-xs) !important;
+        }
+        
+        .district-card .card-body {
+            padding: var(--spacing-xs) !important;
+        }
+        
+        .district-card h3 {
+            font-size: 0.9rem !important;
+            margin-bottom: var(--spacing-xs) !important;
+        }
+        
+        .district-card p {
+            font-size: 0.8rem !important;
+            line-height: 1.4 !important;
+            margin-bottom: var(--spacing-xs) !important;
+        }
+        
+        .card-body {
+            overflow: visible;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        /* Ensure buttons in cards are responsive */
+        .card .btn {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            word-wrap: break-word;
+        }
+        
+        /* Responsive adjustments for mobile */
+        @media (max-width: 768px) {
+            .page-header {
+                padding: var(--spacing-lg) var(--spacing-md) !important;
+                margin-top: 150px !important; /* Significantly increased space for navbar on mobile */
+            }
+            
+            .page-header > div {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
+            
+            .page-header > div > div:last-child {
+                width: 100%;
+                margin-top: var(--spacing-md);
+            }
+            
+            #districtSearch {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            
+            .card-grid {
+                grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr)) !important;
+                gap: var(--spacing-sm) !important;
+            }
+            
+            .district-card {
+                padding: var(--spacing-xs) !important;
+            }
+            
+            .content {
+                padding: var(--spacing-md) !important;
+                margin: var(--spacing-md) 0 !important;
+                width: 100% !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .page-header {
+                padding: var(--spacing-md) var(--spacing-sm) !important;
+                margin-top: 130px !important; /* Significantly increased space for navbar on small mobile */
+            }
+            
+            .page-header h2 {
+                font-size: clamp(1.1rem, 6vw, 1.5rem) !important;
+                line-height: 1.3;
+            }
+            
+            .page-header p {
+                font-size: clamp(0.8rem, 3.5vw, 0.95rem) !important;
+            }
+            
+            .content {
+                padding: var(--spacing-sm) !important;
+                margin: var(--spacing-sm) 0 !important;
+            }
+            
+            .card {
+                padding: var(--spacing-sm) !important;
+            }
+            
+            .card-grid {
+                grid-template-columns: repeat(auto-fill, minmax(min(140px, 100%), 1fr)) !important;
+                gap: var(--spacing-xs) !important;
+            }
+            
+            .district-card .card-title {
+                font-size: 0.85rem !important;
+            }
+            
+            .district-card h3 {
+                font-size: 0.8rem !important;
+            }
+            
+            .district-card p {
+                font-size: 0.75rem !important;
+            }
+            
+            .card .btn {
+                font-size: clamp(0.8rem, 3vw, 0.9rem) !important;
+                padding: var(--spacing-xs) var(--spacing-sm) !important;
+            }
+            
+            .card-title {
+                font-size: clamp(1rem, 4vw, 1.1rem) !important;
+            }
+            
+            .card-body h3 {
+                font-size: clamp(0.95rem, 4vw, 1.1rem) !important;
+            }
+            
+            .card-body p {
+                font-size: clamp(0.85rem, 3vw, 0.95rem) !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -18,9 +241,12 @@
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div>
             <h2>👨‍🏫 ຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ</h2>
-            <p style="margin-bottom: 0;">ຈັດການຂໍ້ມູນຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ ແລະ ຕິດຕາມການເຄື່ອນໄຫວຂອງພວກເຂົາ</p>
+            <p style="margin-bottom: 0;">ຈັດການຂໍ້ມູນຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ ແລະ ຕິດຕາມການເຄື່ອນໄຫວຂອງພວກເຂົາ. ກົດທີ່ເມືອງເພື່ອເພີ່ມຂໍ້ມູນ.</p>
         </div>
-        <a href="uploads/upload-internal-worker.html" class="btn" style="background: white; color: var(--primary-color); border: 2px solid white;">+ ອັບໂຫຼດການເຄື່ອນໄຫວ</a>
+        <div style="position: relative; width: 100%; max-width: 400px;">
+            <input type="text" id="districtSearch" placeholder="ຄົ້ນຫາເມືອງ..." style="width: 100%; padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) calc(var(--spacing-md) + 30px); border: 2px solid white; border-radius: var(--radius-lg); font-size: 1rem; background: rgba(255, 255, 255, 0.95); color: var(--text-primary); box-sizing: border-box;">
+            <span style="position: absolute; left: var(--spacing-md); top: 50%; transform: translateY(-50%); font-size: 1.2rem; pointer-events: none;">🔍</span>
+        </div>
     </div>
 </div>
 
@@ -28,14 +254,104 @@
     <div id="districtsContainer">
         <div style="text-align: center; padding: var(--spacing-2xl);">
             <div class="loading"></div>
-            <p style="margin-top: 1rem; color: var(--text-secondary);">ກຳລັງໂຫຼດເມືອງ...</p>
+            <p style="margin-top: 1rem; color: var(--text-secondary);">ກຳລັງໂຫຼດຂໍ້ມູນ...</p>
         </div>
     </div>
 </section>
 
+<!-- District Form Modal -->
+<div id="districtFormModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-content" style="background-color: white; margin: 5% auto; padding: var(--spacing-xl); border-radius: 16px; width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-xl); padding-bottom: var(--spacing-lg); border-bottom: 2px solid var(--border-color);">
+            <h3 id="districtFormTitle">ສົ່ງຂໍ້ມູນເມືອງ</h3>
+            <span class="close" onclick="closeDistrictForm()" style="color: var(--text-light); font-size: 2rem; font-weight: bold; cursor: pointer; line-height: 1;">&times;</span>
+        </div>
+        <div style="background: white; border-radius: 16px; padding: var(--spacing-lg); border: 1px solid var(--border-color);">
+            <p style="color: var(--text-secondary); margin-bottom: var(--spacing-xl);">ກະລຸນາຕື່ມຂໍ້ມູນຂ້າງລຸ່ມເພື່ອສົ່ງຂໍ້ມູນຫ້ອງການສຶກສາທິການເມືອງຂອງທ່ານ. ຂໍ້ມູນຈະຖືກກວດສອບໂດຍຜູ້ດູແລລະບົບກ່ອນສະແດງຜົນ.</p>
+            
+            <form id="districtUploadForm" enctype="multipart/form-data">
+                <input type="hidden" id="modal_district_name" name="district_name">
+                
+                <div style="margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--border-color);">
+                    <label style="display: block; font-weight: 600; margin-bottom: var(--spacing-sm); color: var(--text-primary);">
+                        1. ຫົວຂໍ້ <span style="color: #dc2626;">*</span>
+                    </label>
+                    <input type="text" id="modal_title" name="title" required placeholder="ຕົວຢ່າງ: ລາຍງານກິດຈະກຳປີ 2024" style="width: 100%; padding: var(--spacing-sm) var(--spacing-md); border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                </div>
+                
+                <div style="margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--border-color);">
+                    <label style="display: block; font-weight: 600; margin-bottom: var(--spacing-sm); color: var(--text-primary);">
+                        2. ລາຍລະອຽດ
+                    </label>
+                    <textarea id="modal_description" name="description" rows="4" placeholder="ອະທິບາຍລາຍລະອຽດກ່ຽວກັບຂໍ້ມູນນີ້..." style="width: 100%; padding: var(--spacing-sm) var(--spacing-md); border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem; font-family: inherit;"></textarea>
+                </div>
+                
+                <div style="margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--border-color);">
+                    <label style="display: block; font-weight: 600; margin-bottom: var(--spacing-sm); color: var(--text-primary);">
+                        3. ເອກະສານ (ຖ້າມີ)
+                    </label>
+                    <div style="font-size: 0.875rem; color: var(--text-light); margin-bottom: var(--spacing-sm);">
+                        ຮູບແບບທີ່ຮອງຮັບ: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, JPG, PNG, GIF, WEBP, BMP (ສູງສຸດ 100MB)
+                    </div>
+                    <div onclick="document.getElementById('modal_district_file').click()" style="border: 2px dashed var(--border-color); border-radius: 8px; padding: var(--spacing-xl); text-align: center; background: var(--bg-secondary); cursor: pointer; transition: all 0.2s;">
+                        <div style="font-size: 2.5rem; margin-bottom: var(--spacing-sm);">☁️</div>
+                        <button type="button" class="btn" style="display: inline-flex; align-items: center; gap: var(--spacing-xs);">
+                            ↑ ເພີ່ມໄຟລ໌
+                        </button>
+                        <input type="file" id="modal_district_file" name="district_file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.webp,.bmp" style="display: none;">
+                    </div>
+                    <div id="modalFilePreview" style="margin-top: var(--spacing-sm);"></div>
+                </div>
+                
+                <div style="margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--border-color);">
+                    <label style="display: block; font-weight: 600; margin-bottom: var(--spacing-sm); color: var(--text-primary);">
+                        4. ລິ້ງ URL (ຖ້າມີ)
+                    </label>
+                    <input type="url" id="modal_link_url" name="link_url" placeholder="https://example.com" style="width: 100%; padding: var(--spacing-sm) var(--spacing-md); border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                    <div style="font-size: 0.875rem; color: var(--text-light); margin-top: var(--spacing-xs);">ສາມາດເປັນລິ້ງເວັບໄຊທ໌, ວິດີໂອ, ຫຼື ລິ້ງອື່ນໆ</div>
+                </div>
+                
+                <div style="margin-bottom: var(--spacing-lg); padding-bottom: var(--spacing-lg); border-bottom: 1px solid var(--border-color);">
+                    <label style="display: block; font-weight: 600; margin-bottom: var(--spacing-sm); color: var(--text-primary);">5. ຂໍ້ມູນຕິດຕໍ່</label>
+                    <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-md); margin-top: var(--spacing-md);">
+                        <div>
+                            <label style="font-size: 0.9rem; display: block; margin-bottom: var(--spacing-xs);">ຊື່</label>
+                            <input type="text" id="modal_contact_name" name="contact_name" placeholder="ຊື່ຜູ້ຕິດຕໍ່" style="width: 100%; padding: var(--spacing-sm) var(--spacing-md); border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.9rem; display: block; margin-bottom: var(--spacing-xs);">ອີເມວ</label>
+                            <input type="email" id="modal_contact_email" name="contact_email" placeholder="email@example.com" style="width: 100%; padding: var(--spacing-sm) var(--spacing-md); border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.9rem; display: block; margin-bottom: var(--spacing-xs);">ເບີໂທ</label>
+                            <input type="tel" id="modal_contact_phone" name="contact_phone" placeholder="020 xxxxxxxx" style="width: 100%; padding: var(--spacing-sm) var(--spacing-md); border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: var(--spacing-lg);">
+                    <label style="display: block; font-weight: 600; margin-bottom: var(--spacing-sm); color: var(--text-primary);">
+                        6. ວັນທີ <span style="color: #dc2626;">*</span>
+                    </label>
+                    <input type="date" id="modal_date_created" name="date_created" required style="width: 100%; padding: var(--spacing-sm) var(--spacing-md); border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                </div>
+                
+                <div id="modalResult"></div>
+                
+                <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl); padding-top: var(--spacing-lg); border-top: 2px solid var(--border-color);">
+                    <button type="submit" class="btn btn-primary" id="modalSubmitBtn" style="flex: 1;">ສົ່ງຂໍ້ມູນ</button>
+                    <button type="button" class="btn btn-outline" onclick="closeDistrictForm()" style="flex: 1;">ຍົກເລີກ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div id="footer"></div>
 <script src="assets/js/main.js"></script>
 <script>
+let allDistricts = [];
+
 // Load and display districts
 function loadDistricts() {
     fetch('backend/fetch-districts.php')
@@ -47,82 +363,21 @@ function loadDistricts() {
                 container.innerHTML = `
                     <div class="card">
                         <div class="card-body" style="text-align: center; padding: var(--spacing-2xl);">
-                            <p style="color: #dc2626;">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດເມືອງ: ${data.error}</p>
+                            <p style="color: #dc2626;">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດຂໍ້ມູນ: ${data.error}</p>
                         </div>
                     </div>
                 `;
                 return;
             }
             
-            if (!data || data.length === 0) {
-                container.innerHTML = `
-                    <div class="card-grid" style="grid-template-columns: 1fr;">
-                        <div class="card">
-                            <div class="card-title">👨‍🏫 ການຈັດການຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ</div>
-                            <div class="card-body">
-                                <p>ຕິດຕາມຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ ແລະ ກິດຈະກຳຂອງພວກເຂົາດ້ວຍປະຫວັດການເຄື່ອນໄຫວລາຍລະອຽດ ແລະ ການວິເຄາະປະສິດທິພາບ. ອັບໂຫຼດຂໍ້ມູນການເຄື່ອນໄຫວໂດຍໃຊ້ປຸ່ມຂ້າງເທິງເພື່ອຮັກສາບັນທຶກທີ່ຖືກຕ້ອງ.</p>
-                                <div style="margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%); border-radius: var(--radius-xl); border: 2px dashed var(--border-color); text-align: center;">
-                                    <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
-                                    <p style="color: var(--text-secondary); margin: 0; font-size: 1.1rem; font-weight: 500;">ຍັງບໍ່ມີຂໍ້ມູນເມືອງ. ຜູ້ດູແລລະບົບຕ້ອງເພີ່ມຂໍ້ມູນເມືອງ.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                return;
-            }
-            
-            // Display districts in a grid (up to 40 districts)
-            const districtsToShow = data.slice(0, 40);
-            container.innerHTML = `
-                <div class="card-grid" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">
-                    ${districtsToShow.map(district => `
-                        <div class="card" style="display: flex; flex-direction: column; height: 100%;">
-                            <div class="card-title" style="font-size: 1.1rem; padding-bottom: var(--spacing-md); border-bottom: 2px solid var(--border-color); margin-bottom: var(--spacing-md);">
-                                🏛️ ${district.district_name || 'ເມືອງ'}
-                            </div>
-                            <div class="card-body" style="flex: 1; display: flex; flex-direction: column;">
-                                <div style="flex: 1;">
-                                    <h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: var(--spacing-sm);">
-                                        ${district.title || 'ບໍ່ມີຫົວຂໍ້'}
-                                    </h3>
-                                    ${district.description ? `
-                                        <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin-bottom: var(--spacing-md);">
-                                            ${district.description.length > 150 ? district.description.substring(0, 150) + '...' : district.description}
-                                        </p>
-                                    ` : ''}
-                                </div>
-                                <div style="margin-top: auto; padding-top: var(--spacing-md); border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: var(--spacing-sm);">
-                                    ${district.file_url ? `
-                                        <a href="${district.file_url}" target="_blank" class="btn" style="background: var(--secondary-gradient); font-size: 0.9rem; padding: var(--spacing-sm) var(--spacing-md); text-decoration: none; display: inline-flex; align-items: center; gap: var(--spacing-xs);">
-                                            📄 ເບິ່ງເອກະສານ
-                                        </a>
-                                    ` : ''}
-                                    ${district.link_url ? `
-                                        <a href="${district.link_url}" target="_blank" class="btn" style="background: var(--accent-gradient); font-size: 0.9rem; padding: var(--spacing-sm) var(--spacing-md); text-decoration: none; display: inline-flex; align-items: center; gap: var(--spacing-xs);">
-                                            🔗 ເປີດລິ້ງ
-                                        </a>
-                                    ` : ''}
-                                    ${!district.file_url && !district.link_url ? `
-                                        <p style="color: var(--text-light); font-size: 0.85rem; text-align: center; margin: 0;">ບໍ່ມີເອກະສານ ຫຼື ລິ້ງທີ່ມີຢູ່</p>
-                                    ` : ''}
-                                    ${district.date_created ? `
-                                        <p style="color: var(--text-light); font-size: 0.8rem; margin-top: var(--spacing-xs); margin-bottom: 0; text-align: center;">
-                                            📅 ${new Date(district.date_created).toLocaleDateString('lo-LA', { year: 'numeric', month: 'long', day: 'numeric' })}
-                                        </p>
-                                    ` : ''}
-                                </div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
+            allDistricts = data || [];
+            filterAndDisplayDistricts();
         })
         .catch(error => {
             document.getElementById('districtsContainer').innerHTML = `
                 <div class="card">
                     <div class="card-body" style="text-align: center; padding: var(--spacing-2xl);">
-                        <p style="color: #dc2626;">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດເມືອງ. ກະລຸນາລອງໃໝ່ອີກຄັ້ງ.</p>
+                        <p style="color: #dc2626;">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດຂໍ້ມູນ. ກະລຸນາລອງໃໝ່ອີກຄັ້ງ.</p>
                     </div>
                 </div>
             `;
@@ -130,9 +385,274 @@ function loadDistricts() {
         });
 }
 
+// Filter and display districts based on search
+function filterAndDisplayDistricts() {
+    const container = document.getElementById('districtsContainer');
+    const searchTerm = document.getElementById('districtSearch')?.value.toLowerCase().trim() || '';
+    
+    if (!allDistricts || allDistricts.length === 0) {
+        container.innerHTML = `
+            <div class="card-grid" style="grid-template-columns: 1fr;">
+                <div class="card">
+                    <div class="card-title">👨‍🏫 ການຈັດການຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ</div>
+                    <div class="card-body">
+                        <p>ຕິດຕາມຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ ແລະ ກິດຈະກຳຂອງພວກເຂົາດ້ວຍປະຫວັດການເຄື່ອນໄຫວລາຍລະອຽດ ແລະ ການວິເຄາະປະສິດທິພາບ. ກົດທີ່ເມືອງເພື່ອເພີ່ມຂໍ້ມູນ.</p>
+                        <div style="margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%); border-radius: var(--radius-xl); border: 2px dashed var(--border-color); text-align: center;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
+                            <p style="color: var(--text-secondary); margin: 0; font-size: 1.1rem; font-weight: 500;">ຍັງບໍ່ມີຂໍ້ມູນເມືອງ. ຜູ້ດູແລລະບົບຕ້ອງເພີ່ມເມືອງກ່ອນ.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    // Filter districts based on search term
+    const filteredDistricts = allDistricts.filter(district => {
+        if (!searchTerm) return true;
+        const districtName = (district.district_name || '').toLowerCase();
+        const title = (district.title || '').toLowerCase();
+        const description = (district.description || '').toLowerCase();
+        return districtName.includes(searchTerm) || title.includes(searchTerm) || description.includes(searchTerm);
+    });
+    
+    if (filteredDistricts.length === 0) {
+        container.innerHTML = `
+            <div class="card">
+                <div class="card-body" style="text-align: center; padding: var(--spacing-2xl);">
+                    <p style="color: var(--text-secondary); font-size: 1.1rem;">ບໍ່ພົບເມືອງທີ່ກົງກັບການຄົ້ນຫາ "${searchTerm}"</p>
+                    <p style="color: var(--text-light); font-size: 0.9rem; margin-top: var(--spacing-sm);">ລອງຄົ້ນຫາດ້ວຍຊື່ເມືອງອື່ນ</p>
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    // Display filtered districts in a compact grid
+    container.innerHTML = `
+        <div class="card-grid">
+            ${filteredDistricts.map(district => `
+                <div class="card district-card" onclick="openDistrictForm('${(district.district_name || '').replace(/'/g, "\\'")}')" style="display: flex; flex-direction: column; height: 100%;">
+                    <div class="card-title" style="font-size: 0.95rem; padding-bottom: var(--spacing-xs); border-bottom: 1px solid var(--border-color); margin-bottom: var(--spacing-xs);">
+                        🏛️ ${district.district_name || 'ເມືອງ'}
+                    </div>
+                    <div class="card-body" style="flex: 1; display: flex; flex-direction: column; padding: var(--spacing-xs);">
+                        ${district.title ? `
+                            <h3 style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: var(--spacing-xs); line-height: 1.3;">
+                                ${district.title.length > 50 ? district.title.substring(0, 50) + '...' : district.title}
+                            </h3>
+                        ` : '<p style="color: var(--text-light); font-size: 0.8rem; margin: 0;">ກົດເພື່ອເພີ່ມຂໍ້ມູນ</p>'}
+                        ${district.description ? `
+                            <p style="color: var(--text-secondary); font-size: 0.75rem; line-height: 1.4; margin-bottom: var(--spacing-xs); flex: 1;">
+                                ${district.description.length > 80 ? district.description.substring(0, 80) + '...' : district.description}
+                            </p>
+                        ` : ''}
+                        <div style="margin-top: auto; padding-top: var(--spacing-xs); border-top: 1px solid var(--border-color); font-size: 0.7rem; color: var(--text-light);">
+                            ${district.date_created ? new Date(district.date_created).toLocaleDateString('lo-LA', { year: 'numeric', month: 'short', day: 'numeric' }) : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+let uploadedFilePath = null;
+
+// Open district form modal
+function openDistrictForm(districtName) {
+    document.getElementById('modal_district_name').value = districtName;
+    document.getElementById('districtFormTitle').textContent = 'ສົ່ງຂໍ້ມູນເມືອງ: ' + districtName;
+    document.getElementById('districtFormModal').style.display = 'block';
+    document.getElementById('districtUploadForm').reset();
+    document.getElementById('modal_district_name').value = districtName;
+    document.getElementById('modalFilePreview').innerHTML = '';
+    document.getElementById('modalResult').innerHTML = '';
+    uploadedFilePath = null;
+    document.getElementById('modal_date_created').valueAsDate = new Date();
+}
+
+// Close district form modal
+function closeDistrictForm() {
+    document.getElementById('districtFormModal').style.display = 'none';
+    document.getElementById('modalResult').innerHTML = '';
+}
+
+// File upload handling for modal
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('modal_district_file');
+    if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            fetch('backend/upload-district-file-user.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    uploadedFilePath = data.file_path;
+                    document.getElementById('modalFilePreview').innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: var(--spacing-sm); background: var(--bg-secondary); border-radius: 8px; margin-top: var(--spacing-sm);">
+                            <div>
+                                <strong>${file.name}</strong>
+                                <div style="font-size: 0.875rem; color: var(--text-light);">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+                            </div>
+                            <button type="button" onclick="clearModalFile()" style="color: #dc2626; background: none; border: none; cursor: pointer; text-decoration: underline;">ລຶບ</button>
+                        </div>
+                    `;
+                } else {
+                    alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ບໍ່ສາມາດອັບໂຫຼດໄຟລ໌ໄດ້'));
+                }
+            })
+            .catch(error => {
+                alert('ເກີດຂໍ້ຜິດພາດໃນການອັບໂຫຼດໄຟລ໌');
+                console.error(error);
+            });
+        });
+    }
+    
+    // Form submission
+    const form = document.getElementById('districtUploadForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            if (uploadedFilePath) {
+                formData.append('file_path', uploadedFilePath);
+            }
+            
+            const submitBtn = document.getElementById('modalSubmitBtn');
+            const originalText = submitBtn.textContent;
+            const result = document.getElementById('modalResult');
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'ກຳລັງສົ່ງ...';
+            result.innerHTML = '';
+            
+            fetch('backend/submit-district-info.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    result.innerHTML = '<div style="padding: var(--spacing-md); background: #d1fae5; color: #059669; border-radius: 8px; margin-top: var(--spacing-md);">✅ ' + data.message + '</div>';
+                    setTimeout(() => {
+                        closeDistrictForm();
+                        loadDistricts();
+                    }, 2000);
+                } else {
+                    result.innerHTML = '<div style="padding: var(--spacing-md); background: #fee2e2; color: #dc2626; border-radius: 8px; margin-top: var(--spacing-md);">❌ ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ສົ່ງບໍ່ສຳເລັດ') + '</div>';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                }
+            })
+            .catch(error => {
+                result.innerHTML = '<div style="padding: var(--spacing-md); background: #fee2e2; color: #dc2626; border-radius: 8px; margin-top: var(--spacing-md);">❌ ເກີດຂໍ້ຜິດພາດໃນການສົ່ງຂໍ້ມູນ</div>';
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                console.error('Error:', error);
+            });
+        });
+    }
+    
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('districtFormModal');
+        if (event.target == modal) {
+            closeDistrictForm();
+        }
+    }
+});
+
+function clearModalFile() {
+    document.getElementById('modal_district_file').value = '';
+    document.getElementById('modalFilePreview').innerHTML = '';
+    uploadedFilePath = null;
+}
+
+// Adjust page header margin based on navbar height
+function adjustPageHeaderSpacing() {
+    const navbar = document.querySelector('.navbar');
+    const pageHeader = document.querySelector('.page-header');
+    
+    if (navbar && pageHeader) {
+        const navbarHeight = navbar.offsetHeight;
+        // Add extra padding (50px) for visual spacing to ensure button is fully visible
+        const requiredMargin = navbarHeight + 50;
+        pageHeader.style.marginTop = `${requiredMargin}px`;
+        
+        // Ensure button is visible
+        const btn = pageHeader.querySelector('.btn');
+        if (btn) {
+            btn.style.position = 'relative';
+            btn.style.zIndex = '2';
+            btn.style.visibility = 'visible';
+            btn.style.opacity = '1';
+        }
+    }
+}
+
 // Load districts when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    // Wait for navbar to be fully loaded and rendered
+    function waitForNavbar() {
+        const navbar = document.querySelector('.navbar');
+        if (navbar && navbar.offsetHeight > 0) {
+            adjustPageHeaderSpacing();
+            // Adjust again after navbar content is fully loaded
+            setTimeout(adjustPageHeaderSpacing, 200);
+            setTimeout(adjustPageHeaderSpacing, 500);
+        } else {
+            // If navbar not ready, wait a bit more
+            setTimeout(waitForNavbar, 100);
+        }
+    }
+    
+    // Start checking for navbar
+    waitForNavbar();
+    
     loadDistricts();
+    
+    // Add search functionality
+    const searchInput = document.getElementById('districtSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            filterAndDisplayDistricts();
+        });
+        
+        // Also search on Enter key
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                filterAndDisplayDistricts();
+            }
+        });
+    }
+    
+    // Adjust on window resize
+    window.addEventListener('resize', function() {
+        setTimeout(adjustPageHeaderSpacing, 100);
+    });
+    
+    // Also adjust when navbar content changes (menu items loaded)
+    const observer = new MutationObserver(function() {
+        adjustPageHeaderSpacing();
+    });
+    
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+        observer.observe(navbar, { childList: true, subtree: true, attributes: true });
+    }
 });
 </script>
 </body>

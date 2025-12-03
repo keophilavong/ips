@@ -95,6 +95,12 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    /* Prevent horizontal scrolling on mobile */
+    width: 100%;
+    max-width: 100vw;
+    position: relative;
+    /* Ensure content can scroll vertically */
+    overflow-y: auto;
 }
 
 /* ===== Typography - Premium System ===== */
@@ -588,13 +594,19 @@ a:hover {
     color: white;
     text-align: center;
     position: relative;
-    overflow: hidden;
-    min-height: 600px;
+    overflow: visible; /* Changed from hidden to visible to show all content */
+    min-height: auto; /* Changed from fixed 600px to auto to accommodate all content */
     display: flex;
     align-items: center;
     justify-content: center;
     margin-top: 80px; /* Space for fixed navbar */
     width: 100%;
+    box-sizing: border-box;
+    /* Ensure hero content is fully visible */
+    max-width: 100vw;
+    /* Allow content to expand naturally */
+    padding-top: var(--spacing-3xl);
+    padding-bottom: var(--spacing-3xl);
 }
 
 /* Background image layer with transparency - behind gradient */
@@ -612,6 +624,8 @@ a:hover {
     opacity: 0.3; /* Adjust this value (0-1) to control image transparency - lower = more transparent */
     z-index: 0;
     pointer-events: none;
+    /* Ensure background covers all content */
+    min-height: 100%;
 }
 
 /* Gradient overlay - on top of image */
@@ -630,6 +644,8 @@ a:hover {
     z-index: 1;
     animation: heroGlow 8s ease-in-out infinite alternate;
     pointer-events: none;
+    /* Ensure overlay covers all content */
+    min-height: 100%;
 }
 
 @keyframes heroGlow {
@@ -647,7 +663,10 @@ a:hover {
     animation: fadeInUp 1s ease-out;
     width: 100%;
     box-sizing: border-box;
-    padding: 0 var(--spacing-md);
+    padding: var(--spacing-lg) var(--spacing-md); /* Added vertical padding */
+    /* Ensure all content is visible */
+    overflow: visible;
+    min-height: auto;
 }
 
 @keyframes fadeInUp {
@@ -696,7 +715,10 @@ a:hover {
     text-align: center;
     width: 100%;
     box-sizing: border-box;
-    padding: 0 var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-sm);
+    /* Ensure text is fully visible */
+    overflow: visible;
+    word-wrap: break-word;
 }
 
 @keyframes float {
@@ -719,6 +741,9 @@ a:hover {
     width: 100%;
     box-sizing: border-box;
     line-height: 1.3;
+    /* Ensure text is fully visible */
+    overflow: visible;
+    display: block;
 }
 
 .hero-logo-text > div:last-child {
@@ -732,6 +757,9 @@ a:hover {
     width: 100%;
     box-sizing: border-box;
     line-height: 1.4;
+    /* Ensure text is fully visible */
+    overflow: visible;
+    display: block;
 }
 
 .hero h1 {
@@ -781,6 +809,37 @@ a:hover {
     overflow: visible;
     width: 100%;
     box-sizing: border-box;
+    /* Prevent content overflow */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    /* Ensure content is fully visible */
+    min-height: auto;
+    display: block;
+}
+
+/* Responsive content padding */
+@media (max-width: 1024px) {
+    .content {
+        margin: var(--spacing-2xl) var(--spacing-lg);
+        padding: var(--spacing-2xl);
+        width: calc(100% - 2 * var(--spacing-lg));
+    }
+}
+
+@media (max-width: 768px) {
+    .content {
+        margin: var(--spacing-xl) var(--spacing-md);
+        padding: var(--spacing-xl);
+        width: calc(100% - 2 * var(--spacing-md));
+    }
+}
+
+@media (max-width: 480px) {
+    .content {
+        margin: var(--spacing-md) var(--spacing-sm);
+        padding: var(--spacing-md);
+        width: calc(100% - 2 * var(--spacing-sm));
+    }
 }
 
 .content::before {
@@ -897,6 +956,33 @@ a:hover {
     grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
     gap: var(--spacing-xl);
     margin: var(--spacing-xl) 0;
+    width: 100%;
+    box-sizing: border-box;
+    /* Ensure all cards are visible */
+    grid-auto-rows: min-content;
+}
+
+/* Responsive card grid */
+@media (max-width: 1024px) {
+    .card-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--spacing-lg);
+    }
+}
+
+@media (max-width: 768px) {
+    .card-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+        margin: var(--spacing-lg) 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-grid {
+        gap: var(--spacing-sm);
+        margin: var(--spacing-md) 0;
+    }
 }
 
 /* ===== Buttons - Premium Design ===== */
@@ -921,6 +1007,10 @@ a:hover {
     overflow: hidden;
     letter-spacing: 0.3px;
     /* Removed uppercase for better readability */
+    min-height: 44px; /* Minimum touch target size for mobile */
+    min-width: 44px; /* Ensure buttons are easily tappable */
+    touch-action: manipulation; /* Prevent double-tap zoom on mobile */
+    -webkit-tap-highlight-color: rgba(30, 64, 175, 0.2); /* Better tap feedback */
 }
 
 .btn::before {
@@ -1011,6 +1101,10 @@ a:hover {
     background: var(--bg-primary);
     color: var(--text-primary);
     font-family: 'Noto Sans Lao', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    min-height: 44px; /* Minimum touch target for mobile */
+    -webkit-appearance: none; /* Remove iOS default styling */
+    appearance: none;
+    box-sizing: border-box;
 }
 
 .form-control:focus {
@@ -1024,6 +1118,25 @@ a:hover {
 .form-control::placeholder {
     color: var(--text-light);
     font-weight: 400;
+}
+
+/* Mobile form improvements */
+@media (max-width: 768px) {
+    .form-control {
+        font-size: 16px; /* Prevent iOS zoom on focus */
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"],
+    textarea,
+    select {
+        font-size: 16px !important; /* Prevent zoom on iOS */
+    }
 }
 
 textarea.form-control {
@@ -1271,6 +1384,24 @@ footer {
     margin-top: auto;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    /* Ensure footer is visible */
+    display: block;
+    flex-shrink: 0;
+}
+
+/* Responsive footer */
+@media (max-width: 768px) {
+    footer {
+        padding: var(--spacing-xl) var(--spacing-md);
+    }
+}
+
+@media (max-width: 480px) {
+    footer {
+        padding: var(--spacing-lg) var(--spacing-sm);
+    }
 }
 
 footer::before {
@@ -1365,6 +1496,27 @@ footer p:first-child {
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-lg);
     border: 1px solid var(--border-light);
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) var(--bg-secondary);
+}
+
+.table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: var(--radius-md);
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
 }
 
 table {
@@ -1373,6 +1525,7 @@ table {
     background: var(--bg-primary);
     border-radius: var(--radius-xl);
     overflow: hidden;
+    min-width: 600px; /* Minimum width for table content */
 }
 
 thead {
@@ -1384,6 +1537,8 @@ th, td {
     padding: var(--spacing-lg) var(--spacing-xl);
     text-align: left;
     border-bottom: 1px solid var(--border-color);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 th {
@@ -1391,6 +1546,7 @@ th {
     text-transform: uppercase;
     font-size: 0.875rem;
     letter-spacing: 1px;
+    white-space: nowrap; /* Prevent header text wrapping */
 }
 
 tbody tr {
@@ -1405,6 +1561,43 @@ tbody tr:hover {
 
 tbody tr:last-child td {
     border-bottom: none;
+}
+
+/* Responsive table improvements */
+@media (max-width: 768px) {
+    .table-container {
+        margin: var(--spacing-md) 0;
+        border-radius: var(--radius-lg);
+    }
+    
+    th, td {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 0.875rem;
+    }
+    
+    th {
+        font-size: 0.75rem;
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    table {
+        min-width: 500px; /* Smaller minimum for mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    th, td {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: 0.8rem;
+    }
+    
+    th {
+        font-size: 0.7rem;
+    }
+    
+    table {
+        min-width: 400px;
+    }
 }
 
 /* ===== Badges - Premium Design ===== */
@@ -1440,12 +1633,12 @@ tbody tr:last-child td {
     background: var(--primary-gradient);
     padding: var(--spacing-3xl) var(--spacing-xl);
     color: white;
-    margin-top: 80px; /* Space for fixed navbar */
+    margin-top: 200px; /* Significantly increased space for fixed navbar with multiple rows */
     margin-bottom: var(--spacing-2xl);
     border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
     box-shadow: var(--shadow-xl);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .page-header::before {
@@ -1578,6 +1771,9 @@ tbody tr:last-child td {
     
     .mobile-menu-toggle {
         margin-left: auto;
+        min-width: 44px; /* Touch-friendly */
+        min-height: 44px;
+        padding: var(--spacing-sm);
     }
     
     .user-menu {
@@ -1585,9 +1781,10 @@ tbody tr:last-child td {
     }
     
     .navbar .btn-login {
-        padding: var(--spacing-xs) var(--spacing-md);
-        font-size: 0.8rem;
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 0.9rem;
         white-space: nowrap;
+        min-height: 44px; /* Touch-friendly */
     }
     
     .hero {
@@ -1627,12 +1824,16 @@ tbody tr:last-child td {
     
     .content {
         padding: var(--spacing-lg) var(--spacing-md);
-        margin: var(--spacing-md) var(--spacing-sm);
+        margin: var(--spacing-xl) var(--spacing-md);
         border-radius: var(--radius-lg);
+        width: calc(100% - 2 * var(--spacing-md));
+        max-width: 100%;
     }
     
     .content > div {
         padding: 0;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     .content h2 {
@@ -1652,6 +1853,7 @@ tbody tr:last-child td {
     
     .card {
         padding: var(--spacing-md);
+        margin: 0; /* Remove any default margins */
     }
     
     .card-title {
@@ -1664,7 +1866,7 @@ tbody tr:last-child td {
     
     .page-header {
         padding: var(--spacing-lg) var(--spacing-md);
-        margin-top: 70px; /* Space for fixed navbar on mobile */
+        margin-top: 100px; /* Space for fixed navbar on mobile (increased for better visibility) */
     }
     
     .page-header h2 {
@@ -1689,6 +1891,23 @@ tbody tr:last-child td {
     
     body {
         font-size: 15px;
+    }
+    
+    /* Ensure all interactive elements are touch-friendly */
+    a, button, input, select, textarea {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Better spacing for mobile */
+    .card-grid {
+        gap: var(--spacing-md);
+    }
+    
+    /* Prevent text overflow */
+    * {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
     
     .navbar-container {
@@ -1736,7 +1955,9 @@ tbody tr:last-child td {
     
     .content {
         padding: var(--spacing-md) var(--spacing-sm);
-        margin: var(--spacing-sm);
+        margin: var(--spacing-lg) var(--spacing-sm);
+        width: calc(100% - 2 * var(--spacing-sm));
+        max-width: 100%;
     }
     
     .content h2 {
@@ -1768,7 +1989,7 @@ tbody tr:last-child td {
     
     .page-header {
         padding: var(--spacing-md) var(--spacing-sm);
-        margin-top: 70px; /* Space for fixed navbar on small mobile */
+        margin-top: 90px; /* Space for fixed navbar on small mobile (increased for better visibility) */
     }
     
     .page-header h2 {
@@ -1852,4 +2073,70 @@ html {
 ::-moz-selection {
     background: var(--primary-color);
     color: white;
+}
+
+/* ===== Image Responsiveness ===== */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Prevent images from overflowing containers */
+.content img,
+.card img,
+.activity-image-container img {
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* ===== Additional Mobile Optimizations ===== */
+@media (max-width: 768px) {
+    /* Better text rendering on mobile */
+    body {
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+    
+    /* Prevent horizontal scrolling */
+    * {
+        max-width: 100%;
+    }
+    
+    /* Better spacing for mobile */
+    section {
+        padding-left: var(--spacing-sm);
+        padding-right: var(--spacing-sm);
+    }
+    
+    /* Improve button spacing on mobile */
+    .btn + .btn {
+        margin-top: var(--spacing-sm);
+    }
+}
+
+/* ===== Accessibility Improvements ===== */
+/* Focus visible for keyboard navigation */
+*:focus-visible {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* Skip to content link for accessibility */
+.skip-to-content {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--primary-color);
+    color: white;
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-decoration: none;
+    z-index: 10000;
+    border-radius: 0 0 var(--radius-md) 0;
+}
+
+.skip-to-content:focus {
+    top: 0;
 }

@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ພະແນກບໍລິຫານ - Department of Administration</title>
+    <link rel="icon" type="image/png" href="assets/images/edu.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .content {
+            padding: var(--spacing-xl) 0;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e3a8a 100%);
+            color: white;
+            padding: var(--spacing-2xl) var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+            overflow: visible;
+        }
+        
+        .page-header h2 {
+            color: white;
+            margin-bottom: var(--spacing-sm);
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            line-height: 1.4;
+        }
+        
+        .page-header p {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+        }
+        
+        /* Enhanced Toolbar */
+        .activities-toolbar {
+            background: var(--bg-primary);
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-xl);
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+            flex-wrap: wrap;
+            border: 1px solid var(--border-light);
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-lg) var(--spacing-sm) 3rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all var(--transition-base);
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: var(--bg-primary);
+            box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.1);
+        }
+        
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: var(--spacing-md);
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            pointer-events: none;
+        }
+        
+        .filter-select {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: var(--bg-primary);
+            box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.1);
+        }
+        
+        .activities-count {
+            color: var(--text-secondary);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        /* Professional Activities Grid */
+        .activities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+        }
+        
+        .activity-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            height: 100%;
+        }
+        
+        .activity-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+            z-index: 1;
+        }
+        
+        .activity-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary-light);
+        }
+        
+        .activity-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .activity-media-container {
+            width: 100%;
+            height: 320px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            cursor: pointer;
+        }
+        
+        .activity-media-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .activity-card:hover .activity-media-container img {
+            transform: scale(1.1);
+        }
+        
+        .activity-video-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: #000;
+        }
+        
+        .activity-video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .activity-media-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            font-size: 4rem;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        }
+        
+        .media-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .activity-card:hover .media-overlay {
+            opacity: 1;
+        }
+        
+        .activity-content {
+            padding: var(--spacing-xl);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .activity-title {
+            font-size: 1.625rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .activity-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+        
+        .activity-date {
+            color: #6b7280;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .activity-description {
+            color: #4b5563;
+            font-size: 1rem;
+            line-height: 1.75;
+            flex-grow: 1;
+            margin-bottom: var(--spacing-md);
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .activity-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+            margin-top: auto;
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .btn-action {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            font-size: 0.875rem;
+            flex: 1;
+            min-width: 100px;
+        }
+        
+        .btn-video {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-video:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+        
+        .btn-document {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-document:hover {
+            background: #1e3a8a;
+            transform: translateY(-2px);
+        }
+        
+        .btn-link {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-link:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+        
+        .btn-image {
+            background: #8b5cf6;
+            color: white;
+        }
+        
+        .btn-image:hover {
+            background: #7c3aed;
+            transform: translateY(-2px);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: var(--spacing-3xl);
+            color: var(--text-secondary);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-3xl);
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border-radius: var(--radius-xl);
+            border: 2px dashed var(--border-color);
+        }
+        
+        .empty-state-icon {
+            font-size: 5rem;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .empty-state h3 {
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+        
+        /* Image Lightbox Modal */
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(8px);
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .image-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .image-modal-content {
+            position: relative;
+            max-width: 98%;
+            max-height: 98vh;
+            margin: var(--spacing-md) auto;
+            animation: zoomIn 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .image-modal-content img {
+            max-width: 100%;
+            max-height: 92vh;
+            width: auto;
+            height: auto;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .image-modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 2001;
+            font-size: 2.5rem;
+            color: white;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .image-modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+        
+        .image-modal-info {
+            margin-top: var(--spacing-md);
+            text-align: center;
+            color: white;
+            max-width: 90%;
+            padding: var(--spacing-md);
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: var(--radius-md);
+            backdrop-filter: blur(10px);
+        }
+        
+        .image-modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .image-modal-description {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            .activities-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .activities-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                min-width: 100%;
+            }
+            
+            .activity-media-container {
+                height: 240px;
+            }
+            
+            .image-modal-close {
+                top: 10px;
+                right: 10px;
+            }
+            
+            .image-modal-info {
+                bottom: 20px;
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="navbar"></div>
+
+<div class="page-header">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h2>🏛️ ພະແນກບໍລິຫານ</h2>
+            <p style="margin-bottom: 0;">ຂໍ້ມູນການເຄື່ອນໄຫວ, ກິດຈະກຳ, ແລະ ເອກະສານຂອງພະແນກບໍລິຫານ</p>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <!-- Enhanced Toolbar with Search & Filters -->
+    <div class="activities-toolbar">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="ຄົ້ນຫາກິດຈະກຳຕາມຫົວຂໍ້ ຫຼື ລາຍລະອຽດ..." autocomplete="off">
+        </div>
+        <div class="filter-group">
+            <select id="sortSelect" class="filter-select">
+                <option value="newest">ໃໝ່ທີ່ສຸດກ່ອນ</option>
+                <option value="oldest">ເກົ່າທີ່ສຸດກ່ອນ</option>
+                <option value="title-asc">ຫົວຂໍ້ (ກ-ຮ)</option>
+                <option value="title-desc">ຫົວຂໍ້ (ຮ-ກ)</option>
+            </select>
+        </div>
+        <div class="activities-count">
+            <span id="activityCount">0</span> ກິດຈະກຳ
+        </div>
+    </div>
+    
+    <!-- Activities Container -->
+    <div id="activities-container">
+        <div class="loading">
+            <div class="loading"></div>
+            <p style="margin-top: 1rem;">ກຳລັງໂຫຼດກິດຈະກຳ...</p>
+        </div>
+    </div>
+</section>
+
+<!-- Image Lightbox Modal -->
+<div id="imageModal" class="image-modal">
+    <div class="image-modal-content">
+        <button class="image-modal-close" onclick="closeImageModal()">&times;</button>
+        <img id="modalImage" src="" alt="">
+        <div class="image-modal-info">
+            <div class="image-modal-title" id="modalTitle"></div>
+            <div class="image-modal-description" id="modalDescription"></div>
+        </div>
+    </div>
+</div>
+
+<div id="footer"></div>
+<script src="assets/js/main.js"></script>
+<script>
+// Check if URL is a video URL
+function isVideoURL(url) {
+    if (!url) return false;
+    const videoDomains = ['youtube.com', 'youtu.be', 'vimeo.com', 'dailymotion.com', 'facebook.com/watch', 'video'];
+    return videoDomains.some(domain => url.toLowerCase().includes(domain));
+}
+
+// Convert YouTube URL to embed URL
+function getYouTubeEmbedURL(url) {
+    if (!url) return null;
+    
+    // Handle youtu.be short URLs
+    if (url.includes('youtu.be/')) {
+        const videoId = url.split('youtu.be/')[1].split('?')[0];
+        return `https://www.youtube.com/embed/${videoId}`;
+    }
+    
+    // Handle youtube.com URLs
+    if (url.includes('youtube.com/watch')) {
+        const urlParams = new URLSearchParams(url.split('?')[1]);
+        const videoId = urlParams.get('v');
+        if (videoId) {
+            return `https://www.youtube.com/embed/${videoId}`;
+        }
+    }
+    
+    return null;
+}
+
+// Convert Vimeo URL to embed URL
+function getVimeoEmbedURL(url) {
+    if (!url || !url.includes('vimeo.com')) return null;
+    
+    const match = url.match(/vimeo.com\/(\d+)/);
+    if (match && match[1]) {
+        return `https://player.vimeo.com/video/${match[1]}`;
+    }
+    
+    return null;
+}
+
+let allActivities = [];
+let filteredActivities = [];
+
+// Open image modal
+function openImageModal(imageUrl, title, description) {
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDescription = document.getElementById('modalDescription');
+    
+    if (!modal || !modalImage) {
+        console.error('Modal elements not found');
+        return;
+    }
+    
+    modalImage.src = imageUrl;
+    modalImage.alt = title || 'ຮູບພາບກິດຈະກຳ';
+    
+    modalImage.onerror = function() {
+        console.error('Failed to load image in modal:', imageUrl);
+        this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23f3f4f6" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%239ca3af" font-family="Arial" font-size="18"%3Eບໍ່ພົບຮູບພາບ%3C/text%3E%3C/svg%3E';
+    };
+    
+    modalTitle.textContent = title || 'Activity Image';
+    modalDescription.textContent = description || '';
+    
+    document.body.style.overflow = 'hidden';
+    modal.classList.add('active');
+}
+
+// Close image modal
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(event) {
+    const modal = document.getElementById('imageModal');
+    if (event.target === modal) {
+        closeImageModal();
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const modal = document.getElementById('imageModal');
+        if (modal.classList.contains('active')) {
+            closeImageModal();
+        }
+    }
+});
+
+// Filter and search activities
+function filterAndSearchActivities() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    const sortOption = document.getElementById('sortSelect').value;
+    
+    // Filter by search
+    filteredActivities = allActivities.filter(activity => {
+        const matchesSearch = !searchTerm || 
+            (activity.title && activity.title.toLowerCase().includes(searchTerm)) ||
+            (activity.description && activity.description.toLowerCase().includes(searchTerm));
+        return matchesSearch;
+    });
+    
+    // Sort activities
+    filteredActivities.sort((a, b) => {
+        switch(sortOption) {
+            case 'newest':
+                return new Date(b.date_created) - new Date(a.date_created);
+            case 'oldest':
+                return new Date(a.date_created) - new Date(b.date_created);
+            case 'title-asc':
+                return (a.title || '').localeCompare(b.title || '');
+            case 'title-desc':
+                return (b.title || '').localeCompare(a.title || '');
+            default:
+                return 0;
+        }
+    });
+    
+    // Update count and display
+    document.getElementById('activityCount').textContent = filteredActivities.length;
+    displayActivities(filteredActivities);
+}
+
+// Display activities
+function displayActivities(activities) {
+    const container = document.getElementById('activities-container');
+    
+    if (activities.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">🔍</div>
+                <h3>ບໍ່ພົບກິດຈະກຳ</h3>
+                <p style="color: var(--text-secondary); font-size: 1.1rem;">ລອງປັບປ່ຽນເງື່ອນໄຂການຄົ້ນຫາຂອງທ່ານ.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = `
+        <div class="activities-grid">
+            ${activities.map(activity => {
+                const imageUrl = activity.image_url || '';
+                const videoUrl = activity.video_url || '';
+                const documentUrl = activity.document_url || '';
+                const safeTitle = (activity.title || 'Untitled Activity').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                const safeDescription = (activity.description || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                const safeImageUrl = imageUrl ? imageUrl.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
+                const date = new Date(activity.date_created).toLocaleDateString('lo-LA', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                
+                // Determine media type
+                let mediaHTML = '';
+                if (videoUrl) {
+                    const embedUrl = getYouTubeEmbedURL(videoUrl) || getVimeoEmbedURL(videoUrl);
+                    if (embedUrl) {
+                        mediaHTML = `
+                            <div class="activity-video-container">
+                                <iframe src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                        `;
+                    } else {
+                        mediaHTML = `
+                            <div class="activity-media-placeholder">🎥</div>
+                        `;
+                    }
+                } else if (imageUrl) {
+                    mediaHTML = `
+                        <img src="${imageUrl}" alt="${safeTitle}" 
+                             onerror="console.error('Image failed to load:', '${safeImageUrl}'); this.style.display='none'; const placeholder = this.nextElementSibling; if(placeholder) placeholder.style.display='flex';"
+                             style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="activity-media-placeholder" style="display: none;">📷</div>
+                        <div class="media-overlay">ກົດເພື່ອເບິ່ງຮູບພາບເຕັມ</div>
+                    `;
+                } else {
+                    mediaHTML = `<div class="activity-media-placeholder">📄</div>`;
+                }
+                
+                // Build actions
+                let actionsHTML = '';
+                if (imageUrl) {
+                    actionsHTML += `
+                        <a href="#" class="btn-action btn-image" onclick="event.preventDefault(); openImageModal('${safeImageUrl}', '${safeTitle}', '${safeDescription}');">
+                            🖼️ ເບິ່ງຮູບພາບ
+                        </a>
+                    `;
+                }
+                if (videoUrl) {
+                    actionsHTML += `
+                        <a href="${videoUrl}" target="_blank" class="btn-action btn-video">
+                            🎥 ເບິ່ງວິດີໂອ
+                        </a>
+                    `;
+                }
+                if (documentUrl) {
+                    actionsHTML += `
+                        <a href="${documentUrl}" target="_blank" class="btn-action btn-document">
+                            📄 ເບິ່ງເອກະສານ
+                        </a>
+                    `;
+                }
+                
+                return `
+                    <div class="activity-card">
+                        <div class="activity-media-container" ${imageUrl && !videoUrl ? `onclick="openImageModal('${safeImageUrl}', '${safeTitle}', '${safeDescription}')" style="cursor: pointer;"` : ''}>
+                            ${mediaHTML}
+                        </div>
+                        <div class="activity-content">
+                            <h3 class="activity-title">${activity.title || 'ກິດຈະກຳທີ່ບໍ່ມີຫົວຂໍ້'}</h3>
+                            <div class="activity-meta">
+                                <div class="activity-date">
+                                    📅 ${date}
+                                </div>
+                            </div>
+                            <div class="activity-description">${activity.description || 'ບໍ່ມີລາຍລະອຽດ.'}</div>
+                            ${actionsHTML ? `<div class="activity-actions">${actionsHTML}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+    `;
+}
+
+// Fetch and load activities
+function loadActivities() {
+    fetch('backend/fetch-activities.php?category=ພະແນກບໍລິຫານ')
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById('activities-container').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <p style="font-size: 1.2rem; color: var(--text-secondary);">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດກິດຈະກຳ: ${data.error}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            if (!data || data.length === 0) {
+                document.getElementById('activities-container').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <h3>ຍັງບໍ່ມີກິດຈະກຳ</h3>
+                        <p style="color: var(--text-secondary); font-size: 1.1rem;">ກິດຈະກຳຈະປາກົດຢູ່ທີ່ນີ້ເມື່ອຖືກເພີ່ມໂດຍຜູ້ດູແລລະບົບ.</p>
+                    </div>
+                `;
+                document.getElementById('activityCount').textContent = '0';
+                return;
+            }
+            
+            allActivities = data;
+            filterAndSearchActivities();
+        })
+        .catch(error => {
+            const container = document.getElementById('activities-container');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">⚠️</div>
+                    <p style="font-size: 1.2rem; color: var(--text-secondary);">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດກິດຈະກຳ. ກະລຸນາລອງໃໝ່ອີກຄັ້ງ.</p>
+                </div>
+            `;
+            console.error('Error:', error);
+        });
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadActivities();
+    
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    let searchTimeout;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(filterAndSearchActivities, 300);
+    });
+    
+    // Sort functionality
+    const sortSelect = document.getElementById('sortSelect');
+    sortSelect.addEventListener('change', filterAndSearchActivities);
+});
+</script>
+</body>
+</html>
+

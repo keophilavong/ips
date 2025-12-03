@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ຂໍ້ມູນທີ່ຜູ້ໃຊ້ສົ່ງມາ - Admin</title>
+    <link rel="icon" type="image/png" href="../assets/images/edu.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+    <style>
+        .admin-container {
+            max-width: 1400px;
+            margin: var(--spacing-3xl) auto;
+            padding: var(--spacing-xl);
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+        
+        .category-tabs {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-xl);
+            flex-wrap: wrap;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: var(--spacing-md);
+        }
+        
+        .category-tab {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: var(--bg-secondary);
+            border: none;
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+        
+        .category-tab:hover {
+            background: var(--bg-tertiary);
+            color: var(--primary-color);
+        }
+        
+        .category-tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .category-section {
+            display: none;
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .category-section.active {
+            display: block;
+        }
+        
+        .category-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e3a8a 100%);
+            color: white;
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .category-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .category-count {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        
+        .submissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+        }
+        
+        .submission-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .submission-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            border-color: var(--primary-color);
+        }
+        
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .submission-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .submission-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .submission-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: var(--spacing-md);
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .submission-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        
+        .submission-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+            margin-top: auto;
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .btn-action {
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        
+        .btn-view {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-view:hover {
+            background: #1e3a8a;
+        }
+        
+        .btn-download {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-download:hover {
+            background: #059669;
+        }
+        
+        .btn-link {
+            background: #8b5cf6;
+            color: white;
+        }
+        
+        .btn-link:hover {
+            background: #7c3aed;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-3xl);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            border: 2px dashed var(--border-color);
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: var(--spacing-3xl);
+            color: var(--text-secondary);
+        }
+        
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .stat-card {
+            background: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: var(--spacing-md);
+                padding-top: calc(var(--spacing-lg) + 120px);
+            }
+            
+            .submissions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+            
+            .category-tab {
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="adminNavbar"></div>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <div>
+            <h2>ຂໍ້ມູນທີ່ຜູ້ໃຊ້ສົ່ງມາ</h2>
+            <p style="margin-top: 0.5rem; color: var(--text-secondary);">ຈັດການ ແລະ ກວດສອບຂໍ້ມູນທີ່ຜູ້ໃຊ້ສົ່ງມາຈາກພອດທານ</p>
+        </div>
+    </div>
+    
+    <!-- Stats Summary -->
+    <div class="stats-summary" id="statsSummary">
+        <div class="stat-card">
+            <div class="stat-value" id="totalCount">0</div>
+            <div class="stat-label">ລວມທັງໝົດ</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="teacherCollegeCount">0</div>
+            <div class="stat-label">ວິທະຍາໄລຄູ</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="internalWorkerCount">0</div>
+            <div class="stat-label">ຜູ້ເຮັດວຽກສຶກສາ</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="districtCount">0</div>
+            <div class="stat-label">ເມືອງ</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="provinceCount">0</div>
+            <div class="stat-label">ແຂວງ</div>
+        </div>
+    </div>
+    
+    <!-- Category Tabs -->
+    <div class="category-tabs">
+        <button class="category-tab active" onclick="filterByCategory('all')">ທັງໝົດ</button>
+        <button class="category-tab" onclick="filterByCategory('teacher_college')">ຂໍ້ມູນການເຄື່ອນໄຫວຂອງວິທະຍາໄລຄູ</button>
+        <button class="category-tab" onclick="filterByCategory('internal_worker')">ຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ</button>
+        <button class="category-tab" onclick="filterByCategory('district')">ຫ້ອງການສຶກສາທິການແລະກິລາເມືອງ</button>
+        <button class="category-tab" onclick="filterByCategory('province')">ພະແນກສຶກສາທິການແລະກິລາແຂວງ</button>
+    </div>
+    
+    <!-- Submissions Container -->
+    <div id="submissionsContainer">
+        <div class="loading">
+            <div class="loading"></div>
+            <p style="margin-top: 1rem;">ກຳລັງໂຫຼດຂໍ້ມູນ...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+// Load admin navbar
+fetch('../components/admin-navbar.html')
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById('adminNavbar').innerHTML = data;
+    });
+
+// Check admin authentication
+function checkAuth() {
+    fetch('../backend/check-admin.php')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.is_admin) {
+                window.location.href = '../login.html';
+            }
+        })
+        .catch(() => {
+            window.location.href = '../login.html';
+        });
+}
+
+let allSubmissions = [];
+let groupedSubmissions = {};
+
+// Load submissions
+function loadSubmissions() {
+    fetch('../backend/fetch-user-submissions.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById('submissionsContainer').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <p style="font-size: 1.2rem; color: var(--text-secondary);">ເກີດຂໍ້ຜິດພາດ: ${data.error}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            allSubmissions = data.submissions || [];
+            groupedSubmissions = data.grouped || {};
+            
+            // Update stats
+            updateStats();
+            
+            // Display all submissions
+            displaySubmissions('all');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('submissionsContainer').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">⚠️</div>
+                    <p style="font-size: 1.2rem; color: var(--text-secondary);">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດຂໍ້ມູນ</p>
+                </div>
+            `;
+        });
+}
+
+// Update statistics
+function updateStats() {
+    const counts = {
+        teacher_college: 0,
+        internal_worker: 0,
+        district: 0,
+        province: 0
+    };
+    
+    allSubmissions.forEach(sub => {
+        if (sub.submission_type === 'teacher_college') counts.teacher_college++;
+        else if (sub.submission_type === 'internal_worker') counts.internal_worker++;
+        else if (sub.submission_type === 'district') counts.district++;
+        else if (sub.submission_type === 'province') counts.province++;
+    });
+    
+    document.getElementById('totalCount').textContent = allSubmissions.length;
+    document.getElementById('teacherCollegeCount').textContent = counts.teacher_college;
+    document.getElementById('internalWorkerCount').textContent = counts.internal_worker;
+    document.getElementById('districtCount').textContent = counts.district;
+    document.getElementById('provinceCount').textContent = counts.province;
+}
+
+// Filter by category
+function filterByCategory(category) {
+    // Update active tab
+    document.querySelectorAll('.category-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    displaySubmissions(category);
+}
+
+// Display submissions
+function displaySubmissions(category) {
+    const container = document.getElementById('submissionsContainer');
+    
+    let submissionsToShow = [];
+    
+    if (category === 'all') {
+        submissionsToShow = allSubmissions;
+    } else {
+        submissionsToShow = allSubmissions.filter(sub => sub.submission_type === category);
+    }
+    
+    if (submissionsToShow.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">📋</div>
+                <h3>ບໍ່ມີຂໍ້ມູນ</h3>
+                <p style="color: var(--text-secondary);">ຍັງບໍ່ມີຂໍ້ມູນທີ່ຜູ້ໃຊ້ສົ່ງມາໃນປະເພດນີ້</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Group by category name
+    const grouped = {};
+    submissionsToShow.forEach(sub => {
+        const catName = sub.category_name;
+        if (!grouped[catName]) {
+            grouped[catName] = [];
+        }
+        grouped[catName].push(sub);
+    });
+    
+    let html = '';
+    
+    Object.keys(grouped).forEach(categoryName => {
+        const categorySubs = grouped[categoryName];
+        html += `
+            <div class="category-section active">
+                <div class="category-header">
+                    <h3>${categoryName}</h3>
+                    <div class="category-count">${categorySubs.length} ລາຍການ</div>
+                </div>
+                <div class="submissions-grid">
+                    ${categorySubs.map(sub => {
+                        const date = sub.date_created || sub.created_at;
+                        const formattedDate = date ? new Date(date).toLocaleDateString('lo-LA', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        }) : 'ບໍ່ມີວັນທີ';
+                        
+                        let actionsHTML = '';
+                        if (sub.file_url) {
+                            actionsHTML += `
+                                <a href="${sub.file_url}" target="_blank" class="btn-action btn-download">
+                                    📄 ດາວໂຫຼດເອກະສານ
+                                </a>
+                            `;
+                        }
+                        if (sub.link_url) {
+                            actionsHTML += `
+                                <a href="${sub.link_url}" target="_blank" class="btn-action btn-link">
+                                    🔗 ເປີດລິ້ງ
+                                </a>
+                            `;
+                        }
+                        
+                        return `
+                            <div class="submission-card">
+                                <div class="submission-header">
+                                    <div>
+                                        <div class="submission-name">${sub.name || 'ບໍ່ມີຊື່'}</div>
+                                        <div class="submission-title">${sub.title || 'ບໍ່ມີຫົວຂໍ້'}</div>
+                                    </div>
+                                </div>
+                                <div class="submission-description">${sub.description || 'ບໍ່ມີລາຍລະອຽດ'}</div>
+                                <div class="submission-meta">
+                                    <span>📅 ${formattedDate}</span>
+                                </div>
+                                ${actionsHTML ? `<div class="submission-actions">${actionsHTML}</div>` : ''}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuth();
+    loadSubmissions();
+});
+</script>
+</body>
+</html>
+

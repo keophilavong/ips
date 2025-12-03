@@ -1339,9 +1339,17 @@ function displayDocuments(documents) {
         container.innerHTML = `
             <div class="documents-list-view">
                 ${documents.map((doc, index) => {
-                    const filename = doc.file_path.split('/').pop() || doc.file_path;
+                    const filename = doc.file_path ? doc.file_path.split('/').pop() : 'unknown';
                     const fileIcon = getFileIcon(filename);
-                    const fileUrl = doc.file_path.startsWith('http') ? doc.file_path : '/' + doc.file_path.replace(/^\.\.\//, '');
+                    // Use file_url from backend if available, otherwise construct it
+                    let fileUrl = doc.file_url || (doc.file_path ? 
+                        (doc.file_path.startsWith('http') ? doc.file_path : 
+                         '/' + doc.file_path.replace(/^\.\.\//, '').replace(/^\/+/, '/')) : 
+                        null);
+                    // Ensure it starts with /internal-education-worker-report/ if it's a relative path
+                    if (fileUrl && !fileUrl.startsWith('http') && !fileUrl.startsWith('/internal-education-worker-report')) {
+                        fileUrl = '/internal-education-worker-report' + (fileUrl.startsWith('/') ? fileUrl : '/' + fileUrl);
+                    }
                     const isImage = isImageFile(filename);
                     const canPreviewFile = canPreview(filename);
                     const fileExt = getFileExtension(filename);
@@ -1407,9 +1415,17 @@ function displayDocuments(documents) {
                     </thead>
                     <tbody>
                         ${documents.map((doc, index) => {
-                            const filename = doc.file_path.split('/').pop() || doc.file_path;
+                            const filename = doc.file_path ? doc.file_path.split('/').pop() : 'unknown';
                             const fileIcon = getFileIcon(filename);
-                            const fileUrl = doc.file_path.startsWith('http') ? doc.file_path : '/' + doc.file_path.replace(/^\.\.\//, '');
+                            // Use file_url from backend if available, otherwise construct it
+                            let fileUrl = doc.file_url || (doc.file_path ? 
+                                (doc.file_path.startsWith('http') ? doc.file_path : 
+                                 '/' + doc.file_path.replace(/^\.\.\//, '').replace(/^\/+/, '/')) : 
+                                null);
+                            // Ensure it starts with /internal-education-worker-report/ if it's a relative path
+                            if (fileUrl && !fileUrl.startsWith('http') && !fileUrl.startsWith('/internal-education-worker-report')) {
+                                fileUrl = '/internal-education-worker-report' + (fileUrl.startsWith('/') ? fileUrl : '/' + fileUrl);
+                            }
                             const canPreviewFile = canPreview(filename);
                             const fileExt = getFileExtension(filename);
                             const safeTitle = (doc.title || 'ເອກະສານທີ່ບໍ່ມີຫົວຂໍ້').replace(/'/g, "\\'").replace(/"/g, '&quot;');

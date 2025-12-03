@@ -7,30 +7,49 @@ try {
     // If admin, show all activities; otherwise only active ones
     $is_admin = isset($_SESSION['admin_id']);
     
+    // Get category filter from query parameter
+    $category = isset($_GET['category']) ? trim($_GET['category']) : null;
+    
+    // Build SQL query with category filter if provided
     if ($is_admin) {
-        $sql = "SELECT activity_id, title, description, image_path, date_created, created_at, updated_at, is_active 
-                FROM activities 
-                ORDER BY date_created DESC, created_at DESC";
+        $sql = "SELECT activity_id, title, description, image_path, video_url, document_path, category, date_created, created_at, updated_at, is_active 
+                FROM activities";
+        
+        if ($category) {
+            $sql .= " WHERE category = :category";
+        }
+        
+        $sql .= " ORDER BY date_created DESC, created_at DESC";
     } else {
-        $sql = "SELECT activity_id, title, description, image_path, date_created, created_at, updated_at 
+        $sql = "SELECT activity_id, title, description, image_path, video_url, document_path, category, date_created, created_at, updated_at 
                 FROM activities 
-                WHERE is_active = TRUE 
-                ORDER BY date_created DESC, created_at DESC";
+                WHERE is_active = TRUE";
+        
+        if ($category) {
+            $sql .= " AND category = :category";
+        }
+        
+        $sql .= " ORDER BY date_created DESC, created_at DESC";
     }
     
     $stmt = $conn->prepare($sql);
-    $stmt->execute();
+    
+    if ($category) {
+        $stmt->execute([':category' => $category]);
+    } else {
+        $stmt->execute();
+    }
+    
     $activities = $stmt->fetchAll();
     
-    // Convert image paths to URLs
+    // Convert paths to URLs
     // Get the base path of the project
     $base_path = '/internal-education-worker-report/';
     
     foreach ($activities as &$activity) {
+        // Handle image path
         if ($activity['image_path']) {
-            // Ensure the path starts with the project base path
             $image_path = ltrim($activity['image_path'], '/');
-            // If path doesn't start with 'internal-education-worker-report', add it
             if (strpos($image_path, 'internal-education-worker-report') !== 0) {
                 $activity['image_url'] = $base_path . ltrim($image_path, '/');
             } else {
@@ -39,6 +58,20 @@ try {
         } else {
             $activity['image_url'] = null;
         }
+        
+        // Handle document path
+        if ($activity['document_path']) {
+            $doc_path = ltrim($activity['document_path'], '/');
+            if (strpos($doc_path, 'internal-education-worker-report') !== 0) {
+                $activity['document_url'] = $base_path . ltrim($doc_path, '/');
+            } else {
+                $activity['document_url'] = '/' . ltrim($doc_path, '/');
+            }
+        } else {
+            $activity['document_url'] = null;
+        }
+        
+        // video_url is already a URL, no conversion needed
     }
     
     echo json_encode($activities, JSON_UNESCAPED_UNICODE);

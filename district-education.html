@@ -85,6 +85,51 @@
             color: var(--text-light);
             margin-bottom: var(--spacing-sm);
         }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .upload-form-container {
+                padding: var(--spacing-lg);
+                margin-top: var(--spacing-lg);
+            }
+            
+            .form-control {
+                font-size: 16px; /* Prevent iOS zoom */
+                padding: var(--spacing-sm) var(--spacing-md);
+                min-height: 44px;
+            }
+            
+            .file-upload-area {
+                padding: var(--spacing-lg);
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: var(--spacing-md) auto;
+                padding: var(--spacing-lg);
+                max-height: 90vh;
+            }
+            
+            .district-selector {
+                max-width: 100%;
+                font-size: 16px;
+                min-height: 44px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .upload-form-container {
+                padding: var(--spacing-md);
+            }
+            
+            .form-control {
+                font-size: 16px;
+            }
+            
+            .file-upload-area {
+                padding: var(--spacing-md);
+            }
+        }
     </style>
 </head>
 
@@ -97,17 +142,6 @@
             <h2>🏛 ຫ້ອງການສຶກສາທິການ ແລະ ກິລາເມືອງ</h2>
             <p style="margin-bottom: 0;">ຈັດການຂໍ້ມູນຫ້ອງການສຶກສາທິການ ແລະ ກິລາເມືອງ</p>
         </div>
-    </div>
-    <div style="margin-top: 1.5rem; position: relative; z-index: 1;">
-        <select id="districtSelector" class="district-selector" style="background: white; color: var(--text-primary); border: none; border-radius: var(--radius-lg); padding: var(--spacing-md) var(--spacing-xl); font-size: 1rem; font-weight: 500; width: 100%; max-width: 400px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12\" height=\"12\" viewBox=\"0 0 12 12\"><path fill=\"%23333\" d=\"M6 9L1 4h10z\"/></svg>'); background-repeat: no-repeat; background-position: right var(--spacing-md) center; padding-right: calc(var(--spacing-xl) + 20px);">
-            <option value="">ເລືອກເມືອງ</option>
-            <option value="all">ທຸກເມືອງ</option>
-            <option value="vientiane">ນະຄອນຫຼວງວຽງຈັນ</option>
-            <option value="luangprabang">ຫຼວງພະບາງ</option>
-            <option value="savannakhet">ສະຫວັນນະເຂດ</option>
-            <option value="pakse">ປາກເຊ</option>
-            <option value="phonsavan">ພອນສະຫວັນ</option>
-        </select>
     </div>
 </div>
 

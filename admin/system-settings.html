@@ -59,6 +59,37 @@
             font-size: 1.1rem;
             font-weight: 600;
         }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: var(--spacing-lg) var(--spacing-md);
+                padding-top: calc(var(--spacing-lg) + 120px);
+            }
+            
+            .admin-header {
+                flex-direction: column;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .settings-section {
+                padding: var(--spacing-lg);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .admin-container {
+                padding: var(--spacing-md) var(--spacing-sm);
+                padding-top: calc(var(--spacing-md) + 140px);
+            }
+            
+            .settings-section {
+                padding: var(--spacing-md);
+            }
+        }
     </style>
 </head>
 <body>
