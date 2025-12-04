@@ -3,6 +3,41 @@ session_start();
 header('Content-Type: application/json; charset=utf-8');
 include "db.php";
 
+// Function to get the base path dynamically
+function getBasePath() {
+    $script_name = $_SERVER['SCRIPT_NAME'];
+    $request_uri = $_SERVER['REQUEST_URI'];
+    $base_path = str_replace(basename($script_name), '', $script_name);
+    // If the request URI contains the base path, use it
+    if (strpos($request_uri, $base_path) === 0) {
+        return $base_path;
+    }
+    // Fallback for different server configurations (e.g., XAMPP in htdocs/ips)
+    // This attempts to find the segment before 'backend/'
+    $parts = explode('/backend/', $request_uri);
+    if (count($parts) > 1) {
+        return $parts[0] . '/';
+    }
+    return '/'; // Default to root
+}
+
+// Helper function to get correct file URL
+function getFileUrl($file_path) {
+    if (!$file_path) return null;
+    
+    // If already a full URL, return as is
+    if (strpos($file_path, 'http') === 0) {
+        return $file_path;
+    }
+    
+    // Remove any ../ prefixes
+    $cleanPath = str_replace('../', '', $file_path);
+    $cleanPath = ltrim($cleanPath, '/');
+    
+    // Prepend base path
+    return getBasePath() . $cleanPath;
+}
+
 try {
     $is_admin = isset($_SESSION['admin_id']);
     $province_name = $_GET['province_name'] ?? '';
@@ -26,18 +61,8 @@ try {
     $stmt->execute($params);
     $provinces = $stmt->fetchAll();
     
-    $base_path = '/internal-education-worker-report/';
     foreach ($provinces as &$province) {
-        if ($province['file_path']) {
-            $file_path = ltrim($province['file_path'], '/');
-            if (strpos($file_path, 'internal-education-worker-report') !== 0) {
-                $province['file_url'] = $base_path . ltrim($file_path, '/');
-            } else {
-                $province['file_url'] = '/' . ltrim($file_path, '/');
-            }
-        } else {
-            $province['file_url'] = null;
-        }
+        $province['file_url'] = getFileUrl($province['file_path']);
     }
     
     echo json_encode($provinces, JSON_UNESCAPED_UNICODE);

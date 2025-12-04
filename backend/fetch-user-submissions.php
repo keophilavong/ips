@@ -10,9 +10,35 @@ if (!isset($_SESSION['admin_id'])) {
 }
 
 try {
+    // Helper function to get correct file URL
+    function getFileUrl($file_path) {
+        if (!$file_path) return null;
+        if (strpos($file_path, 'http') === 0) return $file_path;
+        
+        $cleanPath = str_replace('../', '', $file_path);
+        $cleanPath = ltrim($cleanPath, '/');
+        
+        // Detect base path
+        $script_name = $_SERVER['SCRIPT_NAME'] ?? '';
+        $base_path = '';
+        if ($script_name) {
+            $parts = explode('/', trim($script_name, '/'));
+            if (count($parts) > 1 && $parts[0] !== 'backend') {
+                $base_path = '/' . $parts[0];
+            }
+        }
+        
+        // If path already starts with files/, use it directly
+        if (strpos($cleanPath, 'files/') === 0) {
+            return ($base_path && $base_path !== '/') ? $base_path . '/' . $cleanPath : '/' . $cleanPath;
+        }
+        
+        // Otherwise, assume it's in files/ directory
+        return ($base_path && $base_path !== '/') ? $base_path . '/files/' . $cleanPath : '/files/' . $cleanPath;
+    }
+    
     $category = isset($_GET['category']) ? trim($_GET['category']) : null;
     $submissions = [];
-    $base_path = '/internal-education-worker-report/';
     
     // 1. Teacher College submissions (from reports table with category = college name)
     // Note: upload-handler.php sets user_id to null for admin uploads, so we check for user_id IS NOT NULL
@@ -38,16 +64,7 @@ try {
         $teacher_colleges = $stmt->fetchAll();
         
         foreach ($teacher_colleges as $tc) {
-            if ($tc['file_path']) {
-                $file_path = ltrim($tc['file_path'], '/');
-                if (strpos($file_path, 'internal-education-worker-report') !== 0) {
-                    $tc['file_url'] = $base_path . ltrim($file_path, '/');
-                } else {
-                    $tc['file_url'] = '/' . ltrim($file_path, '/');
-                }
-            } else {
-                $tc['file_url'] = null;
-            }
+            $tc['file_url'] = getFileUrl($tc['file_path']);
             $submissions[] = $tc;
         }
         
@@ -71,16 +88,7 @@ try {
         $teacher_colleges_table = $stmt->fetchAll();
         
         foreach ($teacher_colleges_table as $tc) {
-            if ($tc['file_path']) {
-                $file_path = ltrim($tc['file_path'], '/');
-                if (strpos($file_path, 'internal-education-worker-report') !== 0) {
-                    $tc['file_url'] = $base_path . ltrim($file_path, '/');
-                } else {
-                    $tc['file_url'] = '/' . ltrim($file_path, '/');
-                }
-            } else {
-                $tc['file_url'] = null;
-            }
+            $tc['file_url'] = getFileUrl($tc['file_path']);
             $submissions[] = $tc;
         }
     }
@@ -106,16 +114,7 @@ try {
         $workers = $stmt->fetchAll();
         
         foreach ($workers as $worker) {
-            if ($worker['file_path']) {
-                $file_path = ltrim($worker['file_path'], '/');
-                if (strpos($file_path, 'internal-education-worker-report') !== 0) {
-                    $worker['file_url'] = $base_path . ltrim($file_path, '/');
-                } else {
-                    $worker['file_url'] = '/' . ltrim($file_path, '/');
-                }
-            } else {
-                $worker['file_url'] = null;
-            }
+            $worker['file_url'] = getFileUrl($worker['file_path']);
             $submissions[] = $worker;
         }
     }
@@ -141,16 +140,7 @@ try {
         $districts = $stmt->fetchAll();
         
         foreach ($districts as $district) {
-            if ($district['file_path']) {
-                $file_path = ltrim($district['file_path'], '/');
-                if (strpos($file_path, 'internal-education-worker-report') !== 0) {
-                    $district['file_url'] = $base_path . ltrim($file_path, '/');
-                } else {
-                    $district['file_url'] = '/' . ltrim($file_path, '/');
-                }
-            } else {
-                $district['file_url'] = null;
-            }
+            $district['file_url'] = getFileUrl($district['file_path']);
             $submissions[] = $district;
         }
     }
@@ -176,16 +166,7 @@ try {
         $provinces = $stmt->fetchAll();
         
         foreach ($provinces as $province) {
-            if ($province['file_path']) {
-                $file_path = ltrim($province['file_path'], '/');
-                if (strpos($file_path, 'internal-education-worker-report') !== 0) {
-                    $province['file_url'] = $base_path . ltrim($file_path, '/');
-                } else {
-                    $province['file_url'] = '/' . ltrim($file_path, '/');
-                }
-            } else {
-                $province['file_url'] = null;
-            }
+            $province['file_url'] = getFileUrl($province['file_path']);
             $submissions[] = $province;
         }
     }

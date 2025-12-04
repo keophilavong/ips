@@ -1,7 +1,31 @@
 <?php
 session_start();
 header('Content-Type: application/json; charset=utf-8');
+
+// Include database connection
 include "db.php";
+
+// Check if database connection failed
+if ($conn === null) {
+    $errorMsg = isset($db_error) ? $db_error : 'Database connection failed';
+    
+    // Get environment variables for debugging
+    $envInfo = [
+        'DB_HOST' => getenv('DB_HOST') ?: (isset($_ENV['DB_HOST']) ? $_ENV['DB_HOST'] : (isset($_SERVER['DB_HOST']) ? $_SERVER['DB_HOST'] : 'NOT SET')),
+        'DB_PORT' => getenv('DB_PORT') ?: (isset($_ENV['DB_PORT']) ? $_ENV['DB_PORT'] : (isset($_SERVER['DB_PORT']) ? $_SERVER['DB_PORT'] : 'NOT SET')),
+        'DB_USER' => getenv('DB_USER') ?: (isset($_ENV['DB_USER']) ? $_ENV['DB_USER'] : (isset($_SERVER['DB_USER']) ? $_SERVER['DB_USER'] : 'NOT SET')),
+        'DB_NAME' => getenv('DB_NAME') ?: (isset($_ENV['DB_NAME']) ? $_ENV['DB_NAME'] : (isset($_SERVER['DB_NAME']) ? $_SERVER['DB_NAME'] : 'NOT SET')),
+    ];
+    
+    echo json_encode([
+        'status' => 'error', 
+        'message' => 'Database connection failed: ' . $errorMsg,
+        'error' => $errorMsg,
+        'debug_info' => $envInfo,
+        'suggestion' => 'Please check: 1) Database server is running, 2) Credentials are correct, 3) Network connectivity, 4) Firewall settings'
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
 // Accept either email or username
 $identifier = $_POST['identifier'] ?? $_POST['email'] ?? '';

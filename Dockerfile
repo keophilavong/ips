@@ -20,14 +20,18 @@ RUN apt-get update && apt-get install -y \
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_pgsql mbstring exif pcntl bcmath gd zip
 
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
+# Enable Apache mod_rewrite and mod_env (for environment variables)
+RUN a2enmod rewrite env
 
 # Configure PHP for file uploads
 RUN echo "upload_max_filesize = 100M" >> /usr/local/etc/php/conf.d/uploads.ini \
     && echo "post_max_size = 100M" >> /usr/local/etc/php/conf.d/uploads.ini \
     && echo "max_execution_time = 300" >> /usr/local/etc/php/conf.d/uploads.ini \
     && echo "max_input_time = 300" >> /usr/local/etc/php/conf.d/uploads.ini
+
+# Configure Apache to pass environment variables to PHP
+RUN echo "PassEnv DB_HOST DB_PORT DB_USER DB_PASS DB_NAME" >> /etc/apache2/conf-available/docker-env.conf \
+    && a2enconf docker-env
 
 # Set proper permissions for upload directories
 RUN mkdir -p /var/www/html/files /var/www/html/uploads/activities \

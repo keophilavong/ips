@@ -111,18 +111,35 @@ document.getElementById("registerForm")?.addEventListener("submit", function(e){
     fetch("backend/register.php", {
         method: "POST",
         body: form
-    }).then(res => res.text()).then(data => {
-        if (data.trim() === "success") {
+    })
+    .then(res => {
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            return res.json();
+        } else {
+            return res.text().then(text => {
+                // Handle old format for backward compatibility
+                if (text.trim() === "success") {
+                    return { status: "success" };
+                }
+                return { status: "error", message: text || "Registration failed" };
+            });
+        }
+    })
+    .then(data => {
+        if (data.status === "success") {
             result.innerHTML = '<div class="alert alert-success">Account created successfully! Redirecting to login...</div>';
             setTimeout(() => {
                 window.location = "login.html";
             }, 2000);
         } else {
-            result.innerHTML = '<div class="alert alert-error">Error creating account. ' + (data.includes("error") ? data : "Email may already be in use.") + '</div>';
+            result.innerHTML = '<div class="alert alert-error">' + (data.message || 'Error creating account. Email may already be in use.') + '</div>';
             submitBtn.disabled = false;
             submitBtn.textContent = originalText;
         }
-    }).catch(error => {
+    })
+    .catch(error => {
+        console.error("Registration error:", error);
         result.innerHTML = '<div class="alert alert-error">An error occurred. Please try again later.</div>';
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;

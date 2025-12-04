@@ -303,12 +303,27 @@
     </div>
     
     <!-- Category Tabs -->
-    <div class="category-tabs">
-        <button class="category-tab active" onclick="filterByCategory('all')">ທັງໝົດ</button>
-        <button class="category-tab" onclick="filterByCategory('teacher_college')">ຂໍ້ມູນການເຄື່ອນໄຫວຂອງວິທະຍາໄລຄູ</button>
-        <button class="category-tab" onclick="filterByCategory('internal_worker')">ຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ</button>
-        <button class="category-tab" onclick="filterByCategory('district')">ຫ້ອງການສຶກສາທິການແລະກິລາເມືອງ</button>
-        <button class="category-tab" onclick="filterByCategory('province')">ພະແນກສຶກສາທິການແລະກິລາແຂວງ</button>
+    <div class="category-tabs" style="display: flex; gap: var(--spacing-sm); margin-bottom: var(--spacing-lg); flex-wrap: wrap; border-bottom: 2px solid var(--border-color);">
+        <button class="category-tab active" data-category="teacher_college" onclick="switchCategory('teacher_college')">
+            <span style="font-size: 1.2rem; margin-right: 0.5rem;">🏫</span>
+            <span>ວິທະຍາໄລຄູ</span>
+            <span class="tab-count" id="count-teacher_college" style="margin-left: 0.5rem; background: rgba(255, 255, 255, 0.2); padding: 0.125rem 0.5rem; border-radius: 12px; font-size: 0.85rem;">0</span>
+        </button>
+        <button class="category-tab" data-category="internal_worker" onclick="switchCategory('internal_worker')">
+            <span style="font-size: 1.2rem; margin-right: 0.5rem;">👨‍🏫</span>
+            <span>ຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ</span>
+            <span class="tab-count" id="count-internal_worker" style="margin-left: 0.5rem; background: rgba(255, 255, 255, 0.2); padding: 0.125rem 0.5rem; border-radius: 12px; font-size: 0.85rem;">0</span>
+        </button>
+        <button class="category-tab" data-category="district" onclick="switchCategory('district')">
+            <span style="font-size: 1.2rem; margin-right: 0.5rem;">🏛</span>
+            <span>ຫ້ອງການສຶກສາທິການເມືອງ</span>
+            <span class="tab-count" id="count-district" style="margin-left: 0.5rem; background: rgba(255, 255, 255, 0.2); padding: 0.125rem 0.5rem; border-radius: 12px; font-size: 0.85rem;">0</span>
+        </button>
+        <button class="category-tab" data-category="province" onclick="switchCategory('province')">
+            <span style="font-size: 1.2rem; margin-right: 0.5rem;">🗺</span>
+            <span>ພະແນກສຶກສາທິການແຂວງ</span>
+            <span class="tab-count" id="count-province" style="margin-left: 0.5rem; background: rgba(255, 255, 255, 0.2); padding: 0.125rem 0.5rem; border-radius: 12px; font-size: 0.85rem;">0</span>
+        </button>
     </div>
     
     <!-- Submissions Container -->
@@ -342,13 +357,18 @@ function checkAuth() {
         });
 }
 
-let allSubmissions = [];
-let groupedSubmissions = {};
+let allSubmissionsData = {};
+let currentCategory = 'teacher_college';
 
-// Load submissions
+// Load submissions - using same endpoint as dashboard
 function loadSubmissions() {
-    fetch('../backend/fetch-user-submissions.php')
-        .then(response => response.json())
+    fetch('../backend/fetch-all-submissions-by-category.php')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.error) {
                 document.getElementById('submissionsContainer').innerHTML = `
@@ -360,14 +380,25 @@ function loadSubmissions() {
                 return;
             }
             
-            allSubmissions = data.submissions || [];
-            groupedSubmissions = data.grouped || {};
+            // Ensure data structure is correct
+            if (!data || typeof data !== 'object') {
+                console.error('Invalid data structure:', data);
+                document.getElementById('submissionsContainer').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <p style="font-size: 1.2rem; color: var(--text-secondary);">ຂໍ້ມູນບໍ່ຖືກຕ້ອງ</p>
+                    </div>
+                `;
+                return;
+            }
             
-            // Update stats
+            allSubmissionsData = data;
+            
+            // Update counts
             updateStats();
             
-            // Display all submissions
-            displaySubmissions('all');
+            // Display current category
+            displaySubmissions(currentCategory);
         })
         .catch(error => {
             console.error('Error:', error);
@@ -382,128 +413,280 @@ function loadSubmissions() {
 
 // Update statistics
 function updateStats() {
+    if (!allSubmissionsData || Object.keys(allSubmissionsData).length === 0) {
+        return;
+    }
+    
     const counts = {
-        teacher_college: 0,
-        internal_worker: 0,
-        district: 0,
-        province: 0
+        teacher_college: (allSubmissionsData.teacher_college || []).length,
+        internal_worker: (allSubmissionsData.internal_worker || []).length,
+        district: (allSubmissionsData.district || []).length,
+        province: (allSubmissionsData.province || []).length
     };
     
-    allSubmissions.forEach(sub => {
-        if (sub.submission_type === 'teacher_college') counts.teacher_college++;
-        else if (sub.submission_type === 'internal_worker') counts.internal_worker++;
-        else if (sub.submission_type === 'district') counts.district++;
-        else if (sub.submission_type === 'province') counts.province++;
-    });
+    const total = counts.teacher_college + counts.internal_worker + counts.district + counts.province;
     
-    document.getElementById('totalCount').textContent = allSubmissions.length;
-    document.getElementById('teacherCollegeCount').textContent = counts.teacher_college;
-    document.getElementById('internalWorkerCount').textContent = counts.internal_worker;
-    document.getElementById('districtCount').textContent = counts.district;
-    document.getElementById('provinceCount').textContent = counts.province;
+    if (document.getElementById('totalCount')) {
+        document.getElementById('totalCount').textContent = total;
+    }
+    if (document.getElementById('teacherCollegeCount')) {
+        document.getElementById('teacherCollegeCount').textContent = counts.teacher_college;
+    }
+    if (document.getElementById('internalWorkerCount')) {
+        document.getElementById('internalWorkerCount').textContent = counts.internal_worker;
+    }
+    if (document.getElementById('districtCount')) {
+        document.getElementById('districtCount').textContent = counts.district;
+    }
+    if (document.getElementById('provinceCount')) {
+        document.getElementById('provinceCount').textContent = counts.province;
+    }
+    
+    // Update tab counts if they exist
+    if (document.getElementById('count-teacher_college')) {
+        document.getElementById('count-teacher_college').textContent = counts.teacher_college;
+    }
+    if (document.getElementById('count-internal_worker')) {
+        document.getElementById('count-internal_worker').textContent = counts.internal_worker;
+    }
+    if (document.getElementById('count-district')) {
+        document.getElementById('count-district').textContent = counts.district;
+    }
+    if (document.getElementById('count-province')) {
+        document.getElementById('count-province').textContent = counts.province;
+    }
 }
 
-// Filter by category
-function filterByCategory(category) {
+// Switch category (same as dashboard)
+function switchCategory(category) {
+    currentCategory = category;
+    
     // Update active tab
     document.querySelectorAll('.category-tab').forEach(tab => {
         tab.classList.remove('active');
     });
-    event.target.classList.add('active');
+    const activeTab = document.querySelector(`[data-category="${category}"]`);
+    if (activeTab) {
+        activeTab.classList.add('active');
+    }
     
+    // Display submissions for selected category
     displaySubmissions(category);
 }
 
-// Display submissions
+// Filter by category (for backward compatibility)
+function filterByCategory(category) {
+    switchCategory(category);
+}
+
+// Display submissions - same format as dashboard
 function displaySubmissions(category) {
     const container = document.getElementById('submissionsContainer');
     
-    let submissionsToShow = [];
-    
-    if (category === 'all') {
-        submissionsToShow = allSubmissions;
-    } else {
-        submissionsToShow = allSubmissions.filter(sub => sub.submission_type === category);
-    }
-    
-    if (submissionsToShow.length === 0) {
+    // Check if data is loaded
+    if (!allSubmissionsData || Object.keys(allSubmissionsData).length === 0) {
         container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-icon">📋</div>
-                <h3>ບໍ່ມີຂໍ້ມູນ</h3>
-                <p style="color: var(--text-secondary);">ຍັງບໍ່ມີຂໍ້ມູນທີ່ຜູ້ໃຊ້ສົ່ງມາໃນປະເພດນີ້</p>
+            <div style="text-align: center; padding: var(--spacing-2xl); color: var(--text-secondary);">
+                <div class="loading"></div>
+                <p style="margin-top: 0.5rem; font-size: 0.9rem;">ກຳລັງໂຫຼດຂໍ້ມູນ...</p>
             </div>
         `;
         return;
     }
     
-    // Group by category name
-    const grouped = {};
-    submissionsToShow.forEach(sub => {
-        const catName = sub.category_name;
-        if (!grouped[catName]) {
-            grouped[catName] = [];
-        }
-        grouped[catName].push(sub);
-    });
+    const submissions = allSubmissionsData[category] || [];
     
-    let html = '';
+    if (submissions.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state" style="text-align: center; padding: var(--spacing-2xl);">
+                <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">📭</div>
+                <p style="color: var(--text-secondary); font-size: 1rem; margin: 0;">ຍັງບໍ່ມີຂໍ້ມູນໃນໝວດນີ້</p>
+            </div>
+        `;
+        return;
+    }
     
-    Object.keys(grouped).forEach(categoryName => {
-        const categorySubs = grouped[categoryName];
-        html += `
-            <div class="category-section active">
-                <div class="category-header">
-                    <h3>${categoryName}</h3>
-                    <div class="category-count">${categorySubs.length} ລາຍການ</div>
-                </div>
-                <div class="submissions-grid">
-                    ${categorySubs.map(sub => {
-                        const date = sub.date_created || sub.created_at;
-                        const formattedDate = date ? new Date(date).toLocaleDateString('lo-LA', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                        }) : 'ບໍ່ມີວັນທີ';
-                        
-                        let actionsHTML = '';
-                        if (sub.file_url) {
-                            actionsHTML += `
-                                <a href="${sub.file_url}" target="_blank" class="btn-action btn-download">
-                                    📄 ດາວໂຫຼດເອກະສານ
-                                </a>
-                            `;
-                        }
-                        if (sub.link_url) {
-                            actionsHTML += `
-                                <a href="${sub.link_url}" target="_blank" class="btn-action btn-link">
-                                    🔗 ເປີດລິ້ງ
-                                </a>
-                            `;
-                        }
-                        
-                        return `
-                            <div class="submission-card">
-                                <div class="submission-header">
-                                    <div>
-                                        <div class="submission-name">${sub.name || 'ບໍ່ມີຊື່'}</div>
-                                        <div class="submission-title">${sub.title || 'ບໍ່ມີຫົວຂໍ້'}</div>
-                                    </div>
-                                </div>
-                                <div class="submission-description">${sub.description || 'ບໍ່ມີລາຍລະອຽດ'}</div>
-                                <div class="submission-meta">
-                                    <span>📅 ${formattedDate}</span>
-                                </div>
-                                ${actionsHTML ? `<div class="submission-actions">${actionsHTML}</div>` : ''}
+    const categoryLabels = {
+        'teacher_college': '🏫 ວິທະຍາໄລຄູ',
+        'internal_worker': '👨‍🏫 ຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ',
+        'district': '🏛 ຫ້ອງການສຶກສາທິການ ແລະ ກິລາເມືອງ',
+        'province': '🗺 ພະແນກສຶກສາທິການ ແລະ ກິລາແຂວງ'
+    };
+    
+    container.innerHTML = submissions.map(submission => {
+        const hasDocument = submission.file_path || submission.file_url;
+        const hasVideo = submission.link_url && (submission.link_url.includes('youtube.com') || submission.link_url.includes('youtu.be') || submission.link_url.includes('vimeo.com'));
+        const hasLink = submission.link_url && !hasVideo;
+        const statusClass = submission.is_active ? 'approved' : 'pending';
+        const statusText = submission.is_active ? 'ອະນຸມັດແລ້ວ' : 'ລໍຖ້າກວດສອບ';
+        
+        // Determine submission type for category label
+        const submissionType = submission.type || category;
+        const typeLabel = categoryLabels[submissionType] || submissionType;
+        
+        return `
+            <div class="submission-item" style="background: white; border-radius: 12px; padding: var(--spacing-lg); margin-bottom: var(--spacing-md); border: 1px solid var(--border-color); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);">
+                <div class="submission-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: var(--spacing-lg); flex-wrap: wrap;">
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                            <span class="badge" style="background: #dbeafe; color: #1e40af; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem;">${typeLabel}</span>
+                            <span class="badge" style="background: ${submission.is_active ? '#d1fae5' : '#fef3c7'}; color: ${submission.is_active ? '#059669' : '#92400e'}; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem;">${statusText}</span>
+                            <span style="font-weight: 600; color: var(--text-primary); font-size: 0.9rem;">${submission.name || '-'}</span>
+                        </div>
+                        <div class="submission-title" style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem;">${submission.title || 'ບໍ່ມີຫົວຂໍ້'}</div>
+                        ${submission.description ? `
+                            <div class="submission-description" style="color: var(--text-secondary); margin-bottom: 0.5rem; line-height: 1.6;">
+                                ${submission.description.length > 200 ? submission.description.substring(0, 200) + '...' : submission.description}
                             </div>
-                        `;
-                    }).join('')}
+                        ` : ''}
+                        <div class="submission-meta" style="display: flex; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap; font-size: 0.8rem; color: var(--text-light);">
+                            ${hasDocument ? '<span>📄 ມີເອກະສານ</span>' : ''}
+                            ${hasVideo ? '<span>🎥 ມີວິດີໂອ</span>' : ''}
+                            ${hasLink ? '<span>🔗 ມີລິ້ງ</span>' : ''}
+                            <span>📅 ${new Date(submission.created_at).toLocaleDateString('lo-LA', {year: 'numeric', month: 'short', day: 'numeric'})}</span>
+                        </div>
+                    </div>
+                    <div class="submission-actions" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        ${hasDocument ? `
+                            <button onclick="viewDocument('${submission.file_url || submission.file_path}', '${(submission.title || submission.name || 'Document').replace(/'/g, "\\'")}')" class="btn btn-small" style="background: #3b82f6; color: white; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.8rem; border: none; cursor: pointer;" title="ເບິ່ງເອກະສານ">
+                                👁️ ເບິ່ງ
+                            </button>
+                            <a href="${submission.file_url || submission.file_path}" download="${(submission.title || submission.name || 'document').replace(/[^a-z0-9]/gi, '_')}" onclick="downloadDocument(event, '${submission.file_url || submission.file_path}', '${(submission.title || submission.name || 'document').replace(/[^a-z0-9]/gi, '_')}')" class="btn btn-small" style="background: #10b981; color: white; text-decoration: none; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.8rem;" title="ດາວໂຫຼດເອກະສານ">
+                                ⬇️ ດາວໂຫຼດ
+                            </a>
+                        ` : ''}
+                        ${hasLink ? `
+                            <a href="${submission.link_url}" target="_blank" class="btn btn-small" style="background: #10b981; color: white; text-decoration: none; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.8rem;">
+                                🔗 ເປີດ
+                            </a>
+                        ` : ''}
+                        <button class="btn btn-small" onclick="editSubmission('${submissionType}', ${submission.id})" style="background: #f59e0b; color: white; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.8rem; border: none; cursor: pointer;">
+                            ✏️ ແກ້ໄຂ
+                        </button>
+                        <button class="btn btn-small" onclick="deleteSubmission('${submissionType}', ${submission.id}, '${(submission.name || submission.title || '').replace(/'/g, "\\'")}')" style="background: #dc2626; color: white; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.8rem; border: none; cursor: pointer;">
+                            🗑️ ລຶບ
+                        </button>
+                        ${!submission.is_active ? `
+                            <button class="btn btn-small btn-success" onclick="approveSubmission('${submissionType}', ${submission.id})" style="padding: 0.4rem 0.75rem; font-size: 0.8rem;">✅ ອະນຸມັດ</button>
+                        ` : ''}
+                    </div>
                 </div>
             </div>
         `;
-    });
+    }).join('');
+}
+
+// CRUD Functions - same as dashboard
+function editSubmission(category, id) {
+    // Redirect to appropriate management page
+    const pages = {
+        'teacher_college': 'manage-teacher-colleges.html',
+        'internal_worker': 'manage-internal-workers.html',
+        'district': 'manage-districts.html',
+        'province': 'manage-provinces.html'
+    };
+    const page = pages[category];
+    if (page) {
+        window.location.href = page + '?edit=' + id;
+    } else {
+        alert('ປະເພດບໍ່ຖືກຕ້ອງ');
+    }
+}
+
+function deleteSubmission(category, id, name) {
+    if (!confirm(`ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ "${name}"?\n\nການລຶບນີ້ບໍ່ສາມາດຍົກເລີກໄດ້!`)) {
+        return;
+    }
     
-    container.innerHTML = html;
+    const formData = new FormData();
+    formData.append('id', id);
+    
+    // Map category to endpoint
+    const endpoints = {
+        'teacher_college': '../backend/delete-teacher-college.php',
+        'internal_worker': '../backend/delete-internal-worker.php',
+        'district': '../backend/delete-district.php',
+        'province': '../backend/delete-province.php'
+    };
+    
+    const endpoint = endpoints[category];
+    if (!endpoint) {
+        alert('ປະເພດບໍ່ຖືກຕ້ອງ');
+        return;
+    }
+    
+    // Map category to ID field name
+    const idFields = {
+        'teacher_college': 'college_id',
+        'internal_worker': 'worker_id',
+        'district': 'district_id',
+        'province': 'province_id'
+    };
+    
+    formData.append(idFields[category], id);
+    
+    fetch(endpoint, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message || 'ລຶບສຳເລັດແລ້ວ');
+            loadSubmissions();
+            updateStats();
+        } else {
+            alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ລຶບບໍ່ສຳເລັດ'));
+        }
+    })
+    .catch(error => {
+        alert('ເກີດຂໍ້ຜິດພາດໃນການລຶບ');
+        console.error(error);
+    });
+}
+
+function approveSubmission(category, id) {
+    const formData = new FormData();
+    formData.append('type', category);
+    formData.append('id', id);
+    formData.append('action', 'approve');
+    
+    fetch('../backend/approve-submission.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('ອະນຸມັດສຳເລັດແລ້ວ');
+            loadSubmissions();
+            updateStats();
+        } else {
+            alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ອະນຸມັດບໍ່ສຳເລັດ'));
+        }
+    })
+    .catch(error => {
+        alert('ເກີດຂໍ້ຜິດພາດໃນການອະນຸມັດ');
+        console.error(error);
+    });
+}
+
+function viewDocument(fileUrl, title) {
+    if (!fileUrl) {
+        alert('ບໍ່ມີເອກະສານ');
+        return;
+    }
+    // Open in new tab
+    window.open(fileUrl, '_blank');
+}
+
+function downloadDocument(event, fileUrl, filename) {
+    if (!fileUrl) {
+        event.preventDefault();
+        alert('ບໍ່ມີເອກະສານໃຫ້ດາວໂຫຼດ');
+        return;
+    }
+    // Let default download behavior work
 }
 
 // Initialize

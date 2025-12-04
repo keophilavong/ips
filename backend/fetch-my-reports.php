@@ -12,6 +12,41 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
+// Function to get the base path dynamically
+function getBasePath() {
+    $script_name = $_SERVER['SCRIPT_NAME'];
+    $request_uri = $_SERVER['REQUEST_URI'];
+    $base_path = str_replace(basename($script_name), '', $script_name);
+    // If the request URI contains the base path, use it
+    if (strpos($request_uri, $base_path) === 0) {
+        return $base_path;
+    }
+    // Fallback for different server configurations (e.g., XAMPP in htdocs/ips)
+    // This attempts to find the segment before 'backend/'
+    $parts = explode('/backend/', $request_uri);
+    if (count($parts) > 1) {
+        return $parts[0] . '/';
+    }
+    return '/'; // Default to root
+}
+
+// Helper function to get correct file URL
+function getFileUrl($file_path) {
+    if (!$file_path) return null;
+    
+    // If already a full URL, return as is
+    if (strpos($file_path, 'http') === 0) {
+        return $file_path;
+    }
+    
+    // Remove any ../ prefixes
+    $cleanPath = str_replace('../', '', $file_path);
+    $cleanPath = ltrim($cleanPath, '/');
+    
+    // Prepend base path
+    return getBasePath() . $cleanPath;
+}
+
 try {
     $sql = "SELECT report_id, category, title, description, file_path, created_at 
             FROM reports 
@@ -23,12 +58,7 @@ try {
     
     // Convert file paths to URLs
     foreach ($reports as &$report) {
-        if ($report['file_path']) {
-            // Remove ../ if present and ensure proper path
-            $report['file_url'] = '/' . ltrim(str_replace('../', '', $report['file_path']), '/');
-        } else {
-            $report['file_url'] = null;
-        }
+        $report['file_url'] = getFileUrl($report['file_path']);
     }
     
     echo json_encode($reports, JSON_UNESCAPED_UNICODE);

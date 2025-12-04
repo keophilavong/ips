@@ -5,7 +5,7 @@ include "db.php";
 
 if (!isset($_SESSION['admin_id'])) {
     http_response_code(403);
-    echo json_encode(['error' => 'ມີແຕ່ຜູ້ດູແລລະບົບເທົ່ານັ້ນທີ່ສາມາດເບິ່ງການສົ່ງຂໍ້ມູນທີ່ລໍຖ້າກວດສອບ'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['error' => 'ມີແຕ່ຜູ້ດູແລລະບົບເທົ່ານັ້ນທີ່ສາມາດເບິ່ງຂໍ້ມູນນີ້'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -45,67 +45,62 @@ function getFileUrl($file_path) {
 }
 
 try {
-    $submissions = [];
+    $result = [
+        'teacher_college' => [],
+        'internal_worker' => [],
+        'district' => [],
+        'province' => []
+    ];
     
-    // Fetch pending teacher colleges (is_active = false)
-    $sql = "SELECT 'teacher_college' as type, college_id as id, college_name as name, title, description, file_path, NULL as link_url, date_created, created_at, created_by, is_active 
+    // 1. Teacher Colleges (ຂໍ້ມູນການເຄື່ອນໄຫວຂອງວິທະຍາໄລຄູ)
+    $sql = "SELECT college_id as id, college_name as name, title, description, file_path, NULL as link_url, date_created, created_at, created_by, is_active 
             FROM teacher_colleges 
-            WHERE is_active = FALSE
             ORDER BY created_at DESC";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $colleges = $stmt->fetchAll();
-    foreach ($colleges as $college) {
-        $submissions[] = $college;
+    foreach ($colleges as &$college) {
+        $college['file_url'] = getFileUrl($college['file_path']);
     }
+    $result['teacher_college'] = $colleges;
     
-    // Fetch pending internal workers (is_active = false)
-    $sql = "SELECT 'internal_worker' as type, worker_id as id, worker_name as name, title, description, file_path, NULL as link_url, date_created, created_at, created_by, is_active 
+    // 2. Internal Workers (ຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ)
+    $sql = "SELECT worker_id as id, worker_name as name, title, description, file_path, NULL as link_url, date_created, created_at, created_by, is_active 
             FROM internal_workers 
-            WHERE is_active = FALSE
             ORDER BY created_at DESC";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $workers = $stmt->fetchAll();
-    foreach ($workers as $worker) {
-        $submissions[] = $worker;
+    foreach ($workers as &$worker) {
+        $worker['file_url'] = getFileUrl($worker['file_path']);
     }
+    $result['internal_worker'] = $workers;
     
-    // Fetch pending districts (is_active = false)
-    $sql = "SELECT 'district' as type, district_id as id, district_name as name, title, description, file_path, link_url, date_created, created_at, created_by, is_active 
+    // 3. Districts (ຫ້ອງການສຶກສາທິການ ແລະ ກິລາເມືອງ)
+    $sql = "SELECT district_id as id, district_name as name, title, description, file_path, link_url, date_created, created_at, created_by, is_active 
             FROM districts 
-            WHERE is_active = FALSE
             ORDER BY created_at DESC";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $districts = $stmt->fetchAll();
-    foreach ($districts as $district) {
-        $submissions[] = $district;
+    foreach ($districts as &$district) {
+        $district['file_url'] = getFileUrl($district['file_path']);
     }
+    $result['district'] = $districts;
     
-    // Fetch pending provinces (is_active = false)
-    $sql = "SELECT 'province' as type, province_id as id, province_name as name, title, description, file_path, link_url, date_created, created_at, created_by, is_active 
+    // 4. Provinces (ພະແນກສຶກສາທິການ ແລະ ກິລາແຂວງ)
+    $sql = "SELECT province_id as id, province_name as name, title, description, file_path, link_url, date_created, created_at, created_by, is_active 
             FROM provinces 
-            WHERE is_active = FALSE
             ORDER BY created_at DESC";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $provinces = $stmt->fetchAll();
-    foreach ($provinces as $province) {
-        $submissions[] = $province;
+    foreach ($provinces as &$province) {
+        $province['file_url'] = getFileUrl($province['file_path']);
     }
+    $result['province'] = $provinces;
     
-    // Sort all submissions by created_at (newest first)
-    usort($submissions, function($a, $b) {
-        return strtotime($b['created_at']) - strtotime($a['created_at']);
-    });
-    
-    // Add file URLs
-    foreach ($submissions as &$submission) {
-        $submission['file_url'] = getFileUrl($submission['file_path']);
-    }
-    
-    echo json_encode($submissions, JSON_UNESCAPED_UNICODE);
+    echo json_encode($result, JSON_UNESCAPED_UNICODE);
 } catch(PDOException $e) {
     echo json_encode(['error' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }

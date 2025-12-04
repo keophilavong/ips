@@ -760,7 +760,7 @@
 <div class="admin-dashboard">
     <div class="admin-header">
         <div>
-            <h1>ແຜງຄວບຄຸມຜູ້ດູແລລະບົບ</h1>
+            <h1>ໜ້າຕ່າງການຈັດການ ເເລະ ດູແລລະບົບ</h1>
             <p>ຈັດການທຸກດ້ານຂອງລະບົບລາຍງານຜູ້ເຮັດວຽກສຶກສາ</p>
         </div>
     </div>
@@ -871,7 +871,456 @@
             </div>
         </div>
     </div>
+    
+    <!-- All Submissions by Category Section -->
+    <div class="submissions-by-category-section" style="margin-top: var(--spacing-xl);">
+        <div class="admin-header" style="margin-bottom: var(--spacing-md); display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--spacing-md);">
+            <div>
+                <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">📊 ຂໍ້ມູນທັງໝົດທີ່ຜູ້ໃຊ້ສົ່ງມາ</h2>
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0;">ຈັດການ ແລະ ຕິດຕາມຂໍ້ມູນທັງໝົດທີ່ຜູ້ໃຊ້ສົ່ງມາຈາກທຸກແຫຼ່ງ</p>
+            </div>
+            <div style="display: flex; gap: var(--spacing-sm); flex-wrap: wrap;">
+                <a href="manage-teacher-colleges.html" class="btn" style="background: #3b82f6; color: white; text-decoration: none; padding: var(--spacing-sm) var(--spacing-md); border-radius: 8px; font-size: 0.9rem; white-space: nowrap;">
+                    ➕ ເພີ່ມວິທະຍາໄລຄູ
+                </a>
+                <a href="manage-internal-workers.html" class="btn" style="background: #10b981; color: white; text-decoration: none; padding: var(--spacing-sm) var(--spacing-md); border-radius: 8px; font-size: 0.9rem; white-space: nowrap;">
+                    ➕ ເພີ່ມຜູ້ເຮັດວຽກ
+                </a>
+                <a href="manage-districts.html" class="btn" style="background: #f59e0b; color: white; text-decoration: none; padding: var(--spacing-sm) var(--spacing-md); border-radius: 8px; font-size: 0.9rem; white-space: nowrap;">
+                    ➕ ເພີ່ມເມືອງ
+                </a>
+                <a href="manage-provinces.html" class="btn" style="background: #8b5cf6; color: white; text-decoration: none; padding: var(--spacing-sm) var(--spacing-md); border-radius: 8px; font-size: 0.9rem; white-space: nowrap;">
+                    ➕ ເພີ່ມແຂວງ
+                </a>
+            </div>
+        </div>
+        
+        <!-- Category Tabs -->
+        <div class="category-tabs" style="display: flex; gap: var(--spacing-sm); margin-bottom: var(--spacing-lg); flex-wrap: wrap; border-bottom: 2px solid var(--border-color);">
+            <button class="category-tab active" data-category="teacher_college" onclick="switchCategory('teacher_college')">
+                <span style="font-size: 1.2rem; margin-right: 0.5rem;">🏫</span>
+                <span>ວິທະຍາໄລຄູ</span>
+                <span class="tab-count" id="count-teacher_college">0</span>
+            </button>
+            <button class="category-tab" data-category="internal_worker" onclick="switchCategory('internal_worker')">
+                <span style="font-size: 1.2rem; margin-right: 0.5rem;">👨‍🏫</span>
+                <span>ຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ</span>
+                <span class="tab-count" id="count-internal_worker">0</span>
+            </button>
+            <button class="category-tab" data-category="district" onclick="switchCategory('district')">
+                <span style="font-size: 1.2rem; margin-right: 0.5rem;">🏛</span>
+                <span>ຫ້ອງການສຶກສາທິການເມືອງ</span>
+                <span class="tab-count" id="count-district">0</span>
+            </button>
+            <button class="category-tab" data-category="province" onclick="switchCategory('province')">
+                <span style="font-size: 1.2rem; margin-right: 0.5rem;">🗺</span>
+                <span>ພະແນກສຶກສາທິການແຂວງ</span>
+                <span class="tab-count" id="count-province">0</span>
+            </button>
+        </div>
+        
+        <!-- Submissions Content -->
+        <div id="submissionsContent" class="submissions-content" style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); padding: var(--spacing-lg); border: 1px solid var(--border-color); min-height: 400px;">
+            <div style="text-align: center; padding: var(--spacing-2xl); color: var(--text-secondary);">
+                <div class="loading"></div>
+                <p style="margin-top: 0.5rem; font-size: 0.9rem;">ກຳລັງໂຫຼດຂໍ້ມູນ...</p>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Document Viewer Modal -->
+<div id="documentViewerModal" class="modal" style="display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.9);">
+    <div class="modal-content" style="background-color: #1e1e1e; margin: 2% auto; padding: 0; border-radius: 12px; width: 95%; max-width: 1200px; max-height: 95vh; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-lg); background: #2d2d2d; border-bottom: 1px solid #404040;">
+            <h3 id="documentViewerTitle" style="color: white; margin: 0; font-size: 1.1rem;">📄 ເບິ່ງເອກະສານ</h3>
+            <div style="display: flex; gap: var(--spacing-sm); align-items: center;">
+                <a id="documentDownloadBtn" href="#" download class="btn" style="background: #10b981; color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem;">
+                    ⬇️ ດາວໂຫຼດ
+                </a>
+                <a id="documentOpenBtn" href="#" target="_blank" class="btn" style="background: #3b82f6; color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem;">
+                    🔗 ເປີດໃນແຖບໃໝ່
+                </a>
+                <span class="close" onclick="closeDocumentViewer()" style="color: white; font-size: 2rem; font-weight: bold; cursor: pointer; line-height: 1; margin-left: var(--spacing-sm);">&times;</span>
+            </div>
+        </div>
+        <div id="documentViewerContent" style="padding: var(--spacing-lg); background: #1e1e1e; height: calc(95vh - 100px); overflow: auto; display: flex; align-items: center; justify-content: center;">
+            <div style="text-align: center; color: white;">
+                <div class="loading"></div>
+                <p style="margin-top: 1rem;">ກຳລັງໂຫຼດເອກະສານ...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Submission Modal -->
+<div id="editModal" class="modal" style="display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-content" style="background-color: white; margin: 3% auto; padding: var(--spacing-xl); border-radius: 16px; width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-xl); padding-bottom: var(--spacing-lg); border-bottom: 2px solid var(--border-color);">
+            <h3 id="editModalTitle">✏️ ແກ້ໄຂຂໍ້ມູນ</h3>
+            <span class="close" onclick="closeEditModal()" style="color: var(--text-light); font-size: 2rem; font-weight: bold; cursor: pointer; line-height: 1;">&times;</span>
+        </div>
+        
+        <form id="editForm" enctype="multipart/form-data">
+            <input type="hidden" id="edit_id" name="id">
+            <input type="hidden" id="edit_category" name="category">
+            
+            <div style="margin-bottom: var(--spacing-lg);">
+                <label class="form-label" style="display: block; font-weight: 600; margin-bottom: var(--spacing-sm);">
+                    ຊື່ <span style="color: #dc2626;">*</span>
+                </label>
+                <input type="text" id="edit_name" name="name" class="form-control" required style="width: 100%; padding: var(--spacing-sm) var(--spacing-md); border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+            </div>
+            
+            <div style="margin-bottom: var(--spacing-lg);">
+                <label class="form-label" style="display: block; font-weight: 600; margin-bottom: var(--spacing-sm);">
+                    ຫົວຂໍ້ <span style="color: #dc2626;">*</span>
+                </label>
+                <input type="text" id="edit_title" name="title" class="form-control" required style="width: 100%; padding: var(--spacing-sm) var(--spacing-md); border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+            </div>
+            
+            <div style="margin-bottom: var(--spacing-lg);">
+                <label class="form-label" style="display: block; font-weight: 600; margin-bottom: var(--spacing-sm);">
+                    ລາຍລະອຽດ
+                </label>
+                <textarea id="edit_description" name="description" class="form-control" rows="4" style="width: 100%; padding: var(--spacing-sm) var(--spacing-md); border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem; font-family: inherit;"></textarea>
+            </div>
+            
+            <div style="margin-bottom: var(--spacing-lg);" id="linkUrlField">
+                <label class="form-label" style="display: block; font-weight: 600; margin-bottom: var(--spacing-sm);">
+                    ລິ້ງ URL
+                </label>
+                <input type="url" id="edit_link_url" name="link_url" class="form-control" style="width: 100%; padding: var(--spacing-sm) var(--spacing-md); border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+            </div>
+            
+            <div style="margin-bottom: var(--spacing-lg);">
+                <label class="form-label" style="display: block; font-weight: 600; margin-bottom: var(--spacing-sm);">
+                    ວັນທີ <span style="color: #dc2626;">*</span>
+                </label>
+                <input type="date" id="edit_date_created" name="date_created" class="form-control" required style="width: 100%; padding: var(--spacing-sm) var(--spacing-md); border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+            </div>
+            
+            <div style="margin-bottom: var(--spacing-lg);">
+                <label class="form-label" style="display: block; font-weight: 600; margin-bottom: var(--spacing-sm);">
+                    ສະຖານະ
+                </label>
+                <select id="edit_is_active" name="is_active" class="form-control" style="width: 100%; padding: var(--spacing-sm) var(--spacing-md); border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                    <option value="true">ອະນຸມັດແລ້ວ</option>
+                    <option value="false">ລໍຖ້າກວດສອບ</option>
+                </select>
+            </div>
+            
+            <div id="editResult" style="margin-bottom: var(--spacing-md);"></div>
+            
+            <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl); padding-top: var(--spacing-lg); border-top: 2px solid var(--border-color);">
+                <button type="submit" class="btn btn-primary" id="editSubmitBtn" style="flex: 1; padding: var(--spacing-md);">💾 ບັນທຶກການແກ້ໄຂ</button>
+                <button type="button" class="btn btn-outline" onclick="closeEditModal()" style="flex: 1; padding: var(--spacing-md);">ຍົກເລີກ</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 3% auto;
+    padding: var(--spacing-xl);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.close {
+    color: var(--text-light);
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close:hover {
+    color: var(--text-primary);
+}
+
+/* Document Viewer Styles */
+#documentViewerModal .modal-content {
+    background-color: #1e1e1e;
+    color: white;
+}
+
+#documentViewerContent {
+    background: #1e1e1e;
+}
+
+#documentViewerContent img {
+    max-width: 100%;
+    max-height: calc(95vh - 150px);
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+#documentViewerContent iframe {
+    width: 100%;
+    height: calc(95vh - 150px);
+    border: none;
+    border-radius: 8px;
+    background: white;
+}
+
+#documentViewerContent pre {
+    background: #2d2d2d;
+    padding: var(--spacing-lg);
+    border-radius: 8px;
+    overflow-x: auto;
+    max-height: calc(95vh - 200px);
+}
+
+@media (max-width: 768px) {
+    #documentViewerModal .modal-content {
+        width: 98%;
+        margin: 1% auto;
+        padding: 0;
+    }
+    
+    #documentViewerModal .modal-content > div:first-child {
+        padding: var(--spacing-md);
+        flex-wrap: wrap;
+    }
+    
+    #documentViewerModal .modal-content > div:first-child h3 {
+        font-size: 0.9rem;
+        width: 100%;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    #documentViewerModal .modal-content > div:first-child > div:last-child {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    
+    #documentViewerContent {
+        padding: var(--spacing-md);
+        height: calc(95vh - 120px);
+    }
+}
+</style>
+
+<style>
+.category-tabs {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.category-tab {
+    background: transparent;
+    border: none;
+    padding: var(--spacing-md) var(--spacing-lg);
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    position: relative;
+}
+
+.category-tab:hover {
+    color: var(--primary-color);
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.category-tab.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.tab-count {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    min-width: 24px;
+    text-align: center;
+}
+
+.category-tab.active .tab-count {
+    background: var(--primary-color);
+    color: white;
+}
+
+.submissions-content {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+    min-height: 400px;
+}
+
+.submission-item {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.submission-item:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    transform: translateY(-2px);
+}
+
+.submission-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #3b82f6 0%, #6366f1 100%);
+    border-radius: 8px 0 0 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.submission-item:hover::before {
+    opacity: 1;
+}
+
+.submission-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+}
+
+.submission-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.submission-name {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.submission-description {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-sm);
+}
+
+.submission-meta {
+    display: flex;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--border-color);
+}
+
+.submission-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.submission-status.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.submission-status.approved {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.submission-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .category-tabs {
+        flex-direction: column;
+    }
+    
+    .category-tab {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .submission-header {
+        flex-direction: column;
+    }
+    
+    .submission-actions {
+        width: 100%;
+        justify-content: flex-start;
+        margin-top: var(--spacing-sm);
+    }
+    
+    .submission-actions .btn,
+    .submission-actions a {
+        flex: 1;
+        min-width: 80px;
+        text-align: center;
+    }
+    
+    .admin-header {
+        flex-direction: column !important;
+    }
+    
+    .admin-header > div:last-child {
+        width: 100%;
+        margin-top: var(--spacing-sm);
+    }
+    
+    .admin-header > div:last-child .btn {
+        flex: 1;
+        min-width: 120px;
+    }
+}
+</style>
 
 <script>
 // Load admin navbar instead of regular navbar
@@ -1101,6 +1550,7 @@ function approveSubmission(type, id) {
             alert(data.message);
             loadPendingSubmissions();
             loadStats();
+            loadAllSubmissions();
         } else {
             alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ອະນຸມັດບໍ່ສຳເລັດ'));
         }
@@ -1131,6 +1581,7 @@ function rejectSubmission(type, id) {
             alert(data.message);
             loadPendingSubmissions();
             loadStats();
+            loadAllSubmissions();
         } else {
             alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ປະຕິເສດບໍ່ສຳເລັດ'));
         }
@@ -1141,16 +1592,550 @@ function rejectSubmission(type, id) {
     });
 }
 
+// All Submissions by Category
+let allSubmissionsData = {};
+let currentCategory = 'teacher_college';
+
+function switchCategory(category) {
+    currentCategory = category;
+    
+    // Update active tab
+    document.querySelectorAll('.category-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelector(`[data-category="${category}"]`).classList.add('active');
+    
+    // Display submissions for selected category
+    displaySubmissions(category);
+}
+
+function loadAllSubmissions() {
+    fetch('../backend/fetch-all-submissions-by-category.php')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                document.getElementById('submissionsContent').innerHTML = `
+                    <div style="text-align: center; padding: var(--spacing-xl); color: #dc2626;">
+                        <p>ເກີດຂໍ້ຜິດພາດ: ${data.error}</p>
+                    </div>
+                `;
+                console.error('Backend error:', data.error);
+                return;
+            }
+            
+            // Ensure data structure is correct
+            if (!data || typeof data !== 'object') {
+                console.error('Invalid data structure:', data);
+                document.getElementById('submissionsContent').innerHTML = `
+                    <div style="text-align: center; padding: var(--spacing-xl); color: #dc2626;">
+                        <p>ຂໍ້ມູນບໍ່ຖືກຕ້ອງ</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            allSubmissionsData = data;
+            
+            // Update counts
+            document.getElementById('count-teacher_college').textContent = (data.teacher_college || []).length;
+            document.getElementById('count-internal_worker').textContent = (data.internal_worker || []).length;
+            document.getElementById('count-district').textContent = (data.district || []).length;
+            document.getElementById('count-province').textContent = (data.province || []).length;
+            
+            // Display current category
+            displaySubmissions(currentCategory);
+        })
+        .catch(error => {
+            document.getElementById('submissionsContent').innerHTML = `
+                <div style="text-align: center; padding: var(--spacing-xl); color: #dc2626;">
+                    <p>ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດຂໍ້ມູນ</p>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--text-secondary);">${error.message}</p>
+                </div>
+            `;
+            console.error('Error loading submissions:', error);
+        });
+}
+
+function displaySubmissions(category) {
+    const container = document.getElementById('submissionsContent');
+    
+    // Check if data is loaded
+    if (!allSubmissionsData || Object.keys(allSubmissionsData).length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: var(--spacing-2xl); color: var(--text-secondary);">
+                <div class="loading"></div>
+                <p style="margin-top: 0.5rem; font-size: 0.9rem;">ກຳລັງໂຫຼດຂໍ້ມູນ...</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const submissions = allSubmissionsData[category] || [];
+    
+    if (submissions.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state" style="text-align: center; padding: var(--spacing-2xl);">
+                <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">📭</div>
+                <p style="color: var(--text-secondary); font-size: 1rem; margin: 0;">ຍັງບໍ່ມີຂໍ້ມູນໃນໝວດນີ້</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const categoryLabels = {
+        'teacher_college': '🏫 ວິທະຍາໄລຄູ',
+        'internal_worker': '👨‍🏫 ຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ',
+        'district': '🏛 ຫ້ອງການສຶກສາທິການ ແລະ ກິລາເມືອງ',
+        'province': '🗺 ພະແນກສຶກສາທິການ ແລະ ກິລາແຂວງ'
+    };
+    
+    container.innerHTML = submissions.map(submission => {
+        const hasDocument = submission.file_path || submission.file_url;
+        const hasVideo = submission.link_url && (submission.link_url.includes('youtube.com') || submission.link_url.includes('youtu.be') || submission.link_url.includes('vimeo.com'));
+        const hasLink = submission.link_url && !hasVideo;
+        const statusClass = submission.is_active ? 'approved' : 'pending';
+        const statusText = submission.is_active ? 'ອະນຸມັດແລ້ວ' : 'ລໍຖ້າກວດສອບ';
+        
+        return `
+            <div class="submission-item">
+                <div class="submission-header">
+                    <div style="flex: 1;">
+                        <div class="submission-name">${submission.name || '-'}</div>
+                        <div class="submission-title">${submission.title || 'ບໍ່ມີຫົວຂໍ້'}</div>
+                        ${submission.description ? `
+                            <div class="submission-description">
+                                ${submission.description.length > 200 ? submission.description.substring(0, 200) + '...' : submission.description}
+                            </div>
+                        ` : ''}
+                        <div class="submission-meta">
+                            <span class="submission-status ${statusClass}">${statusText}</span>
+                            ${hasDocument ? '<span>📄 ມີເອກະສານ</span>' : ''}
+                            ${hasVideo ? '<span>🎥 ມີວິດີໂອ</span>' : ''}
+                            ${hasLink ? '<span>🔗 ມີລິ້ງ</span>' : ''}
+                            <span>📅 ${new Date(submission.created_at).toLocaleDateString('lo-LA', {year: 'numeric', month: 'short', day: 'numeric'})}</span>
+                        </div>
+                    </div>
+                    <div class="submission-actions">
+                        ${hasDocument ? `
+                            <button onclick="viewDocument('${submission.file_url || submission.file_path}', '${(submission.title || submission.name || 'Document').replace(/'/g, "\\'")}')" class="btn btn-small" style="background: #3b82f6; color: white; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.8rem; border: none; cursor: pointer;" title="ເບິ່ງເອກະສານ">
+                                👁️ ເບິ່ງ
+                            </button>
+                            <a href="${submission.file_url || submission.file_path}" download="${(submission.title || submission.name || 'document').replace(/[^a-z0-9]/gi, '_')}" onclick="downloadDocument(event, '${submission.file_url || submission.file_path}', '${(submission.title || submission.name || 'document').replace(/[^a-z0-9]/gi, '_')}')" class="btn btn-small" style="background: #10b981; color: white; text-decoration: none; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.8rem;" title="ດາວໂຫຼດເອກະສານ">
+                                ⬇️ ດາວໂຫຼດ
+                            </a>
+                        ` : ''}
+                        ${hasLink ? `
+                            <a href="${submission.link_url}" target="_blank" class="btn btn-small" style="background: #10b981; color: white; text-decoration: none; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.8rem;">
+                                🔗 ເປີດ
+                            </a>
+                        ` : ''}
+                        <button class="btn btn-small" onclick="editSubmission('${category}', ${submission.id})" style="background: #f59e0b; color: white; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.8rem; border: none; cursor: pointer;">
+                            ✏️ ແກ້ໄຂ
+                        </button>
+                        <button class="btn btn-small" onclick="deleteSubmission('${category}', ${submission.id}, '${(submission.name || submission.title || '').replace(/'/g, "\\'")}')" style="background: #dc2626; color: white; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.8rem; border: none; cursor: pointer;">
+                            🗑️ ລຶບ
+                        </button>
+                        ${!submission.is_active ? `
+                            <button class="btn btn-small btn-success" onclick="approveSubmission('${category}', ${submission.id})" style="padding: 0.4rem 0.75rem; font-size: 0.8rem;">✅ ອະນຸມັດ</button>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+
+// CRUD Functions
+function editSubmission(category, id) {
+    // Find the submission in the current data
+    const submissions = allSubmissionsData[category] || [];
+    const submission = submissions.find(s => s.id == id);
+    
+    if (!submission) {
+        alert('ບໍ່ພົບຂໍ້ມູນ');
+        return;
+    }
+    
+    // Populate form
+    document.getElementById('edit_id').value = id;
+    document.getElementById('edit_category').value = category;
+    document.getElementById('edit_name').value = submission.name || '';
+    document.getElementById('edit_title').value = submission.title || '';
+    document.getElementById('edit_description').value = submission.description || '';
+    document.getElementById('edit_link_url').value = submission.link_url || '';
+    document.getElementById('edit_date_created').value = submission.date_created ? submission.date_created.split('T')[0] : '';
+    document.getElementById('edit_is_active').value = submission.is_active ? 'true' : 'false';
+    
+    // Show/hide link URL field based on category
+    const linkUrlField = document.getElementById('linkUrlField');
+    if (category === 'teacher_college' || category === 'internal_worker') {
+        linkUrlField.style.display = 'none';
+    } else {
+        linkUrlField.style.display = 'block';
+    }
+    
+    // Set modal title
+    const categoryLabels = {
+        'teacher_college': 'ວິທະຍາໄລຄູ',
+        'internal_worker': 'ຜູ້ເຮັດວຽກສຶກສານິເທດພາຍໃນ',
+        'district': 'ຫ້ອງການສຶກສາທິການເມືອງ',
+        'province': 'ພະແນກສຶກສາທິການແຂວງ'
+    };
+    document.getElementById('editModalTitle').textContent = `✏️ ແກ້ໄຂ: ${categoryLabels[category] || category}`;
+    
+    // Show modal
+    document.getElementById('editModal').style.display = 'block';
+    document.getElementById('editResult').innerHTML = '';
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+    document.getElementById('editForm').reset();
+    document.getElementById('editResult').innerHTML = '';
+}
+
+function deleteSubmission(category, id, name) {
+    if (!confirm(`ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບ "${name}"?\n\nການລຶບນີ້ບໍ່ສາມາດຍົກເລີກໄດ້!`)) {
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('id', id);
+    
+    // Map category to endpoint
+    const endpoints = {
+        'teacher_college': '../backend/delete-teacher-college.php',
+        'internal_worker': '../backend/delete-internal-worker.php',
+        'district': '../backend/delete-district.php',
+        'province': '../backend/delete-province.php'
+    };
+    
+    const endpoint = endpoints[category];
+    if (!endpoint) {
+        alert('ປະເພດບໍ່ຖືກຕ້ອງ');
+        return;
+    }
+    
+    // Map category to ID field name
+    const idFields = {
+        'teacher_college': 'college_id',
+        'internal_worker': 'worker_id',
+        'district': 'district_id',
+        'province': 'province_id'
+    };
+    
+    formData.append(idFields[category], id);
+    
+    fetch(endpoint, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message || 'ລຶບສຳເລັດແລ້ວ');
+            loadAllSubmissions();
+            loadPendingSubmissions();
+            loadStats();
+        } else {
+            alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ລຶບບໍ່ສຳເລັດ'));
+        }
+    })
+    .catch(error => {
+        alert('ເກີດຂໍ້ຜິດພາດໃນການລຶບ');
+        console.error(error);
+    });
+}
+
+// Handle edit form submission
+let isEditSubmitting = false;
+document.getElementById('editForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Prevent duplicate submissions
+    if (isEditSubmitting) {
+        return;
+    }
+    
+    const category = document.getElementById('edit_category').value;
+    const id = document.getElementById('edit_id').value;
+    const formData = new FormData(this);
+    
+    // Map category to endpoint and field names
+    const endpoints = {
+        'teacher_college': '../backend/update-teacher-college.php',
+        'internal_worker': '../backend/update-internal-worker.php',
+        'district': '../backend/update-district.php',
+        'province': '../backend/update-province.php'
+    };
+    
+    const fieldMappings = {
+        'teacher_college': {
+            'id': 'college_id',
+            'name': 'college_name'
+        },
+        'internal_worker': {
+            'id': 'worker_id',
+            'name': 'worker_name'
+        },
+        'district': {
+            'id': 'district_id',
+            'name': 'district_name'
+        },
+        'province': {
+            'id': 'province_id',
+            'name': 'province_name'
+        }
+    };
+    
+    const mapping = fieldMappings[category];
+    const endpoint = endpoints[category];
+    
+    if (!endpoint || !mapping) {
+        alert('ປະເພດບໍ່ຖືກຕ້ອງ');
+        return;
+    }
+    
+    // Rename fields according to mapping
+    const submitData = new FormData();
+    submitData.append(mapping.id, id);
+    submitData.append(mapping.name, formData.get('name'));
+    submitData.append('title', formData.get('title'));
+    submitData.append('description', formData.get('description'));
+    submitData.append('date_created', formData.get('date_created'));
+    submitData.append('is_active', formData.get('is_active'));
+    
+    // Add link_url for districts and provinces
+    if (category === 'district' || category === 'province') {
+        submitData.append('link_url', formData.get('link_url') || '');
+    }
+    
+    const submitBtn = document.getElementById('editSubmitBtn');
+    const originalText = submitBtn.textContent;
+    const result = document.getElementById('editResult');
+    
+    // Disable form and show loading state
+    isEditSubmitting = true;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'ກຳລັງບັນທຶກ...';
+    result.innerHTML = '';
+    
+    fetch(endpoint, {
+        method: 'POST',
+        body: submitData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            result.innerHTML = `<div style="padding: var(--spacing-md); background: #d1fae5; color: #059669; border-radius: 8px; margin-bottom: var(--spacing-md);">✅ ${data.message || 'ບັນທຶກສຳເລັດແລ້ວ'}</div>`;
+            setTimeout(() => {
+                closeEditModal();
+                loadAllSubmissions();
+                loadPendingSubmissions();
+                loadStats();
+            }, 1500);
+        } else {
+            result.innerHTML = `<div style="padding: var(--spacing-md); background: #fee2e2; color: #dc2626; border-radius: 8px; margin-bottom: var(--spacing-md);">❌ ${data.error || 'ບັນທຶກບໍ່ສຳເລັດ'}</div>`;
+        }
+    })
+    .catch(error => {
+        result.innerHTML = `<div style="padding: var(--spacing-md); background: #fee2e2; color: #dc2626; border-radius: 8px; margin-bottom: var(--spacing-md);">❌ ເກີດຂໍ້ຜິດພາດໃນການບັນທຶກ</div>`;
+        console.error(error);
+    })
+    .finally(() => {
+        // Re-enable form
+        isEditSubmitting = false;
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    });
+});
+
+// Document Viewer Functions
+function viewDocument(fileUrl, title) {
+    if (!fileUrl) {
+        alert('ບໍ່ມີເອກະສານ');
+        return;
+    }
+    
+    const modal = document.getElementById('documentViewerModal');
+    const content = document.getElementById('documentViewerContent');
+    const titleEl = document.getElementById('documentViewerTitle');
+    const downloadBtn = document.getElementById('documentDownloadBtn');
+    const openBtn = document.getElementById('documentOpenBtn');
+    
+    // Set title
+    titleEl.textContent = `📄 ${title}`;
+    
+    // Set download and open links
+    const fileName = title.replace(/[^a-z0-9]/gi, '_') || 'document';
+    downloadBtn.href = fileUrl;
+    downloadBtn.download = fileName;
+    downloadBtn.onclick = function(e) {
+        downloadDocument(e, fileUrl, fileName);
+    };
+    openBtn.href = fileUrl;
+    
+    // Show modal
+    modal.style.display = 'block';
+    
+    // Determine file type
+    const fileExtension = fileUrl.split('.').pop().toLowerCase();
+    const imageTypes = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
+    const pdfTypes = ['pdf'];
+    const textTypes = ['txt', 'csv'];
+    const officeTypes = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
+    
+    // Clear content and show loading
+    content.innerHTML = `
+        <div style="text-align: center; color: white;">
+            <div class="loading"></div>
+            <p style="margin-top: 1rem;">ກຳລັງໂຫຼດເອກະສານ...</p>
+        </div>
+    `;
+    
+    // Display based on file type
+    if (imageTypes.includes(fileExtension)) {
+        // Display image
+        content.innerHTML = `
+            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                <img src="${fileUrl}" alt="${title}" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);" onerror="this.parentElement.innerHTML='<div style=\'text-align: center; color: #ef4444; padding: 2rem;\'><p>ບໍ່ສາມາດໂຫຼດຮູບພາບໄດ້</p><p style=\'font-size: 0.9rem; margin-top: 0.5rem;\'><a href=\'${fileUrl}\' target=\'_blank\' style=\'color: #3b82f6;\'>ເປີດໃນແຖບໃໝ່</a></p></div>'">
+            </div>
+        `;
+    } else if (pdfTypes.includes(fileExtension)) {
+        // Display PDF
+        content.innerHTML = `
+            <div style="width: 100%; height: 100%;">
+                <iframe src="${fileUrl}" style="width: 100%; height: 100%; border: none; border-radius: 8px;" onerror="this.parentElement.innerHTML='<div style=\'text-align: center; color: #ef4444; padding: 2rem;\'><p>ບໍ່ສາມາດໂຫຼດ PDF ໄດ້</p><p style=\'font-size: 0.9rem; margin-top: 0.5rem;\'><a href=\'${fileUrl}\' target=\'_blank\' style=\'color: #3b82f6;\'>ເປີດໃນແຖບໃໝ່</a></p></div>'"></iframe>
+            </div>
+        `;
+    } else if (textTypes.includes(fileExtension)) {
+        // Display text file
+        fetch(fileUrl)
+            .then(response => response.text())
+            .then(text => {
+                content.innerHTML = `
+                    <div style="background: #2d2d2d; padding: var(--spacing-xl); border-radius: 8px; max-width: 100%; overflow: auto;">
+                        <pre style="color: #e5e5e5; font-family: 'Courier New', monospace; white-space: pre-wrap; word-wrap: break-word; margin: 0; line-height: 1.6;">${escapeHtml(text)}</pre>
+                    </div>
+                `;
+            })
+            .catch(error => {
+                content.innerHTML = `
+                    <div style="text-align: center; color: #ef4444; padding: 2rem;">
+                        <p>ບໍ່ສາມາດໂຫຼດໄຟລ໌ໄດ້</p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">
+                            <a href="${fileUrl}" target="_blank" style="color: #3b82f6;">ເປີດໃນແຖບໃໝ່</a> ຫຼື 
+                            <a href="${fileUrl}" download style="color: #10b981;">ດາວໂຫຼດ</a>
+                        </p>
+                    </div>
+                `;
+            });
+    } else if (officeTypes.includes(fileExtension)) {
+        // Office documents - show download option
+        content.innerHTML = `
+            <div style="text-align: center; color: white; padding: 3rem;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">📄</div>
+                <h3 style="margin-bottom: 1rem;">${title}</h3>
+                <p style="color: #a0a0a0; margin-bottom: 2rem;">ໄຟລ໌ນີ້ບໍ່ສາມາດເບິ່ງໄດ້ໃນບຣາວເຊີ. ກະລຸນາດາວໂຫຼດເພື່ອເບິ່ງ.</p>
+                <div style="display: flex; gap: var(--spacing-md); justify-content: center; flex-wrap: wrap;">
+                    <a href="${fileUrl}" download class="btn" style="background: #10b981; color: white; text-decoration: none; padding: var(--spacing-md) var(--spacing-xl); border-radius: 8px; font-size: 1rem;">
+                        ⬇️ ດາວໂຫຼດເອກະສານ
+                    </a>
+                    <a href="${fileUrl}" target="_blank" class="btn" style="background: #3b82f6; color: white; text-decoration: none; padding: var(--spacing-md) var(--spacing-xl); border-radius: 8px; font-size: 1rem;">
+                        🔗 ເປີດໃນແຖບໃໝ່
+                    </a>
+                </div>
+            </div>
+        `;
+    } else {
+        // Unknown file type - show download option
+        content.innerHTML = `
+            <div style="text-align: center; color: white; padding: 3rem;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">📄</div>
+                <h3 style="margin-bottom: 1rem;">${title}</h3>
+                <p style="color: #a0a0a0; margin-bottom: 2rem;">ໄຟລ໌ນີ້ບໍ່ສາມາດເບິ່ງໄດ້ໃນບຣາວເຊີ. ກະລຸນາດາວໂຫຼດເພື່ອເບິ່ງ.</p>
+                <div style="display: flex; gap: var(--spacing-md); justify-content: center; flex-wrap: wrap;">
+                    <a href="${fileUrl}" download class="btn" style="background: #10b981; color: white; text-decoration: none; padding: var(--spacing-md) var(--spacing-xl); border-radius: 8px; font-size: 1rem;">
+                        ⬇️ ດາວໂຫຼດເອກະສານ
+                    </a>
+                    <a href="${fileUrl}" target="_blank" class="btn" style="background: #3b82f6; color: white; text-decoration: none; padding: var(--spacing-md) var(--spacing-xl); border-radius: 8px; font-size: 1rem;">
+                        🔗 ເປີດໃນແຖບໃໝ່
+                    </a>
+                </div>
+            </div>
+        `;
+    }
+}
+
+function closeDocumentViewer() {
+    document.getElementById('documentViewerModal').style.display = 'none';
+    document.getElementById('documentViewerContent').innerHTML = '';
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Download document with proper filename
+function downloadDocument(event, fileUrl, filename) {
+    if (!fileUrl) {
+        event.preventDefault();
+        alert('ບໍ່ມີເອກະສານໃຫ້ດາວໂຫຼດ');
+        return;
+    }
+    
+    // If it's a relative path, make sure it's correct
+    if (!fileUrl.startsWith('http') && !fileUrl.startsWith('/')) {
+        fileUrl = '/' + fileUrl;
+    }
+    
+    // Create a temporary anchor element for download
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = filename || 'document';
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Also allow default behavior as fallback
+    // event.preventDefault() is not called, so default download will work too
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const editModal = document.getElementById('editModal');
+    const documentViewerModal = document.getElementById('documentViewerModal');
+    
+    if (event.target == editModal) {
+        closeEditModal();
+    }
+    
+    if (event.target == documentViewerModal) {
+        closeDocumentViewer();
+    }
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     checkAuth();
     loadStats();
     loadPendingSubmissions();
+    loadAllSubmissions();
     
-    // Refresh stats and pending submissions every 30 seconds
+    // Refresh stats and submissions every 30 seconds
     setInterval(() => {
         loadStats();
         loadPendingSubmissions();
+        loadAllSubmissions();
     }, 30000);
 });
 </script>

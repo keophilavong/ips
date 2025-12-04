@@ -42,34 +42,55 @@ try {
     
     $activities = $stmt->fetchAll();
     
-    // Convert paths to URLs
-    // Get the base path of the project
-    $base_path = '/internal-education-worker-report/';
+    // Helper function to get correct file URL
+    function getFileUrl($file_path) {
+        if (!$file_path) return null;
+        
+        // If already a full URL, return as is
+        if (strpos($file_path, 'http') === 0) {
+            return $file_path;
+        }
+        
+        // Remove any ../ prefixes
+        $cleanPath = str_replace('../', '', $file_path);
+        $cleanPath = ltrim($cleanPath, '/');
+        
+        // Detect base path from request URI (more reliable)
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+        $script_name = $_SERVER['SCRIPT_NAME'] ?? '';
+        
+        // Extract base path from script name (e.g., /ips/backend/fetch-activities.php -> /ips)
+        $base_path = '';
+        if ($script_name) {
+            $parts = explode('/', trim($script_name, '/'));
+            if (count($parts) > 1 && $parts[0] !== 'backend') {
+                $base_path = '/' . $parts[0];
+            }
+        }
+        
+        // If we couldn't detect from script, try from request URI
+        if (!$base_path && $request_uri) {
+            $uri_parts = explode('/', trim($request_uri, '/'));
+            if (count($uri_parts) > 0 && $uri_parts[0] !== 'backend') {
+                $base_path = '/' . $uri_parts[0];
+            }
+        }
+        
+        // If base_path is not root, prepend it
+        if ($base_path && $base_path !== '/') {
+            return $base_path . '/' . $cleanPath;
+        }
+        
+        // Return absolute path from web root
+        return '/' . $cleanPath;
+    }
     
     foreach ($activities as &$activity) {
         // Handle image path
-        if ($activity['image_path']) {
-            $image_path = ltrim($activity['image_path'], '/');
-            if (strpos($image_path, 'internal-education-worker-report') !== 0) {
-                $activity['image_url'] = $base_path . ltrim($image_path, '/');
-            } else {
-                $activity['image_url'] = '/' . ltrim($image_path, '/');
-            }
-        } else {
-            $activity['image_url'] = null;
-        }
+        $activity['image_url'] = getFileUrl($activity['image_path']);
         
         // Handle document path
-        if ($activity['document_path']) {
-            $doc_path = ltrim($activity['document_path'], '/');
-            if (strpos($doc_path, 'internal-education-worker-report') !== 0) {
-                $activity['document_url'] = $base_path . ltrim($doc_path, '/');
-            } else {
-                $activity['document_url'] = '/' . ltrim($doc_path, '/');
-            }
-        } else {
-            $activity['document_url'] = null;
-        }
+        $activity['document_url'] = getFileUrl($activity['document_path']);
         
         // video_url is already a URL, no conversion needed
     }

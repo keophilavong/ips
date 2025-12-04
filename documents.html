@@ -1346,9 +1346,9 @@ function displayDocuments(documents) {
                         (doc.file_path.startsWith('http') ? doc.file_path : 
                          '/' + doc.file_path.replace(/^\.\.\//, '').replace(/^\/+/, '/')) : 
                         null);
-                    // Ensure it starts with /internal-education-worker-report/ if it's a relative path
-                    if (fileUrl && !fileUrl.startsWith('http') && !fileUrl.startsWith('/internal-education-worker-report')) {
-                        fileUrl = '/internal-education-worker-report' + (fileUrl.startsWith('/') ? fileUrl : '/' + fileUrl);
+                    // Ensure it's an absolute path from root
+                    if (fileUrl && !fileUrl.startsWith('http') && !fileUrl.startsWith('/')) {
+                        fileUrl = '/' + fileUrl;
                     }
                     const isImage = isImageFile(filename);
                     const canPreviewFile = canPreview(filename);
@@ -1422,9 +1422,9 @@ function displayDocuments(documents) {
                                 (doc.file_path.startsWith('http') ? doc.file_path : 
                                  '/' + doc.file_path.replace(/^\.\.\//, '').replace(/^\/+/, '/')) : 
                                 null);
-                            // Ensure it starts with /internal-education-worker-report/ if it's a relative path
-                            if (fileUrl && !fileUrl.startsWith('http') && !fileUrl.startsWith('/internal-education-worker-report')) {
-                                fileUrl = '/internal-education-worker-report' + (fileUrl.startsWith('/') ? fileUrl : '/' + fileUrl);
+                            // Ensure it's an absolute path from root
+                            if (fileUrl && !fileUrl.startsWith('http') && !fileUrl.startsWith('/')) {
+                                fileUrl = '/' + fileUrl;
                             }
                             const canPreviewFile = canPreview(filename);
                             const fileExt = getFileExtension(filename);

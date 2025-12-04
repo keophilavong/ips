@@ -9,7 +9,7 @@ if (!isset($_SESSION['admin_id'])) {
     exit;
 }
 
-$type = $_POST['type'] ?? ''; // 'teacher_college', 'district', or 'province'
+$type = $_POST['type'] ?? ''; // 'teacher_college', 'internal_worker', 'district', or 'province'
 $id = $_POST['id'] ?? 0;
 $action = $_POST['action'] ?? 'approve'; // 'approve' or 'reject'
 
@@ -27,6 +27,10 @@ try {
         case 'teacher_college':
             $table_name = 'teacher_colleges';
             $id_column = 'college_id';
+            break;
+        case 'internal_worker':
+            $table_name = 'internal_workers';
+            $id_column = 'worker_id';
             break;
         case 'district':
             $table_name = 'districts';

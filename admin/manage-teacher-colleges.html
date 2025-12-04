@@ -75,43 +75,67 @@
 <div id="collegeModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3 id="modalTitle">Add Teacher College Data</h3>
+            <h3 id="modalTitle">ເພີ່ມຂໍ້ມູນວິທະຍາໄລຄູ</h3>
             <span class="close" onclick="closeModal()">&times;</span>
         </div>
         <form id="collegeForm">
             <input type="hidden" id="college_id" name="college_id">
             
             <div class="form-group">
-                <label for="college_name">College Name <span style="color: #ef4444;">*</span></label>
+                <label for="college_name">ຊື່ວິທະຍາໄລຄູ <span style="color: #ef4444;">*</span></label>
                 <input type="text" id="college_name" name="college_name" required>
             </div>
             
             <div class="form-group">
-                <label for="title">Title <span style="color: #ef4444;">*</span></label>
+                <label for="title">ຫົວຂໍ້ <span style="color: #ef4444;">*</span></label>
                 <input type="text" id="title" name="title" required>
             </div>
             
             <div class="form-group">
-                <label for="description">Description</label>
+                <label for="description">ລາຍລະອຽດ</label>
                 <textarea id="description" name="description" rows="4"></textarea>
             </div>
             
             <div class="form-group">
-                <label for="date_created">Date</label>
+                <label for="date_created">ວັນທີ</label>
                 <input type="date" id="date_created" name="date_created">
             </div>
             
             <div class="form-group" id="isActiveGroup" style="display: none;">
                 <label>
-                    <input type="checkbox" id="is_active" name="is_active" checked> Active
+                    <input type="checkbox" id="is_active" name="is_active" checked> ເປີດໃຊ້ງານ
                 </label>
             </div>
             
             <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl);">
-                <button type="submit" class="btn btn-primary" style="flex: 1;">Save</button>
-                <button type="button" class="btn btn-outline" onclick="closeModal()" style="flex: 1;">Cancel</button>
+                <button type="submit" class="btn btn-primary" style="flex: 1;">ບັນທຶກ</button>
+                <button type="button" class="btn btn-outline" onclick="closeModal()" style="flex: 1;">ຍົກເລີກ</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Document Viewer Modal -->
+<div id="documentViewerModal" class="modal" style="display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.9);">
+    <div class="modal-content" style="background-color: #1e1e1e; margin: 2% auto; padding: 0; border-radius: 12px; width: 95%; max-width: 1200px; max-height: 95vh; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-lg); background: #2d2d2d; border-bottom: 1px solid #404040;">
+            <h3 id="documentViewerTitle" style="color: white; margin: 0; font-size: 1.1rem;">📄 ເບິ່ງເອກະສານ</h3>
+            <div style="display: flex; gap: var(--spacing-sm); align-items: center;">
+                <a id="documentDownloadBtn" href="#" download class="btn" style="background: #10b981; color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem;">
+                    ⬇️ ດາວໂຫຼດ
+                </a>
+                <a id="documentOpenBtn" href="#" target="_blank" class="btn" style="background: #3b82f6; color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem;">
+                    🔗 ເປີດໃນແຖບໃໝ່
+                </a>
+                <span class="close" onclick="closeDocumentViewer()" style="color: white; font-size: 2rem; font-weight: bold; cursor: pointer; line-height: 1; margin-left: var(--spacing-sm);">&times;</span>
+            </div>
+        </div>
+        <div id="documentViewerContent" style="padding: var(--spacing-lg); background: #1e1e1e; height: calc(95vh - 100px); overflow: auto; display: flex; align-items: center; justify-content: center;">
+            <div style="text-align: center; color: white;">
+                <div class="loading"></div>
+                <p style="margin-top: 1rem;">ກຳລັງໂຫຼດເອກະສານ...</p>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -151,7 +175,7 @@ function loadColleges() {
             const tbody = document.getElementById('collegesTableBody');
             
             if (data.error) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: #ef4444;">Error: ${data.error}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: var(--spacing-xl); color: #ef4444;">ເກີດຂໍ້ຜິດພາດ: ${data.error}</td></tr>`;
                 return;
             }
             
@@ -180,8 +204,14 @@ function loadColleges() {
                         </span>
                     </td>
                     <td>
-                        <button class="btn btn-small btn-success" onclick="editCollege(${college.college_id})">Edit</button>
-                        <button class="btn btn-small btn-danger" onclick="deleteCollege(${college.college_id})">Delete</button>
+                        <div style="display: flex; gap: 0.25rem; flex-wrap: wrap;">
+                            ${college.file_url ? `
+                                <button class="btn btn-small" onclick="viewDocument('${college.file_url}', '${(college.title || college.college_name || 'Document').replace(/'/g, "\\'")}')" style="background: #3b82f6; color: white; padding: 0.3rem 0.6rem; font-size: 0.75rem; border: none; cursor: pointer;" title="View Document">👁️</button>
+                                <a href="${college.file_url}" download="${(college.title || college.college_name || 'document').replace(/[^a-z0-9]/gi, '_')}" onclick="downloadDocument(event, '${college.file_url}', '${(college.title || college.college_name || 'document').replace(/[^a-z0-9]/gi, '_')}')" class="btn btn-small" style="background: #10b981; color: white; text-decoration: none; padding: 0.3rem 0.6rem; font-size: 0.75rem;" title="Download Document">⬇️</a>
+                            ` : ''}
+                            <button class="btn btn-small btn-success" onclick="editCollege(${college.college_id})" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;">✏️</button>
+                            <button class="btn btn-small btn-danger" onclick="deleteCollege(${college.college_id})" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;">🗑️</button>
+                        </div>
                     </td>
                 </tr>
             `).join('');
@@ -221,7 +251,7 @@ function openModal(collegeId = null) {
                 }
             });
     } else {
-        modalTitle.textContent = 'Add Teacher College Data';
+        modalTitle.textContent = 'ເພີ່ມຂໍ້ມູນວິທະຍາໄລຄູ';
         isActiveGroup.style.display = 'none';
         document.getElementById('date_created').valueAsDate = new Date();
     }
@@ -258,7 +288,7 @@ function deleteCollege(collegeId) {
             alert('Teacher college data deleted successfully!');
             loadColleges();
         } else {
-            alert('Error: ' + (data.error || 'Failed to delete'));
+            alert('ເກີດຂໍ້ຜິດພາດ: ' + (data.error || 'ລຶບບໍ່ສຳເລັດ'));
         }
     })
     .catch(error => {
@@ -268,8 +298,22 @@ function deleteCollege(collegeId) {
 }
 
 // Form submission
+let isSubmitting = false;
 document.getElementById('collegeForm').addEventListener('submit', function(e) {
     e.preventDefault();
+    
+    // Prevent duplicate submissions
+    if (isSubmitting) {
+        return;
+    }
+    
+    const submitButton = this.querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
+    
+    // Disable form and show loading state
+    isSubmitting = true;
+    submitButton.disabled = true;
+    submitButton.textContent = 'ກຳລັງບັນທຶກ...';
     
     const formData = new FormData(this);
     const collegeId = formData.get('college_id');
@@ -296,6 +340,12 @@ document.getElementById('collegeForm').addEventListener('submit', function(e) {
     .catch(error => {
         alert('Error saving data');
         console.error(error);
+    })
+    .finally(() => {
+        // Re-enable form
+        isSubmitting = false;
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
     });
 });
 
@@ -304,6 +354,140 @@ window.onclick = function(event) {
     const modal = document.getElementById('collegeModal');
     if (event.target == modal) {
         closeModal();
+    }
+}
+
+// Document Viewer Functions
+function viewDocument(fileUrl, title) {
+    if (!fileUrl) {
+        alert('ບໍ່ມີເອກະສານ');
+        return;
+    }
+    
+    const modal = document.getElementById('documentViewerModal');
+    const content = document.getElementById('documentViewerContent');
+    const titleEl = document.getElementById('documentViewerTitle');
+    const downloadBtn = document.getElementById('documentDownloadBtn');
+    const openBtn = document.getElementById('documentOpenBtn');
+    
+    titleEl.textContent = `📄 ${title}`;
+    const fileName = title.replace(/[^a-z0-9]/gi, '_') || 'document';
+    downloadBtn.href = fileUrl;
+    downloadBtn.download = fileName;
+    downloadBtn.onclick = function(e) {
+        downloadDocument(e, fileUrl, fileName);
+    };
+    openBtn.href = fileUrl;
+    
+    modal.style.display = 'block';
+    
+    const fileExtension = fileUrl.split('.').pop().toLowerCase();
+    const imageTypes = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
+    const pdfTypes = ['pdf'];
+    const textTypes = ['txt', 'csv'];
+    const officeTypes = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
+    
+    content.innerHTML = `
+        <div style="text-align: center; color: white;">
+            <div class="loading"></div>
+            <p style="margin-top: 1rem;">ກຳລັງໂຫຼດເອກະສານ...</p>
+        </div>
+    `;
+    
+    if (imageTypes.includes(fileExtension)) {
+        content.innerHTML = `
+            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                <img src="${fileUrl}" alt="${title}" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);" onerror="this.parentElement.innerHTML='<div style=\'text-align: center; color: #ef4444; padding: 2rem;\'><p>ບໍ່ສາມາດໂຫຼດຮູບພາບໄດ້</p><p style=\'font-size: 0.9rem; margin-top: 0.5rem;\'><a href=\'${fileUrl}\' target=\'_blank\' style=\'color: #3b82f6;\'>ເປີດໃນແຖບໃໝ່</a></p></div>'">
+            </div>
+        `;
+    } else if (pdfTypes.includes(fileExtension)) {
+        content.innerHTML = `
+            <div style="width: 100%; height: 100%;">
+                <iframe src="${fileUrl}" style="width: 100%; height: 100%; border: none; border-radius: 8px;" onerror="this.parentElement.innerHTML='<div style=\'text-align: center; color: #ef4444; padding: 2rem;\'><p>ບໍ່ສາມາດໂຫຼດ PDF ໄດ້</p><p style=\'font-size: 0.9rem; margin-top: 0.5rem;\'><a href=\'${fileUrl}\' target=\'_blank\' style=\'color: #3b82f6;\'>ເປີດໃນແຖບໃໝ່</a></p></div>'"></iframe>
+            </div>
+        `;
+    } else if (textTypes.includes(fileExtension)) {
+        fetch(fileUrl)
+            .then(response => response.text())
+            .then(text => {
+                content.innerHTML = `
+                    <div style="background: #2d2d2d; padding: var(--spacing-xl); border-radius: 8px; max-width: 100%; overflow: auto;">
+                        <pre style="color: #e5e5e5; font-family: 'Courier New', monospace; white-space: pre-wrap; word-wrap: break-word; margin: 0; line-height: 1.6;">${escapeHtml(text)}</pre>
+                    </div>
+                `;
+            })
+            .catch(error => {
+                content.innerHTML = `
+                    <div style="text-align: center; color: #ef4444; padding: 2rem;">
+                        <p>ບໍ່ສາມາດໂຫຼດໄຟລ໌ໄດ້</p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">
+                            <a href="${fileUrl}" target="_blank" style="color: #3b82f6;">ເປີດໃນແຖບໃໝ່</a> ຫຼື 
+                            <a href="${fileUrl}" download style="color: #10b981;">ດາວໂຫຼດ</a>
+                        </p>
+                    </div>
+                `;
+            });
+    } else {
+        content.innerHTML = `
+            <div style="text-align: center; color: white; padding: 3rem;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">📄</div>
+                <h3 style="margin-bottom: 1rem;">${title}</h3>
+                <p style="color: #a0a0a0; margin-bottom: 2rem;">ໄຟລ໌ນີ້ບໍ່ສາມາດເບິ່ງໄດ້ໃນບຣາວເຊີ. ກະລຸນາດາວໂຫຼດເພື່ອເບິ່ງ.</p>
+                <div style="display: flex; gap: var(--spacing-md); justify-content: center; flex-wrap: wrap;">
+                    <a href="${fileUrl}" download class="btn" style="background: #10b981; color: white; text-decoration: none; padding: var(--spacing-md) var(--spacing-xl); border-radius: 8px; font-size: 1rem;">
+                        ⬇️ ດາວໂຫຼດເອກະສານ
+                    </a>
+                    <a href="${fileUrl}" target="_blank" class="btn" style="background: #3b82f6; color: white; text-decoration: none; padding: var(--spacing-md) var(--spacing-xl); border-radius: 8px; font-size: 1rem;">
+                        🔗 ເປີດໃນແຖບໃໝ່
+                    </a>
+                </div>
+            </div>
+        `;
+    }
+}
+
+function closeDocumentViewer() {
+    document.getElementById('documentViewerModal').style.display = 'none';
+    document.getElementById('documentViewerContent').innerHTML = '';
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function downloadDocument(event, fileUrl, filename) {
+    if (!fileUrl) {
+        event.preventDefault();
+        alert('ບໍ່ມີເອກະສານໃຫ້ດາວໂຫຼດ');
+        return;
+    }
+    
+    if (!fileUrl.startsWith('http') && !fileUrl.startsWith('/')) {
+        fileUrl = '/' + fileUrl;
+    }
+    
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = filename || 'document';
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('collegeModal');
+    const documentViewerModal = document.getElementById('documentViewerModal');
+    
+    if (event.target == modal) {
+        closeModal();
+    }
+    
+    if (event.target == documentViewerModal) {
+        closeDocumentViewer();
     }
 }
 

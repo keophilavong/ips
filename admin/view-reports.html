@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Reports - Admin</title>
+    <title>ເບິ່ງເອກະສານ - ຜູ້ດູແລລະບົບ</title>
     <link rel="icon" type="image/png" href="../assets/images/edu.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -232,14 +232,14 @@
 <div class="admin-container">
     <div class="admin-header">
         <div>
-            <h2>View Reports</h2>
-            <p style="margin-top: 0.5rem; color: var(--text-secondary);">View and manage all uploaded reports</p>
+            <h2>ເບິ່ງເອກະສານ</h2>
+            <p style="margin-top: 0.5rem; color: var(--text-secondary);">ເບິ່ງແລະຈັດການລາຍງານທັງໝົດທີ່ອັບໂຫຼດ</p>
         </div>
         <div style="display: flex; gap: var(--spacing-md); align-items: center; flex-wrap: wrap;">
             <button class="btn" onclick="openAddReportModal()" style="background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%); color: white; border: none;">
-                + ເພີ່ມລາຍງານ
+                + ເພີ່ມເອກະສານ
             </button>
-            <a href="dashboard.html" class="btn btn-outline">← Back to Dashboard</a>
+            <a href="dashboard.html" class="btn btn-outline">← ກັບໄປແຜງຄວບຄຸມ</a>
         </div>
     </div>
     
@@ -247,20 +247,20 @@
         <table class="reports-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Category</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>File</th>
-                    <th>Uploaded</th>
-                    <th>Actions</th>
+                    <th>ລະຫັດ</th>
+                    <th>ປະເພດ</th>
+                    <th>ຫົວຂໍ້</th>
+                    <th>ລາຍລະອຽດ</th>
+                    <th>ເອກະສານ</th>
+                    <th>ວັນທີອັບໂຫຼດ</th>
+                    <th>ການດຳເນີນການ</th>
                 </tr>
             </thead>
             <tbody id="reports-table-body">
                 <tr>
                     <td colspan="7" style="text-align: center; padding: var(--spacing-3xl);">
                         <div class="loading"></div>
-                        <p style="margin-top: 1rem; color: var(--text-secondary);">Loading...</p>
+                        <p style="margin-top: 1rem; color: var(--text-secondary);">ກຳລັງໂຫຼດ...</p>
                     </td>
                 </tr>
             </tbody>
@@ -277,27 +277,27 @@
         </div>
         <form id="addReportForm" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="category">ປະເພດ (Category) <span class="required">*</span></label>
+                <label for="category">ປະເພດ <span class="required">*</span></label>
                 <input type="text" id="category" name="category" required placeholder="ຕົວຢ່າງ: REPORT, OTHER, ປາກເຊ">
             </div>
             
             <div class="form-group">
-                <label for="title">ຫົວຂໍ້ (Title) <span class="required">*</span></label>
+                <label for="title">ຫົວຂໍ້ <span class="required">*</span></label>
                 <input type="text" id="title" name="title" required placeholder="ຕົວຢ່າງ: ລາຍງານກິດຈະກຳປີ 2024">
             </div>
             
             <div class="form-group">
-                <label for="description">ລາຍລະອຽດ (Description)</label>
+                <label for="description">ລາຍລະອຽດ</label>
                 <textarea id="description" name="description" rows="4" placeholder="ອະທິບາຍລາຍລະອຽດກ່ຽວກັບລາຍງານ..."></textarea>
             </div>
             
             <div class="form-group">
-                <label for="date">ວັນທີ (Date)</label>
+                <label for="date">ວັນທີ</label>
                 <input type="date" id="date" name="date" value="">
             </div>
             
             <div class="form-group">
-                <label>ເອກະສານ (File) <span class="required">*</span></label>
+                <label>ເອກະສານ <span class="required">*</span></label>
                 <div class="file-upload-area" onclick="document.getElementById('reportFile').click()">
                     <div style="font-size: 2.5rem; margin-bottom: var(--spacing-sm);">☁️</div>
                     <button type="button" class="btn" style="display: inline-flex; align-items: center; gap: var(--spacing-xs);">
@@ -361,7 +361,7 @@ function loadReports() {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="7" style="text-align: center; padding: var(--spacing-3xl); color: #ef4444;">
-                            Error: ${data.error}
+                            ເກີດຂໍ້ຜິດພາດ: ${data.error}
                         </td>
                     </tr>
                 `;
@@ -372,7 +372,7 @@ function loadReports() {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="7" style="text-align: center; padding: var(--spacing-3xl);">
-                            <p style="color: var(--text-secondary);">No reports found.</p>
+                            <p style="color: var(--text-secondary);">ບໍ່ພົບລາຍງານ.</p>
                         </td>
                     </tr>
                 `;
@@ -410,7 +410,7 @@ function loadReports() {
                     </td>
                     <td>${new Date(report.created_at).toLocaleDateString('lo-LA')}</td>
                     <td>
-                        <button class="btn btn-small btn-danger" onclick="deleteReport(${report.report_id})">Delete</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteReport(${report.report_id})">ລຶບ</button>
                     </td>
                 </tr>
             `;
@@ -421,7 +421,7 @@ function loadReports() {
             document.getElementById('reports-table-body').innerHTML = `
                 <tr>
                     <td colspan="7" style="text-align: center; padding: var(--spacing-3xl); color: #ef4444;">
-                        Error loading reports. Please refresh the page.
+                        ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດລາຍງານ. ກະລຸນາລອງໂຫຼດໜ້າຄືນ.
                     </td>
                 </tr>
             `;
@@ -493,7 +493,7 @@ function updateFileList() {
         <div class="file-list-item">
             <div>
                 <strong>${file.name}</strong>
-                <div style="font-size: 0.875rem; color: var(--text-light);">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+                <div style="font-size: 0.875rem; color: var(--text-light);">${(file.size / 1024 / 1024).toFixed(2)} ແມັດກິໂບ</div>
             </div>
             <button type="button" onclick="removeFile(${index})" style="color: #ef4444; background: none; border: none; cursor: pointer; text-decoration: underline;">ລຶບ</button>
         </div>
@@ -511,8 +511,14 @@ function removeFile(index) {
 }
 
 // Form submission
+let isReportSubmitting = false;
 document.getElementById('addReportForm').addEventListener('submit', function(e) {
     e.preventDefault();
+    
+    // Prevent duplicate submissions
+    if (isReportSubmitting) {
+        return;
+    }
     
     if (selectedFiles.length === 0) {
         document.getElementById('addReportResult').innerHTML = '<div class="alert alert-error" style="padding: var(--spacing-md); background: #fee2e2; color: #dc2626; border-radius: 8px; margin-top: var(--spacing-md);">❌ ກະລຸນາເລືອກຢ່າງໜ້ອຍ 1 ໄຟລ໌</div>';
@@ -530,6 +536,8 @@ document.getElementById('addReportForm').addEventListener('submit', function(e) 
     const originalText = submitBtn.textContent;
     const result = document.getElementById('addReportResult');
     
+    // Disable form and show loading state
+    isReportSubmitting = true;
     submitBtn.disabled = true;
     submitBtn.textContent = 'ກຳລັງບັນທຶກ...';
     result.innerHTML = '';
@@ -548,15 +556,17 @@ document.getElementById('addReportForm').addEventListener('submit', function(e) 
             }, 1500);
         } else {
             result.innerHTML = '<div class="alert alert-error" style="padding: var(--spacing-md); background: #fee2e2; color: #dc2626; border-radius: 8px; margin-top: var(--spacing-md);">❌ ເກີດຂໍ້ຜິດພາດ: ' + (data.includes('error') ? data : 'ບໍ່ສາມາດບັນທຶກລາຍງານໄດ້') + '</div>';
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalText;
         }
     })
     .catch(error => {
         result.innerHTML = '<div class="alert alert-error" style="padding: var(--spacing-md); background: #fee2e2; color: #dc2626; border-radius: 8px; margin-top: var(--spacing-md);">❌ ເກີດຂໍ້ຜິດພາດໃນການບັນທຶກ</div>';
+        console.error('Error:', error);
+    })
+    .finally(() => {
+        // Re-enable form
+        isReportSubmitting = false;
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
-        console.error('Error:', error);
     });
 });
 

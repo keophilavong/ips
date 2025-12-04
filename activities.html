@@ -487,8 +487,44 @@ function checkAdmin() {
         .catch(err => console.log('Not admin or not logged in'));
 }
 
+// Detect base path from current URL
+function getBasePath() {
+    const currentPath = window.location.pathname;
+    const pathParts = currentPath.split('/').filter(p => p);
+    if (pathParts.length > 1) {
+        return '/' + pathParts[0];
+    }
+    return '';
+}
+
+const BASE_PATH = getBasePath();
+
 let allActivities = [];
 let filteredActivities = [];
+
+// Fix image URL to ensure it's accessible
+function fixImageUrl(url) {
+    if (!url) return url;
+    
+    // If already a full URL, return as is
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+        return url;
+    }
+    
+    // If URL starts with /, it's absolute from web root
+    if (url.startsWith('/')) {
+        // If we have a base path and URL doesn't include it, prepend it
+        if (BASE_PATH && BASE_PATH !== '/' && !url.startsWith(BASE_PATH)) {
+            return BASE_PATH + url;
+        }
+        return url;
+    }
+    
+    // Relative URL - make it relative to current page
+    const currentPath = window.location.pathname;
+    const pageBase = currentPath.substring(0, currentPath.lastIndexOf('/'));
+    return (pageBase || '') + '/' + url;
+}
 
 // Open image modal
 function openImageModal(imageUrl, title, description) {
@@ -502,10 +538,12 @@ function openImageModal(imageUrl, title, description) {
         return;
     }
     
-    console.log('Opening image modal with URL:', imageUrl);
+    // Fix the image URL
+    const fixedUrl = fixImageUrl(imageUrl);
+    console.log('Opening image modal with URL:', imageUrl, '-> Fixed:', fixedUrl);
     
     // Set image source
-    modalImage.src = imageUrl;
+    modalImage.src = fixedUrl;
     modalImage.alt = title || 'ຮູບພາບກິດຈະກຳ';
     
     // Handle image load error
@@ -603,7 +641,9 @@ function displayActivities(activities) {
     container.innerHTML = `
         <div class="activities-grid">
             ${activities.map(activity => {
-                const imageUrl = activity.image_url || '';
+                let imageUrl = activity.image_url || '';
+                // Fix image URL before using it
+                imageUrl = fixImageUrl(imageUrl);
                 const safeTitle = (activity.title || 'Untitled Activity').replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 const safeDescription = (activity.description || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 const safeImageUrl = imageUrl ? imageUrl.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
@@ -618,7 +658,7 @@ function displayActivities(activities) {
                         <div class="activity-image-container" ${imageUrl ? `onclick="openImageModal('${safeImageUrl}', '${safeTitle}', '${safeDescription}')" style="cursor: pointer;"` : ''}>
                             ${imageUrl ? 
                                 `<img src="${imageUrl}" alt="${safeTitle}" 
-                                     onerror="console.error('Image failed to load:', '${safeImageUrl}'); this.style.display='none'; const placeholder = this.nextElementSibling; if(placeholder) placeholder.style.display='flex';"
+                                     onerror="console.error('Image failed to load:', '${safeImageUrl}'); const currentPath = window.location.pathname; const basePath = currentPath.substring(0, currentPath.lastIndexOf('/')); const newUrl = '${imageUrl}'.startsWith('/') && basePath && basePath !== '/' ? basePath + '${imageUrl}' : '${imageUrl}'; if (newUrl !== this.src) { this.src = newUrl; } else { this.style.display='none'; const placeholder = this.nextElementSibling; if(placeholder) placeholder.style.display='flex'; }"
                                      onload="console.log('Image loaded successfully:', '${safeImageUrl}');"
                                      style="width: 100%; height: 100%; object-fit: cover;">
                                  <div class="activity-image-placeholder" style="display: none;">📷</div>` :

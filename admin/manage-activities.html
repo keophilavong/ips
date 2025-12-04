@@ -336,7 +336,7 @@ function loadActivities() {
                 <tr>
                     <td>
                         ${activity.image_url ? 
-                            `<img src="${activity.image_url.startsWith('/') ? '..' + activity.image_url : '../' + activity.image_url}" alt="${activity.title}" class="activity-image-preview">` :
+                            `<img src="${activity.image_url}" alt="${activity.title}" class="activity-image-preview" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 font-family=%22sans-serif%22 font-size=%2214%22 dy=%22.3em%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E';">` :
                             '<span style="color: var(--text-light);">No image</span>'
                         }
                     </td>
@@ -395,19 +395,17 @@ function editActivity(id) {
                 document.getElementById('category').value = activity.category || '';
                 
                 if (activity.image_url) {
-                    const imageSrc = activity.image_url.startsWith('/') ? '..' + activity.image_url : '../' + activity.image_url;
                     document.getElementById('imagePreview').innerHTML = `
-                        <img src="${imageSrc}" style="max-width: 200px; border-radius: var(--radius-md);">
+                        <img src="${activity.image_url}" style="max-width: 200px; border-radius: var(--radius-md);" onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<p style=\'color: var(--text-light);\'>Image not found</p>';">
                     `;
                 } else {
                     document.getElementById('imagePreview').innerHTML = '';
                 }
                 
                 if (activity.document_url) {
-                    const docSrc = activity.document_url.startsWith('/') ? '..' + activity.document_url : '../' + activity.document_url;
                     const fileName = activity.document_url.split('/').pop();
                     document.getElementById('documentPreview').innerHTML = `
-                        <a href="${docSrc}" target="_blank" style="color: var(--primary-color); text-decoration: none;">
+                        <a href="${activity.document_url}" target="_blank" style="color: var(--primary-color); text-decoration: none;">
                             📄 ${fileName}
                         </a>
                     `;
